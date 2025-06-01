@@ -1,12 +1,91 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>ポケモンダメージ計算ツール</title>
+  <meta charset="UTF-8">
+  <title>ポケモン実数値計算ツール</title>
+  <style>
+    body { font-family: sans-serif; margin: 20px; }
+    .container { display: flex; gap: 30px; }
+    .panel { flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 8px; }
+    .panel h3 { margin-top: 0; }
+    .stat-block { margin-bottom: 10px; }
+    .stat-block input[type=range] { width: 100px; }
+    .rank-btn { width: 24px; }
+  </style>
+  <!-- autoComplete.js CSS -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css">
+  <!-- autoComplete.js JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+  <link rel="stylesheet" href="style/main.css" />
 </head>
 <body>
-  <div id="app">ここにアプリが表示されます</div>
-  <script type="module" src="ui/panelBuilder.js"></script>
+
+<h2>ポケモン ダブル用ダメージ計算</h2>
+
+<div class="container">
+  <!-- 攻撃側 -->
+  <div class="panel">
+    <h3>攻撃側</h3>
+    <label for="attacker">攻撃側ポケモン:</label>
+    <input type="text" id="attacker" autocomplete="off">
+    <div id="abilities"></div>
+
+    <label for="move">技:</label>
+    <input type="text" id="move" autocomplete="off">
+
+    <div class="stat-block">
+      <h4>攻撃</h4>
+      個体値: <input type="number" id="attack-iv" value="31" min="0" max="31"><br>
+      努力値: <input type="range" id="attack-ev" value="0" min="0" max="252" step="4">
+      <span id="attack-ev-val">0</span><br>
+      性格:
+      <select id="attack-nature">
+        <option value="1.1">↑</option>
+        <option value="1.0" selected>±</option>
+        <option value="0.9">↓</option>
+      </select><br>
+      ランク:
+      <button onclick="changeAttackRank(-1)" class="rank-btn">-</button>
+      <span id="attack-rank-val">0</span>
+      <button onclick="changeAttackRank(1)" class="rank-btn">+</button><br>
+      実数値: <span id="attack-actual">-</span>
+    </div>
+  </div>
+
+  <!-- 防御側 -->
+  <div class="panel">
+    <h3>防御側</h3>
+    <label for="defender">防御側ポケモン:</label>
+    <input type="text" id="defender" autocomplete="off">
+
+    <div class="stat-block">
+      <h4>HP</h4>
+      個体値: <input type="number" id="hp-iv" value="31" min="0" max="31"><br>
+      努力値: <input type="range" id="hp-ev" value="0" min="0" max="252" step="4">
+      <span id="hp-ev-val">0</span><br>
+      実数値: <span id="hp-actual">-</span>
+    </div>
+
+    <div class="stat-block">
+      <h4>防御 or 特防</h4>
+      個体値: <input type="number" id="defense-iv" value="31" min="0" max="31"><br>
+      努力値: <input type="range" id="defense-ev" value="0" min="0" max="252" step="4">
+      <span id="defense-ev-val">0</span><br>
+      性格:
+      <select id="defense-nature">
+        <option value="1.1">↑</option>
+        <option value="1.0" selected>±</option>
+        <option value="0.9">↓</option>
+      </select><br>
+      ランク:
+      <button onclick="changeDefenseRank(-1)" class="rank-btn">-</button>
+      <span id="defense-rank-val">0</span>
+      <button onclick="changeDefenseRank(1)" class="rank-btn">+</button><br>
+      実数値: <span id="defense-actual">-</span>
+    </div>
+  </div>
+</div>
+
+<script src="ui/app.js" defer></script>
 </body>
 </html>

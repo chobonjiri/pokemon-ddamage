@@ -1,0 +1,3327 @@
+[
+  {
+    "name": "だいばくはつ",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "250",
+    "memo": "全体"
+  },
+  {
+    "name": "じばく",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "200",
+    "memo": "全体"
+  },
+  {
+    "name": "Vジェネレート",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "180",
+    "memo": ""
+  },
+  {
+    "name": "プリズムレーザー",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "160",
+    "memo": ""
+  },
+  {
+    "name": "デカハンマー",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "160",
+    "memo": ""
+  },
+  {
+    "name": "もろはのずつき",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "ふんか",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "150",
+    "memo": "全体"
+  },
+  {
+    "name": "ブラストバーン",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "はかいこうせん",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "ハイドロカノン",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "ハードプラント",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "ドラゴンエナジー",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "150",
+    "memo": "全体"
+  },
+  {
+    "name": "ときのほうこう",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "しおふき",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "150",
+    "memo": "全体"
+  },
+  {
+    "name": "クロロブラスト",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "ギガインパクト",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "きあいパンチ",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "がんせきほう",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "150",
+    "memo": ""
+  },
+  {
+    "name": "フリーズボルト",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "140",
+    "memo": ""
+  },
+  {
+    "name": "ブラッドムーン",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "140",
+    "memo": ""
+  },
+  {
+    "name": "はめつのねがい",
+    "category": "特殊",
+    "Type": "はがね",
+    "power": "140",
+    "memo": ""
+  },
+  {
+    "name": "ばくおんぱ",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "140",
+    "memo": "全体"
+  },
+  {
+    "name": "とっておき",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "140",
+    "memo": ""
+  },
+  {
+    "name": "てっていこうせん",
+    "category": "特殊",
+    "Type": "はがね",
+    "power": "140",
+    "memo": ""
+  },
+  {
+    "name": "サイコブースト",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "140",
+    "memo": ""
+  },
+  {
+    "name": "ゴッドバード",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "140",
+    "memo": ""
+  },
+  {
+    "name": "コールドフレア",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "140",
+    "memo": ""
+  },
+  {
+    "name": "りゅうせいぐん",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "リーフストーム",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "らいげき",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "もえつきる",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "フルールカノン",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "とびひざげり",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "オーバーヒート",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "エレクトロビーム",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "あおいほのお",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "アイアンローラー",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "130",
+    "memo": ""
+  },
+  {
+    "name": "ソーラーブレード",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "125",
+    "memo": ""
+  },
+  {
+    "name": "メテオビーム",
+    "category": "特殊",
+    "Type": "いわ",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "メガホーン",
+    "category": "物理",
+    "Type": "むし",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "メガトンキック",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "みらいよち",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ボルテッカー",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ブレイブバード",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "フレアドライブ",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ブリザードランス",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "120",
+    "memo": "全体"
+  },
+  {
+    "name": "ぶちかまし",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "パワーウィップ",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "はなびらのまい",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ばかぢから",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "でんじほう",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "でんこうそうげき",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "テラクラスター",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "だんがいのつるぎ",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "120",
+    "memo": "全体"
+  },
+  {
+    "name": "ダストシュート",
+    "category": "物理",
+    "Type": "どく",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "だいふんげき",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ソーラービーム",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "すてみタックル",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "シャドーダイブ",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "シードフレア",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ゴールドラッシュ",
+    "category": "特殊",
+    "Type": "はがね",
+    "power": "120",
+    "memo": "全体"
+  },
+  {
+    "name": "ゲップ",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "げきりん",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "きょけんとつげき",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "きあいだま",
+    "category": "特殊",
+    "Type": "かくとう",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ガリョウテンセイ",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "かかとおとし",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "かえんボール",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ウッドハンマー",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ウェーブタックル",
+    "category": "物理",
+    "Type": "みず",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "インファイト",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "あばれる",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "アストラルビット",
+    "category": "特殊",
+    "Type": "ゴースト",
+    "power": "120",
+    "memo": "全体"
+  },
+  {
+    "name": "アーマーキャノン",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "120",
+    "memo": ""
+  },
+  {
+    "name": "ポルターガイスト",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "110",
+    "memo": ""
+  },
+  {
+    "name": "ぼうふう",
+    "category": "特殊",
+    "Type": "ひこう",
+    "power": "110",
+    "memo": ""
+  },
+  {
+    "name": "ふぶき",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "110",
+    "memo": "全体"
+  },
+  {
+    "name": "ハイドロポンプ",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "110",
+    "memo": ""
+  },
+  {
+    "name": "だいもんじ",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "110",
+    "memo": ""
+  },
+  {
+    "name": "スチームバースト",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "110",
+    "memo": ""
+  },
+  {
+    "name": "スケイルノイズ",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "110",
+    "memo": "全体"
+  },
+  {
+    "name": "こんげんのはどう",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "110",
+    "memo": "全体"
+  },
+  {
+    "name": "かみなり",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "110",
+    "memo": ""
+  },
+  {
+    "name": "オーラぐるま",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "110",
+    "memo": ""
+  },
+  {
+    "name": "れんごく",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ゆめくい",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "メテオドライブ",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ミストバースト",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "100",
+    "memo": "全体"
+  },
+  {
+    "name": "マグマストーム",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ホイールスピン",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "フライングプレス",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "フォトンゲイザー",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ひょうざんおろし",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "はるのあらし",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "100",
+    "memo": "全体"
+  },
+  {
+    "name": "ばくれつパンチ",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ハイパードリル",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ねっさのあらし",
+    "category": "特殊",
+    "Type": "じめん",
+    "power": "100",
+    "memo": "全体"
+  },
+  {
+    "name": "ドラゴンダイブ",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ツタこんぼう",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ダイヤストーム",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "100",
+    "memo": "全体"
+  },
+  {
+    "name": "ダイマックスほう",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "せいなるほのお",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "ストーンエッジ",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "じゃどくのくさり",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "シャドーレイ",
+    "category": "特殊",
+    "Type": "ゴースト",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "じしん",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "100",
+    "memo": "全体"
+  },
+  {
+    "name": "サンダーダイブ",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "さばきのつぶて",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "サイコブレイク",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "こがらしあらし",
+    "category": "特殊",
+    "Type": "ひこう",
+    "power": "100",
+    "memo": "全体"
+  },
+  {
+    "name": "クロスフレイム",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "クロスチョップ",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "クロスサンダー",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "クラブハンマー",
+    "category": "物理",
+    "Type": "みず",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "くちばしキャノン",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "きょじゅうだん",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "きょじゅうざん",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "かみなりあらし",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "100",
+    "memo": "全体"
+  },
+  {
+    "name": "エアロブラスト",
+    "category": "特殊",
+    "Type": "ひこう",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "イナズマドライブ",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "いじげんラッシュ",
+    "category": "物理",
+    "Type": "あく",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "アクセルブレイク",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "あくうせつだん",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "アイスハンマー",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "アイアンテール",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "アームハンマー",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "100",
+    "memo": ""
+  },
+  {
+    "name": "10まんばりき",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "95",
+    "memo": ""
+  },
+  {
+    "name": "ラスターパージ",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "95",
+    "memo": ""
+  },
+  {
+    "name": "ムーンフォース",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "95",
+    "memo": ""
+  },
+  {
+    "name": "ミストボール",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "95",
+    "memo": ""
+  },
+  {
+    "name": "ヘドロウェーブ",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "95",
+    "memo": "全体"
+  },
+  {
+    "name": "パワフルエッジ",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "95",
+    "memo": ""
+  },
+  {
+    "name": "ねっぷう",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "95",
+    "memo": "全体"
+  },
+  {
+    "name": "イカサマ",
+    "category": "物理",
+    "Type": "あく",
+    "power": "95",
+    "memo": ""
+  },
+  {
+    "name": "ワンダースチーム",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "ワイルドボルト",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "れいとうビーム",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "レイジングブル",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "リーフブレード",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "らいめいげり",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "もえあがるいかり",
+    "category": "特殊",
+    "Type": "あく",
+    "power": "90",
+    "memo": "全体"
+  },
+  {
+    "name": "めざめるダンス",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "むねんのつるぎ",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "むしのさざめき",
+    "category": "特殊",
+    "Type": "むし",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "ヘドロばくだん",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "はなふぶき",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "90",
+    "memo": "全体"
+  },
+  {
+    "name": "ハイパーボイス",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "90",
+    "memo": "全体"
+  },
+  {
+    "name": "なみのり",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "90",
+    "memo": "全体"
+  },
+  {
+    "name": "ドラゴンハンマー",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "とっしん",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "であいがしら",
+    "category": "物理",
+    "Type": "むし",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "だくりゅう",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "90",
+    "memo": "全体"
+  },
+  {
+    "name": "だいちのちから",
+    "category": "特殊",
+    "Type": "じめん",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "そらをとぶ",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "せいなるつるぎ",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "じゃれつく",
+    "category": "物理",
+    "Type": "フェアリー",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "10まんボルト",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "シェルアームズ",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "さわぐ",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "サイコキネシス",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "コメットパンチ",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "ゴーストダイブ",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "こうげきしれい",
+    "category": "物理",
+    "Type": "むし",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "かふんだんご",
+    "category": "特殊",
+    "Type": "むし",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "かえんほうしゃ",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "エナジーボール",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "うたかたのアリア",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "90",
+    "memo": "全体"
+  },
+  {
+    "name": "いてつくしせん",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "アクアテール",
+    "category": "物理",
+    "Type": "みず",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "3ぼんのや",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "90",
+    "memo": ""
+  },
+  {
+    "name": "りゅうのはどう",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "ブレイズキック",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "のしかかり",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "ナイトバースト",
+    "category": "特殊",
+    "Type": "あく",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "とびはねる",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "ドゲザン",
+    "category": "物理",
+    "Type": "あく",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "つららおとし",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "しんぴのつるぎ",
+    "category": "特殊",
+    "Type": "かくとう",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "サイコファング",
+    "category": "物理",
+    "Type": "エスパー",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "アクアブレイク",
+    "category": "物理",
+    "Type": "みず",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "DDラリアット",
+    "category": "物理",
+    "Type": "あく",
+    "power": "85",
+    "memo": ""
+  },
+  {
+    "name": "ワイドフォース",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ルミナコリジョン",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "りんごさん",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ラスターカノン",
+    "category": "特殊",
+    "Type": "はがね",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "メガトンパンチ",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "みわくのボイス",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "みずのちかい",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "マジカルシャイン",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "80",
+    "memo": "全体"
+  },
+  {
+    "name": "ほのおのムチ",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ほのおのまい",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ほのおのちかい",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ボディプレス",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ほうでん",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "80",
+    "memo": "全体"
+  },
+  {
+    "name": "ふんえん",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "80",
+    "memo": "全体"
+  },
+  {
+    "name": "フレアソング",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ぶきみなじゅもん",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "フェイタルクロー",
+    "category": "物理",
+    "Type": "どく",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "びりびりちくちく",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "パワージェム",
+    "category": "特殊",
+    "Type": "いわ",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "はどうだん",
+    "category": "特殊",
+    "Type": "かくとう",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ハイドロスチーム",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ねらいうち",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ねっとう",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ドリルライナー",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ドリルくちばし",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ドラムアタック",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ドラゴンクロー",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "トライアタック",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "とびかかる",
+    "category": "物理",
+    "Type": "むし",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "どげざつき",
+    "category": "物理",
+    "Type": "あく",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "どくづき",
+    "category": "物理",
+    "Type": "どく",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "テラバースト",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "タネばくだん",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "たたきつける",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "たきのぼり",
+    "category": "物理",
+    "Type": "みず",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "ダイビング",
+    "category": "物理",
+    "Type": "みず",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "じんつうりき",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "しんそく",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "シャドーボール",
+    "category": "特殊",
+    "Type": "ゴースト",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "シャカシャカほう",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "80",
+    "memo": "全体"
+  },
+  {
+    "name": "しねんのずつき",
+    "category": "物理",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "シザークロス",
+    "category": "物理",
+    "Type": "むし",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "じごくづき",
+    "category": "物理",
+    "Type": "あく",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "サンダープリズン",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "サイコブレイド",
+    "category": "物理",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "サイコショック",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "くらいつく",
+    "category": "物理",
+    "Type": "あく",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "くさのちかい",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "きゅうけつ",
+    "category": "物理",
+    "Type": "むし",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "きまぐレーザー",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "かみくだく",
+    "category": "物理",
+    "Type": "あく",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "かげぬい",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "かいりき",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "オーラウイング",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "オーバードライブ",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "80",
+    "memo": "全体"
+  },
+  {
+    "name": "いっちょうあがり",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "いじげんホール",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "あなをほる",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "あくのはどう",
+    "category": "特殊",
+    "Type": "あく",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "アクアステップ",
+    "category": "物理",
+    "Type": "みず",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "アイススピナー",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "アイアンヘッド",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "Gのちから",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "80",
+    "memo": ""
+  },
+  {
+    "name": "れいとうパンチ",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "やけっぱち",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "マジカルフレイム",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "ほのおのパンチ",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "ブレイククロー",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "ドレインパンチ",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "ソウルクラッシュ",
+    "category": "物理",
+    "Type": "フェアリー",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "じだんだ",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "シェルブレード",
+    "category": "物理",
+    "Type": "みず",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "サイコノイズ",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "ギガドレイン",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "かわらわり",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "かみなりパンチ",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "エアスラッシュ",
+    "category": "特殊",
+    "Type": "ひこう",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "うらみつらみ",
+    "category": "特殊",
+    "Type": "ゴースト",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "うっぷんばらし",
+    "category": "物理",
+    "Type": "あく",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "ウッドホーン",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "いわなだれ",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "75",
+    "memo": "全体"
+  },
+  {
+    "name": "いにしえのうた",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "75",
+    "memo": "全体"
+  },
+  {
+    "name": "あんこくきょうだ",
+    "category": "物理",
+    "Type": "あく",
+    "power": "75",
+    "memo": ""
+  },
+  {
+    "name": "ライジングボルト",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "ボルトチェンジ",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "フリーズドライ",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "ふいうち",
+    "category": "物理",
+    "Type": "あく",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "バリアーラッシュ",
+    "category": "物理",
+    "Type": "エスパー",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "はがねのつばさ",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "はいよるいちげき",
+    "category": "物理",
+    "Type": "むし",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "ねっさのだいち",
+    "category": "特殊",
+    "Type": "じめん",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "とんぼがえり",
+    "category": "物理",
+    "Type": "むし",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "トロピカルキック",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "トリックフラワー",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "つじぎり",
+    "category": "物理",
+    "Type": "あく",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "スマートホーン",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "ずつき",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "じんらい",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "しんぴのちから",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "シャドークロー",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "しっとのほのお",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "70",
+    "memo": "全体"
+  },
+  {
+    "name": "サイコカッター",
+    "category": "物理",
+    "Type": "エスパー",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "クロスポイズン",
+    "category": "物理",
+    "Type": "どく",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "きりさく",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "からげんき",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "かたきうち",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "アクアカッター",
+    "category": "物理",
+    "Type": "みず",
+    "power": "70",
+    "memo": ""
+  },
+  {
+    "name": "ローキック",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "ほのおのキバ",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "ベノムショック",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "ヘドロこうげき",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "ふみつけ",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "ひけん・ちえなみ",
+    "category": "物理",
+    "Type": "あく",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "パラボラチャージ",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "65",
+    "memo": "全体"
+  },
+  {
+    "name": "はやてがえし",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "バブルこうせん",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "はたきおとす",
+    "category": "物理",
+    "Type": "あく",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "つのでつく",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "たたりめ",
+    "category": "特殊",
+    "Type": "ゴースト",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "スパーク",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "しおみず",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "サイケこうせん",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "こごえるせかい",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "65",
+    "memo": "全体"
+  },
+  {
+    "name": "こおりのキバ",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "がんせきアックス",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "かみなりのキバ",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "オーロラビーム",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "65",
+    "memo": ""
+  },
+  {
+    "name": "ワイドブレイカー",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "60",
+    "memo": "全体"
+  },
+  {
+    "name": "りんしょう",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "りゅうのいぶき",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "ゆきなだれ",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "やきつくす",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "60",
+    "memo": "全体"
+  },
+  {
+    "name": "むしくい",
+    "category": "物理",
+    "Type": "むし",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "みずのはどう",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "みずあめボム",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "マジカルリーフ",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "ほしがる",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "ぶんまわす",
+    "category": "物理",
+    "Type": "あく",
+    "power": "60",
+    "memo": "全体"
+  },
+  {
+    "name": "ひゃっきやこう",
+    "category": "特殊",
+    "Type": "ゴースト",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "はっけい",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "どろぼう",
+    "category": "物理",
+    "Type": "あく",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "ドラゴンテール",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "ともえなげ",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "どくばりセンボン",
+    "category": "物理",
+    "Type": "どく",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "でんげきは",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "つばめがえし",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "つばさでうつ",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "ついばむ",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "ダメおし",
+    "category": "物理",
+    "Type": "あく",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "スピードスター",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "60",
+    "memo": "全体"
+  },
+  {
+    "name": "シャドーパンチ",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "じならし",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "60",
+    "memo": "全体"
+  },
+  {
+    "name": "ジェットパンチ",
+    "category": "物理",
+    "Type": "みず",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "こおりのいぶき",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "げんしのちから",
+    "category": "特殊",
+    "Type": "いわ",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "クイックターン",
+    "category": "物理",
+    "Type": "みず",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "がんせきふうじ",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "かみつく",
+    "category": "物理",
+    "Type": "あく",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "かえんぐるま",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "60",
+    "memo": ""
+  },
+  {
+    "name": "エアカッター",
+    "category": "特殊",
+    "Type": "ひこう",
+    "power": "60",
+    "memo": "全体"
+  },
+  {
+    "name": "マッドショット",
+    "category": "特殊",
+    "Type": "じめん",
+    "power": "55",
+    "memo": ""
+  },
+  {
+    "name": "はっぱカッター",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "55",
+    "memo": "全体"
+  },
+  {
+    "name": "はさむ",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "55",
+    "memo": ""
+  },
+  {
+    "name": "バークアウト",
+    "category": "特殊",
+    "Type": "あく",
+    "power": "55",
+    "memo": "全体"
+  },
+  {
+    "name": "こごえるかぜ",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "55",
+    "memo": "全体"
+  },
+  {
+    "name": "グラススライダー",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "55",
+    "memo": ""
+  },
+  {
+    "name": "エレキネット",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "55",
+    "memo": "全体"
+  },
+  {
+    "name": "アクロバット",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "55",
+    "memo": ""
+  },
+  {
+    "name": "わるあがき",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "メタルクロー",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "むしのていこう",
+    "category": "特殊",
+    "Type": "むし",
+    "power": "50",
+    "memo": "全体"
+  },
+  {
+    "name": "ポイズンテール",
+    "category": "物理",
+    "Type": "どく",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "ふんどのこぶし",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "ひやみず",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "ねんりき",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "ニトロチャージ",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "ドレインキッス",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "ドラゴンアロー",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "50",
+    "memo": "連続"
+  },
+  {
+    "name": "とびつく",
+    "category": "物理",
+    "Type": "むし",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "とどめばり",
+    "category": "物理",
+    "Type": "むし",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "どくどくのキバ",
+    "category": "物理",
+    "Type": "どく",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "チャージビーム",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "タキオンカッター",
+    "category": "特殊",
+    "Type": "はがね",
+    "power": "50",
+    "memo": "連続"
+  },
+  {
+    "name": "だいちのはどう",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "しっぺがえし",
+    "category": "物理",
+    "Type": "あく",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "こうそくスピン",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "クリアスモッグ",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "くさわけ",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "おはかまいり",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "うちおとす",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "ウェザーボール",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "いわおとし",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "いびき",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "いあいぎり",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "50",
+    "memo": ""
+  },
+  {
+    "name": "つるのムチ",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "45",
+    "memo": ""
+  },
+  {
+    "name": "れんぞくぎり",
+    "category": "物理",
+    "Type": "むし",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "ようせいのかぜ",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "ようかいえき",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "40",
+    "memo": "全体"
+  },
+  {
+    "name": "メガドレイン",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "みねうち",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "みずでっぽう",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "マッハパンチ",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "ひのこ",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "ひっかく",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "バレットパンチ",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "はたく",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "ネコにこばん",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "ねこだまし",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "でんこうせっか",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "でんきショック",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "てかげん",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "ツインビーム",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "40",
+    "memo": "連続"
+  },
+  {
+    "name": "チャームボイス",
+    "category": "特殊",
+    "Type": "フェアリー",
+    "power": "40",
+    "memo": "全体"
+  },
+  {
+    "name": "ダブルウイング",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "40",
+    "memo": "連続"
+  },
+  {
+    "name": "たつまき",
+    "category": "特殊",
+    "Type": "ドラゴン",
+    "power": "40",
+    "memo": "全体"
+  },
+  {
+    "name": "たいあたり",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "しんくうは",
+    "category": "特殊",
+    "Type": "かくとう",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "しおづけ",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "このは",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "こなゆき",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "40",
+    "memo": "全体"
+  },
+  {
+    "name": "こおりのつぶて",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "かぜおこし",
+    "category": "特殊",
+    "Type": "ひこう",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "かげうち",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "えだづき",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "エコーボイス",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "いわくだき",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "アシッドボム",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "アクセルロック",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "アクアジェット",
+    "category": "物理",
+    "Type": "みず",
+    "power": "40",
+    "memo": ""
+  },
+  {
+    "name": "ほのおのうず",
+    "category": "特殊",
+    "Type": "ほのお",
+    "power": "35",
+    "memo": ""
+  },
+  {
+    "name": "つつく",
+    "category": "物理",
+    "Type": "ひこう",
+    "power": "35",
+    "memo": ""
+  },
+  {
+    "name": "ダブルアタック",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "35",
+    "memo": "連続"
+  },
+  {
+    "name": "すなじごく",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "35",
+    "memo": ""
+  },
+  {
+    "name": "うずしお",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "35",
+    "memo": ""
+  },
+  {
+    "name": "フェイント",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "30",
+    "memo": ""
+  },
+  {
+    "name": "にどげり",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "30",
+    "memo": "連続"
+  },
+  {
+    "name": "トリプルダイブ",
+    "category": "物理",
+    "Type": "みず",
+    "power": "30",
+    "memo": "連続"
+  },
+  {
+    "name": "スモッグ",
+    "category": "特殊",
+    "Type": "どく",
+    "power": "30",
+    "memo": ""
+  },
+  {
+    "name": "したでなめる",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "30",
+    "memo": ""
+  },
+  {
+    "name": "ころがる",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "30",
+    "memo": ""
+  },
+  {
+    "name": "キラースピン",
+    "category": "物理",
+    "Type": "どく",
+    "power": "30",
+    "memo": "全体"
+  },
+  {
+    "name": "おどろかす",
+    "category": "物理",
+    "Type": "ゴースト",
+    "power": "30",
+    "memo": ""
+  },
+  {
+    "name": "ロックブラスト",
+    "category": "物理",
+    "Type": "いわ",
+    "power": "25",
+    "memo": "連続"
+  },
+  {
+    "name": "ミサイルばり",
+    "category": "物理",
+    "Type": "むし",
+    "power": "25",
+    "memo": ""
+  },
+  {
+    "name": "ボーンラッシュ",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "25",
+    "memo": "連続"
+  },
+  {
+    "name": "つららばり",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "25",
+    "memo": "連続"
+  },
+  {
+    "name": "タネマシンガン",
+    "category": "物理",
+    "Type": "くさ",
+    "power": "25",
+    "memo": "連続"
+  },
+  {
+    "name": "スケイルショット",
+    "category": "物理",
+    "Type": "ドラゴン",
+    "power": "25",
+    "memo": "連続"
+  },
+  {
+    "name": "すいりゅうれんだ",
+    "category": "物理",
+    "Type": "みず",
+    "power": "25",
+    "memo": "連続"
+  },
+  {
+    "name": "スイープビンタ",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "25",
+    "memo": "連続"
+  },
+  {
+    "name": "まとわりつく",
+    "category": "特殊",
+    "Type": "むし",
+    "power": "20",
+    "memo": ""
+  },
+  {
+    "name": "ほっぺすりすり",
+    "category": "物理",
+    "Type": "でんき",
+    "power": "20",
+    "memo": ""
+  },
+  {
+    "name": "ネズミざん",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "20",
+    "memo": "連続"
+  },
+  {
+    "name": "どろかけ",
+    "category": "特殊",
+    "Type": "じめん",
+    "power": "20",
+    "memo": ""
+  },
+  {
+    "name": "トリプルアクセル",
+    "category": "物理",
+    "Type": "こおり",
+    "power": "20",
+    "memo": "連続"
+  },
+  {
+    "name": "つけあがる",
+    "category": "物理",
+    "Type": "あく",
+    "power": "20",
+    "memo": ""
+  },
+  {
+    "name": "すいとる",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "20",
+    "memo": ""
+  },
+  {
+    "name": "アシストパワー",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "20",
+    "memo": ""
+  },
+  {
+    "name": "みだれひっかき",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "18",
+    "memo": "連続"
+  },
+  {
+    "name": "みだれづき",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "15",
+    "memo": "連続"
+  },
+  {
+    "name": "みずしゅりけん",
+    "category": "特殊",
+    "Type": "みず",
+    "power": "15",
+    "memo": "連続"
+  },
+  {
+    "name": "まきつく",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "15",
+    "memo": ""
+  },
+  {
+    "name": "どくばり",
+    "category": "物理",
+    "Type": "どく",
+    "power": "15",
+    "memo": ""
+  },
+  {
+    "name": "つっぱり",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "15",
+    "memo": "連続"
+  },
+  {
+    "name": "しめつける",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "15",
+    "memo": ""
+  },
+  {
+    "name": "トリプルキック",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "10",
+    "memo": "連続"
+  },
+  {
+    "name": "なげつける",
+    "category": "物理",
+    "Type": "あく",
+    "power": "持物参照",
+    "memo": ""
+  },
+  {
+    "name": "ふくろだたき",
+    "category": "物理",
+    "Type": "あく",
+    "power": "味方参照",
+    "memo": "連続"
+  },
+  {
+    "name": "はきだす",
+    "category": "特殊",
+    "Type": "ノーマル",
+    "power": "前技参照",
+    "memo": ""
+  },
+  {
+    "name": "メタルバースト",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "ダメージ参照",
+    "memo": ""
+  },
+  {
+    "name": "ミラーコート",
+    "category": "特殊",
+    "Type": "エスパー",
+    "power": "ダメージ参照",
+    "memo": ""
+  },
+  {
+    "name": "ほうふく",
+    "category": "物理",
+    "Type": "あく",
+    "power": "ダメージ参照",
+    "memo": ""
+  },
+  {
+    "name": "カウンター",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "ダメージ参照",
+    "memo": ""
+  },
+  {
+    "name": "プレゼント",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "確率",
+    "memo": ""
+  },
+  {
+    "name": "ハサミギロチン",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "一撃",
+    "memo": ""
+  },
+  {
+    "name": "つのドリル",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "一撃",
+    "memo": ""
+  },
+  {
+    "name": "ぜったいれいど",
+    "category": "特殊",
+    "Type": "こおり",
+    "power": "一撃",
+    "memo": ""
+  },
+  {
+    "name": "じわれ",
+    "category": "物理",
+    "Type": "じめん",
+    "power": "一撃",
+    "memo": ""
+  },
+  {
+    "name": "ヘビーボンバー",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "W参照",
+    "memo": ""
+  },
+  {
+    "name": "ヒートスタンプ",
+    "category": "物理",
+    "Type": "ほのお",
+    "power": "W参照",
+    "memo": ""
+  },
+  {
+    "name": "けたぐり",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "W参照",
+    "memo": ""
+  },
+  {
+    "name": "くさむすび",
+    "category": "特殊",
+    "Type": "くさ",
+    "power": "W参照",
+    "memo": ""
+  },
+  {
+    "name": "ジャイロボール",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "S参照",
+    "memo": ""
+  },
+  {
+    "name": "エレキボール",
+    "category": "特殊",
+    "Type": "でんき",
+    "power": "S参照",
+    "memo": ""
+  },
+  {
+    "name": "ナイトヘッド",
+    "category": "特殊",
+    "Type": "ゴースト",
+    "power": "Lv参照",
+    "memo": ""
+  },
+  {
+    "name": "ちきゅうなげ",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "Lv参照",
+    "memo": ""
+  },
+  {
+    "name": "ハードプレス",
+    "category": "物理",
+    "Type": "はがね",
+    "power": "HP参照",
+    "memo": ""
+  },
+  {
+    "name": "にぎりつぶす",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "HP参照",
+    "memo": ""
+  },
+  {
+    "name": "じたばた",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "HP参照",
+    "memo": ""
+  },
+  {
+    "name": "きしかいせい",
+    "category": "物理",
+    "Type": "かくとう",
+    "power": "HP参照",
+    "memo": ""
+  },
+  {
+    "name": "がむしゃら",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "HP参照",
+    "memo": ""
+  },
+  {
+    "name": "カタストロフィ",
+    "category": "特殊",
+    "Type": "あく",
+    "power": "HP参照",
+    "memo": ""
+  },
+  {
+    "name": "いのちがけ",
+    "category": "特殊",
+    "Type": "かくとう",
+    "power": "HP参照",
+    "memo": ""
+  },
+  {
+    "name": "いかりのまえば",
+    "category": "物理",
+    "Type": "ノーマル",
+    "power": "HP参照",
+    "memo": ""
+  }
+]
