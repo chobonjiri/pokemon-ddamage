@@ -182,6 +182,7 @@ function setupAutoComplete(selector, dataList, onSelectCallback) {
         return item;
       }
     },
+
     events: {
       input: {
         selection: (e) => {
