@@ -14,28 +14,41 @@
     .ability-btn.selected { background-color: #99ccff; }
     .ability-section { margin-top: 10px; }
     .tab-container { margin-top: 10px; }
+    .tab-content { display: none; margin-top: 5px; }
+    .tab-button.active { font-weight: bold; }
   </style>
-  <!-- autoComplete.js CSS -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css" />
-  <!-- autoComplete.js JS -->
   <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
   <link rel="stylesheet" href="style/main.css" />
 </head>
 <body>
-
-<h2>ポケモン ダブル用ダメージ計算</h2>
 
 <div class="container">
   <!-- 攻撃側 -->
   <div class="panel">
     <input type="text" id="attacker" autocomplete="off" placeholder="入力：攻撃側ポケモン" />
 
-
-    
-    <input type="text" id="move" autocomplete="off" />
+    <input type="text" id="move" autocomplete="off" placeholder="入力：技" />
     <div id="move-double-damage-section" style="margin-top:5px; display:none;">
       <label><input type="checkbox" id="double-damage-checkbox" /> ダブルダメージとして扱う</label>
     </div>
+
+    <div class="ability-section">
+      <div class="segmented-control" id="ability-choice">
+        <button type="button" class="ability-btn">特性1</button>
+        <button type="button" class="ability-btn">特性2</button>
+        <button type="button" class="ability-btn">特性3</button>
+        <input type="text" id="custom-ability" placeholder="特性入力">
+      </div>
+      <div style="margin-top: 8px;">
+        
+      </div>
+      <div style="margin-top: 8px;">
+        <label><input type="checkbox" id="ability-nullified"> 無効化</label>
+      </div>
+    </div>
+
+
 
     <div class="stat-block">
       <h4>A</h4>
@@ -58,8 +71,18 @@
 
   <!-- 防御側 -->
   <div class="panel">
-    <input type="text" id="defender" autocomplete="off" />
-    <div id="defender-abilities" class="ability-section"></div>
+    <input type="text" id="defender" autocomplete="off" placeholder="入力：防御側ポケモン" />
+
+    <div id="defender-abilities" class="ability-section">
+
+    <div>
+      <label>特性：</label>
+      <div id="attacker-abilities" class="ability-container"></div>
+      <input type="text" id="attacker-ability-custom" placeholder="特性を直接入力">
+      <label>
+        <input type="checkbox" id="attacker-ability-nullified"> 特性無効化
+      </label>
+    </div>
 
     <div class="stat-block">
       <h4>HP</h4>
@@ -88,6 +111,135 @@
     </div>
   </div>
 </div>
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>ポケモン条件ポップアップ</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body {
+      font-family: sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    /* メニュー本体 */
+    #menu {
+      position: fixed;
+      top: 0;
+      right: -340px;
+      width: 300px;
+      height: 100%;
+      padding: 20px;
+      transition: right 0.5s ease;
+      background-color: rgba(0, 0, 0, 0.85);
+      color: white;
+      z-index: 1001;
+    }
+
+    /* メニュー表示時 */
+    #open:checked + #menu {
+      right: 0;
+    }
+
+    /* 背景暗く */
+    #overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.3);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+      z-index: 1000;
+    }
+
+    #open:checked ~ #overlay {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ハンバーガーボタン */
+    .toggle {
+      position: fixed;
+      top: 16px;
+      right: 16px;
+      font-size: 32px;
+      color: white;
+      cursor: pointer;
+      z-index: 1002;
+    }
+
+    #open {
+      display: none;
+    }
+
+    .menu-section {
+      margin-bottom: 16px;
+    }
+
+    label.checkbox {
+      display: block;
+      margin-bottom: 8px;
+    }
+
+    select {
+      width: 100%;
+      margin-bottom: 12px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- トグルボタン -->
+  <label class="toggle" for="open">
+    <i class="fa fa-bars" aria-hidden="true"></i>
+  </label>
+  <input id="open" type="checkbox">
+
+  <!-- サイドパネル -->
+  <div id="menu">
+    <h2>条件</h2>
+
+    <div class="menu-section">
+      <label class="checkbox"><input type="checkbox" id="light-screen"> ひかりのかべ</label>
+      <label class="checkbox"><input type="checkbox" id="reflect"> リフレクター</label>
+      <label class="checkbox"><input type="checkbox" id="friend-guard"> フレンドガード</label>
+      <label class="checkbox"><input type="checkbox" id="ruin"> わざわい</label>
+      <label class="checkbox"><input type="checkbox" id="helping-hand"> てだすけ</label>
+      <label class="checkbox"><input type="checkbox" id="critical-hit"> きゅうしょ</label>
+      <label class="checkbox"><input type="checkbox" id="burn"> やけど</label>
+    </div>
+
+    <div class="menu-section">
+      <label for="weather">天候</label>
+      <select id="weather">
+        <option value="">なし</option>
+        <option value="sun">にほんばれ</option>
+        <option value="rain">あめ</option>
+        <option value="sand">すなあらし</option>
+        <option value="hail">ゆき</option>
+      </select>
+
+      <label for="field">フィールド</label>
+      <select id="field">
+        <option value="">なし</option>
+        <option value="grassy">グラス</option>
+        <option value="electric">エレキ</option>
+        <option value="psychic">サイコ</option>
+        <option value="misty">ミスト</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- 背景の半透明レイヤー -->
+  <div id="overlay"></div>
+
+</body>
+</html>
 
 <script src="ui/app.js" defer></script>
 </body>

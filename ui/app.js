@@ -19,7 +19,7 @@ function calcHPStat(base, iv, ev) {
 // UI更新系
 function updateAttackActualStat() {
   const attackerId = document.getElementById("attacker").value;
-  const selectedPoke = pokemonData.find(p => p.id === attackerId);
+  const selectedPoke = pokemonData.find(p => p.name === attackerId);
   if (!selectedPoke) return;
 
   const moveName = document.getElementById("move").value;
@@ -39,7 +39,7 @@ function updateAttackActualStat() {
 
 function updateDefenseActualStat() {
   const defenderId = document.getElementById("defender").value;
-  const selectedPoke = pokemonData.find(p => p.id === defenderId);
+  const selectedPoke = pokemonData.find(p => p.name === defenderId);
   if (!selectedPoke) return;
 
   const moveName = document.getElementById("move").value;
@@ -59,7 +59,7 @@ function updateDefenseActualStat() {
 
 function updateHPStat() {
   const defenderId = document.getElementById("defender").value;
-  const selectedPoke = pokemonData.find(p => p.id === defenderId);
+  const selectedPoke = pokemonData.find(p => p.name === defenderId);
   if (!selectedPoke) return;
 
   const base = parseInt(selectedPoke.H);
@@ -69,14 +69,12 @@ function updateHPStat() {
   document.getElementById("hp-actual").textContent = result;
 }
 
-// 特性表示
 function showAbilities(pokemon, containerId) {
   const container = document.getElementById(containerId);
-  if (!container) {
-    console.warn(`Element with id '${containerId}' not found.`);
-    return;
-  }
+  if (!container) return;
+
   container.innerHTML = "";
+
   [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean).forEach(ability => {
     const btn = document.createElement("button");
     btn.textContent = ability;
@@ -87,9 +85,76 @@ function showAbilities(pokemon, containerId) {
     };
     container.appendChild(btn);
   });
+
+  // 自由入力欄と特性無効チェック
+  const input = document.createElement("input");
+  input.type = "text";
+  input.placeholder = "その他の特性を入力";
+  container.appendChild(document.createElement("br"));
+  container.appendChild(input);
+
+  const label = document.createElement("label");
+  const checkbox = document.createElement("input");
+  checkbox.type = "checkbox";
+  label.appendChild(checkbox);
+  label.appendChild(document.createTextNode(" 特性を無効化する"));
+  container.appendChild(document.createElement("br"));
+  container.appendChild(label);
+}
+// 事前にボタン3つは固定でHTMLにある想定
+function showAbilities(pokemon) {
+  const container = document.getElementById("ability-choice");
+  if (!container) return;
+
+  const buttons = container.querySelectorAll("button.ability-btn");
+  const abilities = [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean);
+
+  buttons.forEach((btn, i) => {
+    if (abilities[i]) {
+      btn.textContent = abilities[i];
+      btn.disabled = false;
+      btn.style.display = "inline-block";
+    } else {
+      // 特性が無いところは無効化して非表示でもOK
+      btn.textContent = "";
+      btn.disabled = true;
+      btn.style.display = "none";
+    }
+    btn.classList.remove("selected");
+    btn.onclick = () => {
+      buttons.forEach(b => b.classList.remove("selected"));
+      btn.classList.add("selected");
+      // 自由入力欄はクリア（必要なら）
+      document.getElementById("custom-ability").value = "";
+    };
+  });
 }
 
-// イベントリスナー登録
+// ポケモン選択イベント
+document.getElementById("attacker").addEventListener("change", () => {
+  const attackerId = document.getElementById("attacker").value;
+  const selectedPoke = pokemonData.find(p => p.id === attackerId);
+  if (!selectedPoke) return;
+
+  showAbilities(selectedPoke);
+  updateAttackActualStat();
+});
+
+
+
+function updateDoubleDamageCheckbox() {
+  const moveName = document.getElementById("move").value;
+  const selectedMove = moveData.find(m => m.name === moveName);
+  if (!selectedMove) return;
+
+  const section = document.getElementById("move-double-damage-section");
+  if (selectedMove.remark && selectedMove.remark.includes("全体技")) {
+    section.style.display = "block";
+  } else {
+    section.style.display = "none";
+  }
+}
+
 function setupEventListeners() {
   ["attack-iv", "attack-ev", "attack-nature"].forEach(id => {
     document.getElementById(id).addEventListener("input", updateAttackActualStat);
@@ -103,71 +168,27 @@ function setupEventListeners() {
   document.getElementById("move").addEventListener("change", () => {
     updateAttackActualStat();
     updateDefenseActualStat();
+    updateDoubleDamageCheckbox();
   });
 }
-
-// 初期化
-function initialize() {
-  fetch("data/pokemonList.json")
-    .then(res => res.json())
-    .then(data => {
-      pokemonData = data;
-      const attackerSelect = document.getElementById("attacker");
-      const defenderSelect = document.getElementById("defender");
-
-      data.forEach(poke => {
-        const optionA = new Option(poke.name, poke.id);
-        const optionD = new Option(poke.name, poke.id);
-        attackerSelect.appendChild(optionA);
-        defenderSelect.appendChild(optionD);
-      });
-
-      attackerSelect.addEventListener("change", () => {
-        const selected = data.find(p => p.id === attackerSelect.value);
-        showAbilities(selected, "attacker-abilities");
-        updateAttackActualStat();
-      });
-
-      defenderSelect.addEventListener("change", () => {
-        const selected = data.find(p => p.id === defenderSelect.value);
-        showAbilities(selected, "defender-abilities");
-        updateDefenseActualStat();
-        updateHPStat();
-      });
-    });
-
-  fetch("data/moveList.json")
-    .then(res => res.json())
-    .then(data => {
-      moveData = data;
-      const moveSelect = document.getElementById("move");
-      data.forEach(move => {
-        const option = new Option(`${move.name} (${move.category})`, move.name);
-        moveSelect.appendChild(option);
-      });
-    });
-
-  setupEventListeners();
-}
-// ひらがな変換と正規化
 function toHiragana(str) {
   return str.replace(/[\u30a1-\u30f6]/g, ch =>
     String.fromCharCode(ch.charCodeAt(0) - 0x60)
   );
 }
+
 function normalize(str) {
   return toHiragana(str.toLowerCase());
 }
 
-// 共通のAutoComplete初期化関数（normalizeを使って先頭一致に限定）
-function setupAutoComplete(selector, dataList, onSelectCallback, placeholderText) {
+function setupAutoComplete(selector, nameList, onSelectCallback, placeholderText) {
   new autoComplete({
     selector,
     placeHolder: placeholderText || "入力",
     threshold: 1,
     data: {
-      src: dataList.map(d => (typeof d === "string" ? d : d.name)),
-      cache: true,
+      src: nameList,
+      cache: true
     },
     searchEngine: (query, record) => {
       const normQuery = normalize(query);
@@ -177,7 +198,7 @@ function setupAutoComplete(selector, dataList, onSelectCallback, placeholderText
     resultItem: {
       highlight: true,
       render: (item, data) => {
-        item.innerHTML = data.match;
+        item.innerHTML = data.value;  // 修正：data.match → data.value（候補の名前表示）
         return item;
       }
     },
@@ -194,64 +215,56 @@ function setupAutoComplete(selector, dataList, onSelectCallback, placeholderText
   });
 }
 
+function initialize() {
+  fetch("data/pokemonList.json")
+    .then(res => res.json())
+    .then(data => {
+      pokemonData = data;
 
-// ポケモンと技のデータを取得し、autocompleteを適用
-pokemonData = [];
-moveData = [];
+      // 名前リストだけを抽出して渡す
+      const nameList = pokemonData.map(p => p.name);
 
-fetch('data/pokemonList.json')
-  .then(res => res.json())
-  .then(data => {
-    pokemonData = data;
+      setupAutoComplete("#attacker", nameList, updateAttackActualStat, "入力：攻撃側ポケモン");
+      setupAutoComplete("#defender", nameList, () => {
+        updateDefenseActualStat();
+        updateHPStat();
+      }, "入力：防御側ポケモン");
+    });
 
-    setupAutoComplete("#attacker", pokemonData, () => updateAttackActualStat());
-    setupAutoComplete("#defender", pokemonData, () => updateDefenseActualStat());
-  });
+  fetch("data/moveList.json")
+    .then(res => res.json())
+    .then(data => {
+      moveData = data;
 
-fetch('data/moveList.json')
-  .then(res => res.json())
-  .then(data => {
-    moveData = data;
+      const moveNameList = moveData.map(m => m.name);
+      setupAutoComplete("#move", moveNameList, () => {
+        updateAttackActualStat();
+        updateDefenseActualStat();
+        updateDoubleDamageCheckbox();
+      }, "入力：技");
+    });
 
-    setupAutoComplete("#move", moveData, () => updateAttackActualStat());
-  });
-
-function updateDoubleDamageCheckbox() {
-  const moveName = document.getElementById("move").value;
-  const selectedMove = moveData.find(m => m.name === moveName);
-  if (!selectedMove) return;
-
-  const container = document.getElementById("double-damage-container");
-  if (selectedMove.remark && selectedMove.remark.includes("全体技")) {
-    container.style.display = "block";
-  } else {
-    container.style.display = "none";
-    document.getElementById("double-damage").checked = false;
-  }
+  setupEventListeners();
 }
 
-document.getElementById("move").addEventListener("change", () => {
-  updateAttackActualStat();
-  updateDefenseActualStat();
-  updateDoubleDamageCheckbox();
+document.addEventListener("DOMContentLoaded", () => {
+  const toggleBtn = document.getElementById("popup-toggle");
+  const popup = document.getElementById("side-popup");
+  const overlay = document.getElementById("popup-overlay");
+
+  toggleBtn.addEventListener("click", () => {
+    const isVisible = popup.classList.toggle("show");
+    overlay.classList.toggle("show", isVisible);
+    toggleBtn.classList.toggle("rotated", isVisible); // ← 回転トグル
+  });
+
+  overlay.addEventListener("click", () => {
+    popup.classList.remove("show");
+    overlay.classList.remove("show");
+    toggleBtn.classList.remove("rotated");
+  });
 });
 
-fetch('data/pokemonList.json')
-  .then(res => res.json())
-  .then(data => {
-    pokemonData = data;
-
-    setupAutoComplete("#attacker", pokemonData, () => updateAttackActualStat(), "入力：攻撃側ポケモン");
-    setupAutoComplete("#defender", pokemonData, () => updateDefenseActualStat(), "入力：防御側ポケモン");
-  });
-
-fetch('data/moveList.json')
-  .then(res => res.json())
-  .then(data => {
-    moveData = data;
-
-    setupAutoComplete("#move", moveData, () => updateAttackActualStat(), "入力：技");
-  });
 
 
 
