@@ -56,11 +56,14 @@
       努力値: <input type="range" id="attack-ev" value="0" min="0" max="252" step="4" />
       <span id="attack-ev-val">0</span><br />
       性格:
-      <select id="attack-nature">
-        <option value="1.1">↑</option>
-        <option value="1.0" selected>±</option>
-        <option value="0.9">↓</option>
-      </select><br />
+      <div class="segmented-control" id="attack-nature-control">
+        <button type="button" data-value="1.1">↑</button>
+        <button type="button" data-value="1.0" class="active">±</button>
+        <button type="button" data-value="0.9">↓</button>
+      </div>
+      <!-- 元のselectは削除または非表示に -->
+      <input type="hidden" id="attack-nature" value="1.0">
+      <br />
       ランク:
       <button onclick="changeAttackRank(-1)" class="rank-btn">-</button>
       <span id="attack-rank-val">0</span>
@@ -205,14 +208,11 @@
     <h2>条件</h2>
 
     <div class="menu-section">
+      <label>壁</label>
       <label class="checkbox"><input type="checkbox" id="light-screen"> オーロラベール</label>
       <label class="checkbox"><input type="checkbox" id="reflect"> リフレクター</label>
       <label class="checkbox"><input type="checkbox" id="light-screen"> ひかりのかべ</label>
       <label class="checkbox"><input type="checkbox" id="friend-guard"> フレンドガード</label>
-      <label class="checkbox"><input type="checkbox" id="ruin"> わざわい</label>
-      <label class="checkbox"><input type="checkbox" id="helping-hand"> てだすけ</label>
-      <label class="checkbox"><input type="checkbox" id="critical-hit"> きゅうしょ</label>
-      <label class="checkbox"><input type="checkbox" id="burn"> やけど</label>
     </div>
     
     <div class="menu-section">
@@ -231,8 +231,20 @@
         <button type="button" data-value="psychic">サイコ</button>
         <button type="button" data-value="misty">ミスト</button>
       </div>
-    </div>
 
+      <label>わざわい</label>
+      <div class="segmented-control" id="fieldControl">
+        <button type="button" data-value="tablets">A↓</button>
+        <button type="button" data-value="sword">B↓</button>
+        <button type="button" data-value="vessel">C↓</button>
+        <button type="button" data-value="beads">D↓</button>
+      </div>
+
+    <div class="menu-section">
+      <label>状態</label>
+      <label class="checkbox"><input type="checkbox" id="helping-hand"> てだすけ</label>
+      <label class="checkbox"><input type="checkbox" id="burn"> やけど</label>
+    </div>
 
     
   </div>
@@ -240,6 +252,116 @@
 
 </body>
 </html>
+
+
+<!-- HTML: ダメージ結果ポップアップ -->
+<div id="damage-popup">
+  <h3>ダメージ計算結果</h3>
+  <div class="damage-bar-container">
+    <div class="damage-bar-background">
+      <div id="normal-min" class="damage-segment normal"></div>
+      <div id="normal-max" class="damage-segment normal"></div>
+      <div id="critical" class="damage-segment critical"></div>
+    </div>
+    <div class="damage-labels">
+      <span id="label-normal">通常: --%</span>
+      <span id="label-critical">急所: --%</span>
+    </div>
+    <div class="damage-values">
+      <span id="value-normal">通常: -- ダメージ</span>
+      <span id="value-critical">急所: -- ダメージ</span>
+    </div>
+  </div>
+</div>
+
+<style>
+#damage-popup {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(40, 40, 40, 0.9);
+  color: white;
+  padding: 1rem;
+  border-top: 2px solid #444;
+  font-family: sans-serif;
+  z-index: 1000;
+}
+
+.damage-bar-container {
+  margin-top: 0.5rem;
+}
+
+.damage-bar-background {
+  width: 100%;
+  height: 20px;
+  background-color: #eee;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.damage-segment {
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.normal {
+  background-color: #4caf50;
+  opacity: 0.7;
+}
+
+.critical {
+  background-color: #f44336;
+  opacity: 0.6;
+}
+
+.damage-labels,
+.damage-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
+</style>
+
+<script>
+function updateDamagePopup({ normalMin, normalMax, critical, damageNormalMin, damageNormalMax, damageCritical, targetHP }) {
+  const barWidth = 100; // %
+  const normalMinPercent = (normalMin / targetHP) * 100;
+  const normalMaxPercent = (normalMax / targetHP) * 100;
+  const criticalPercent = (critical / targetHP) * 100;
+
+  document.getElementById('normal-min').style.left = '0%';
+  document.getElementById('normal-min').style.width = normalMinPercent + '%';
+
+  document.getElementById('normal-max').style.left = normalMinPercent + '%';
+  document.getElementById('normal-max').style.width = (normalMaxPercent - normalMinPercent) + '%';
+
+  document.getElementById('critical').style.left = normalMaxPercent + '%';
+  document.getElementById('critical').style.width = (criticalPercent - normalMaxPercent) + '%';
+
+  document.getElementById('label-normal').textContent = `通常: ${Math.round(normalMinPercent)}% - ${Math.round(normalMaxPercent)}%`;
+  document.getElementById('label-critical').textContent = `急所: ${Math.round(criticalPercent)}%`;
+
+  document.getElementById('value-normal').textContent = `通常: ${damageNormalMin} - ${damageNormalMax} ダメージ`;
+  document.getElementById('value-critical').textContent = `急所: ${damageCritical} ダメージ`;
+}
+
+// サンプル呼び出し（実際の計算結果で置き換えてください）
+updateDamagePopup({
+  normalMin: 30,
+  normalMax: 40,
+  critical: 60,
+  damageNormalMin: 30,
+  damageNormalMax: 40,
+  damageCritical: 60,
+  targetHP: 100
+});
+</script>
+
+
 
 <script src="ui/app.js" defer></script>
 </body>
