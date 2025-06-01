@@ -15,81 +15,26 @@
   transition: background-color 0.2s, color 0.2s;
 }
 
-.segmented-control button:not(:last-child) {
-  border-right: 1px solid #c4c4c4;
-}
-
-.segmented-control button.active {
-  background-color: #dbeafe;
-  font-weight: bold;
-}
-/* スライドインパネル */
-.side-popup {
-  position: fixed;
-  top: 0;
-  right: 0;
-  width: 280px;
-  height: 100%;
-  background-color: #fff;
-  box-shadow: -2px 0 5px rgba(0,0,0,0.2);
-  padding: 1em;
-  transform: translateX(100%);
-  transition: transform 0.3s ease-in-out;
-  z-index: 1001;
-  overflow-y: auto;
-}
-
-/* 表示状態 */
-.side-popup.show {
-  transform: translateX(0);
-}
-
-/* ポップアップトグルボタン（右上） */
-.popup-toggle {
+.toggle {
   position: fixed;
   top: 16px;
   right: 16px;
-  background: black;
+  font-size: 32px;
   color: white;
-  border: none;
-  border-radius: 50%;
-  width: 44px;
-  height: 44px;
-  font-size: 1.2em;
   cursor: pointer;
-  z-index: 1100;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-}
+  z-index: 1002;
 
-/* オーバーレイ表示状態 */
-.popup-overlay.show {
-  pointer-events: auto; /* 必要に応じてクリック遮断可能に */
-  opacity: 1;
-}
+  border: 2px solid white;
+  border-radius: 8px;
 
-/* 初期非表示 */
-.hidden {
-  display: none;
-}
-.popup-toggle {
-  position: fixed;
-  top: 16px;
-  right: 16px;
-  width: 40px;
-  height: 40px;
-  background: black;
-  cursor: pointer;
-  z-index: 1100;
-  transform: rotate(0deg);
-  transition: transform 0.3s ease;
-  clip-path: polygon(
-    0% 50%,             /* (-1, 0) → 左中 */
-    100% 15%,           /* (1/2, -√3/2) → 右上 */
-    100% 85%            /* (1/2, √3/2)  → 右下 */
-  );
-}
+  /* 正方形にするために固定サイズ */
+  width: 48px;
+  height: 48px;
 
-/* 回転時のクラス */
-.popup-toggle.rotated {
-  transform: rotate(180deg);
+  /* アイコンを中央に配置 */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background-color: rgba(0, 0, 0, 0.4);
 }
