@@ -41,16 +41,17 @@
       white-space: nowrap;
     }
 
-    /* 特性入力欄のスタイル */
-    #custom-ability {
-      flex-grow: 1; /* ここを1に調整：残りのスペースを埋めるように拡張 */
+    /* 特性入力欄のスタイル (攻撃側、防御側共通) */
+    #custom-ability,
+    #defender-custom-ability { /* ここにdefender-custom-abilityを追加 */
+      flex-grow: 1; /* 残りのスペースを埋めるように拡張 */
       min-width: 100px; /* 最小幅は維持 */
       padding: 5px;
       border: 1px solid #ddd;
       border-radius: 5px;
     }
 
-    /* 無効化チェックボックスのラッパー */
+    /* 無効化チェックボックスのラッパー (攻撃側、防御側共通) */
     .segmented-control .ability-nullified-checkbox-wrapper {
       margin-left: auto; /* 右端に配置 */
       flex-shrink: 0;
@@ -63,11 +64,15 @@
         padding: 0;
     }
 
-    /* search-input-field のスタイル（もし適用されていれば） */
+    /* search-input-field のスタイル */
     .search-input-field {
         background-repeat: no-repeat;
         background-position: 8px center;
-        padding-left: 35px !important;
+        /* padding-left: 35px !important; */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
+        /* width: calc(100% - 10px); */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
+        /* padding: 8px; */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
+        /* border: 1px solid #ddd; */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
+        /* border-radius: 5px; */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
     }
 
     /* サイドメニューのスタイル */
@@ -114,7 +119,7 @@
       top: 16px;
       right: 16px;
       font-size: 32px;
-      color: white; /* ボタンの色を白に */
+      color: white;
       cursor: pointer;
       z-index: 1002;
     }
@@ -135,8 +140,8 @@
     select {
       width: 100%;
       margin-bottom: 12px;
-      padding: 5px; /* selectのpaddingを追加 */
-      border-radius: 4px; /* selectのborder-radiusを追加 */
+      padding: 5px;
+      border-radius: 4px;
     }
 
     /* ダメージポップアップのスタイル */
@@ -244,13 +249,12 @@
     <input type="text" id="defender" autocomplete="off" placeholder="入力：防御側ポケモン" class="search-input-field" />
 
     <div id="defender-abilities" class="ability-section">
-      <div>
-        <label>特性：</label>
-        <div id="attacker-abilities" class="ability-container"></div>
-        <input type="text" id="attacker-ability-custom" placeholder="特性を直接入力" />
-        <label>
-          <input type="checkbox" id="attacker-ability-nullified"> 特性無効化
-        </label>
+      <div class="segmented-control">
+        <button type="button" class="ability-btn">特性1</button>
+        <button type="button" class="ability-btn">特性2</button>
+        <button type="button" class="ability-btn">特性3</button>
+        <input type="text" id="defender-custom-ability" placeholder="特性入力"> <div class="ability-nullified-checkbox-wrapper">
+          <label><input type="checkbox" id="defender-ability-nullified"> 無効化</label> </div>
       </div>
     </div>
 
