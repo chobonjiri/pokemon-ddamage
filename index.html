@@ -205,38 +205,38 @@
     <h2>条件</h2>
 
     <div class="menu-section">
-      <label class="checkbox"><input type="checkbox" id="light-screen"> ひかりのかべ</label>
+      <label class="checkbox"><input type="checkbox" id="light-screen"> オーロラベール</label>
       <label class="checkbox"><input type="checkbox" id="reflect"> リフレクター</label>
+      <label class="checkbox"><input type="checkbox" id="light-screen"> ひかりのかべ</label>
       <label class="checkbox"><input type="checkbox" id="friend-guard"> フレンドガード</label>
       <label class="checkbox"><input type="checkbox" id="ruin"> わざわい</label>
       <label class="checkbox"><input type="checkbox" id="helping-hand"> てだすけ</label>
       <label class="checkbox"><input type="checkbox" id="critical-hit"> きゅうしょ</label>
       <label class="checkbox"><input type="checkbox" id="burn"> やけど</label>
     </div>
-
+    
     <div class="menu-section">
-      <label for="weather">天候</label>
-      <select id="weather">
-        <option value="">なし</option>
-        <option value="sun">にほんばれ</option>
-        <option value="rain">あめ</option>
-        <option value="sand">すなあらし</option>
-        <option value="hail">ゆき</option>
-      </select>
+      <label>天候</label>
+      <div class="segmented-control" id="weatherControl">
+        <button type="button" data-value="sun">晴</button>
+        <button type="button" data-value="rain">雨</button>
+        <button type="button" data-value="sand">砂</button>
+        <button type="button" data-value="hail">雪</button>
+      </div>
 
-      <label for="field">フィールド</label>
-      <select id="field">
-        <option value="">なし</option>
-        <option value="grassy">グラス</option>
-        <option value="electric">エレキ</option>
-        <option value="psychic">サイコ</option>
-        <option value="misty">ミスト</option>
-      </select>
+      <label>フィールド</label>
+      <div class="segmented-control" id="fieldControl">
+        <button type="button" data-value="grassy">グラス</button>
+        <button type="button" data-value="electric">エレキ</button>
+        <button type="button" data-value="psychic">サイコ</button>
+        <button type="button" data-value="misty">ミスト</button>
+      </div>
     </div>
+
+
+    
   </div>
 
-  <!-- 背景の半透明レイヤー -->
-  <div id="overlay"></div>
 
 </body>
 </html>

@@ -247,24 +247,55 @@ function initialize() {
   setupEventListeners();
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const toggleBtn = document.getElementById("popup-toggle");
-  const popup = document.getElementById("side-popup");
-  const overlay = document.getElementById("popup-overlay");
+document.addEventListener('DOMContentLoaded', function () {
+  // セグメントコントロールの初期化
+function setupSegmentedControl(controlId, onChangeCallback) {
+  const control = document.getElementById(controlId);
+  const buttons = control.querySelectorAll('button');
 
-  toggleBtn.addEventListener("click", () => {
-    const isVisible = popup.classList.toggle("show");
-    overlay.classList.toggle("show", isVisible);
-    toggleBtn.classList.toggle("rotated", isVisible); // ← 回転トグル
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const isActive = button.classList.contains('active');
+
+      // すでに active の場合はトグルオフ（非選択にする）
+      if (isActive) {
+        button.classList.remove('active');
+        if (onChangeCallback) onChangeCallback(""); // 空文字を返す
+        return;
+      }
+
+      // 他のボタンを非アクティブにし、これをアクティブにする
+      buttons.forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      const selectedValue = button.dataset.value;
+      if (onChangeCallback) {
+        onChangeCallback(selectedValue);
+      }
+    });
+  });
+}
+
+
+  // 天候セグメントの動作
+  setupSegmentedControl('weatherControl', selected => {
+    console.log('選択された天候:', selected);
+    // 例: select要素があれば同期する
+    const select = document.getElementById('weather');
+    if (select) {
+      select.value = selected;
+    }
   });
 
-  overlay.addEventListener("click", () => {
-    popup.classList.remove("show");
-    overlay.classList.remove("show");
-    toggleBtn.classList.remove("rotated");
+  // フィールドセグメントの動作
+  setupSegmentedControl('fieldControl', selected => {
+    console.log('選択されたフィールド:', selected);
+    const select = document.getElementById('field');
+    if (select) {
+      select.value = selected;
+    }
   });
 });
-
 
 
 
