@@ -160,10 +160,10 @@ function normalize(str) {
 }
 
 // 共通のAutoComplete初期化関数（normalizeを使って先頭一致に限定）
-function setupAutoComplete(selector, dataList, onSelectCallback) {
+function setupAutoComplete(selector, dataList, onSelectCallback, placeholderText) {
   new autoComplete({
     selector,
-    placeHolder: "入力",
+    placeHolder: placeholderText || "入力",
     threshold: 1,
     data: {
       src: dataList.map(d => (typeof d === "string" ? d : d.name)),
@@ -177,12 +177,10 @@ function setupAutoComplete(selector, dataList, onSelectCallback) {
     resultItem: {
       highlight: true,
       render: (item, data) => {
-        console.log('render data:', data);
-        item.innerHTML = data.match;  // ここで「1」ではなく候補名だけを表示
+        item.innerHTML = data.match;
         return item;
       }
     },
-
     events: {
       input: {
         selection: (e) => {
@@ -195,7 +193,6 @@ function setupAutoComplete(selector, dataList, onSelectCallback) {
     }
   });
 }
-
 
 
 // ポケモンと技のデータを取得し、autocompleteを適用
@@ -218,6 +215,44 @@ fetch('data/moveList.json')
 
     setupAutoComplete("#move", moveData, () => updateAttackActualStat());
   });
+
+function updateDoubleDamageCheckbox() {
+  const moveName = document.getElementById("move").value;
+  const selectedMove = moveData.find(m => m.name === moveName);
+  if (!selectedMove) return;
+
+  const container = document.getElementById("double-damage-container");
+  if (selectedMove.remark && selectedMove.remark.includes("全体技")) {
+    container.style.display = "block";
+  } else {
+    container.style.display = "none";
+    document.getElementById("double-damage").checked = false;
+  }
+}
+
+document.getElementById("move").addEventListener("change", () => {
+  updateAttackActualStat();
+  updateDefenseActualStat();
+  updateDoubleDamageCheckbox();
+});
+
+fetch('data/pokemonList.json')
+  .then(res => res.json())
+  .then(data => {
+    pokemonData = data;
+
+    setupAutoComplete("#attacker", pokemonData, () => updateAttackActualStat(), "入力：攻撃側ポケモン");
+    setupAutoComplete("#defender", pokemonData, () => updateDefenseActualStat(), "入力：防御側ポケモン");
+  });
+
+fetch('data/moveList.json')
+  .then(res => res.json())
+  .then(data => {
+    moveData = data;
+
+    setupAutoComplete("#move", moveData, () => updateAttackActualStat(), "入力：技");
+  });
+
 
 
 document.addEventListener("DOMContentLoaded", initialize);
