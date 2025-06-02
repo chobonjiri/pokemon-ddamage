@@ -15,131 +15,329 @@
   <link rel="stylesheet" href="style/modules/panels.css" />
   <link rel="stylesheet" href="style/modules/damage-popup.css" />
   <link rel="stylesheet" href="style/menu.css" />
-  <link rel="stylesheet" href="style/main.css" /> 
-</head>
+  </head>
 <body>
-  <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
-  <script>
-    // Your inline JavaScript here (rank, nature, damage popup updates)
-    // It's generally good practice to move this to a separate JS file as well
-    // e.g., script/ui-interactions.js or script/calculator-ui.js
-    function changeRank(type, change) {
-        const rankSpanId = `${type}-rank-val`;
-        const rankSpan = document.getElementById(rankSpanId);
-        let currentRank = parseInt(rankSpan.textContent);
 
-        currentRank += change;
+<div class="container">
+  <div class="panel">
+    <div class="attacker-input-group">
+      <input type="text" id="attacker" autocomplete="off" placeholder="入力：攻撃側ポケモン" class="search-input-field" />
+      <button id="attacker-button-1" type="button">テラス</button>
+      <button id="attacker-button-2" type="button">ステラ</button>
+    </div>
 
-        if (currentRank < -6) {
-            currentRank = -6;
-        } else if (currentRank > 6) {
-            currentRank = 6;
-        }
+    <input type="text" id="move" autocomplete="off" placeholder="入力：技" class="search-input-field" />
+    <div id="move-double-damage-section" style="margin-top:5px; display:none;">
+      <label><input type="checkbox" id="double-damage-checkbox" /> ダブルダメージとして扱う</label>
+    </div>
 
-        rankSpan.textContent = currentRank;
+    <div class="ability-section">
+      <div class="segmented-control" id="ability-choice">
+        <button type="button" class="ability-btn">特性1</button>
+        <button type="button" class="ability-btn">特性2</button>
+        <button type="button" class="ability-btn">特性3</button>
+        <input type="text" id="custom-ability" placeholder="特性入力">
+        <div class="ability-nullified-checkbox-wrapper">
+          <label><input type="checkbox" id="ability-nullified"> 無効化</label>
+        </div>
+      </div>
+    </div>
+
+
+    <div class="stat-block">
+      <h4>A</h4>
+      個体値: <input type="number" id="attack-iv" value="31" min="0" max="31" /><br />
+      努力値: <input type="range" id="attack-ev" value="0" min="0" max="252" step="4" />
+      <span id="attack-ev-val">0</span><br />
+      <div class="inline-flex-group"> 性格:
+        <div class="segmented-control" id="attack-nature-control">
+          <button type="button" data-value="0.9">x0.9</button>
+          <button type="button" data-value="1.0" class="active">x1.0</button>
+          <button type="button" data-value="1.1">x1.1</button>
+        </div>
+      </div>
+      <input type="hidden" id="attack-nature" value="1.0">
+      <br />
+      ランク:
+      <button onclick="changeRank('attack', -1)" class="rank-btn">-</button>
+      <span id="attack-rank-val">0</span>
+      <button onclick="changeRank('attack', 1)" class="rank-btn">+</button><br />
+      実数値: <span id="attack-actual">-</span>
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="defender-control-group">
+      <input type="text" id="defender" autocomplete="off" placeholder="入力：防御側ポケモン" class="search-input-field" />
+      <div class="switch-with-text">
+        <span class="switch-text">テラス</span>
+        <label class="switch">
+          <input type="checkbox" id="toggleSwitch"> <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="segmented-control" id="speedControl">
+        <button type="button">x0.5</button>
+        <button type="button">x1.0</button>
+        <button type="button">x2.0</button>
+      </div>
+    </div>
+
+    <div id="defender-abilities" class="ability-section">
+      <div class="segmented-control">
+        <button type="button" class="ability-btn">特性1</button>
+        <button type="button" class="ability-btn">特性2</button>
+        <button type="button" class="ability-btn">特性3</button>
+        <input type="text" id="defender-custom-ability" placeholder="特性入力">
+        <div class="ability-nullified-checkbox-wrapper">
+          <label><input type="checkbox" id="defender-ability-nullified"> 無効化</label>
+        </div>
+      </div>
+    </div>
+
+    <div class="stat-block">
+      <h4>HP</h4>
+      個体値: <input type="number" id="hp-iv" value="31" min="0" max="31" /><br />
+      努力値: <input type="range" id="hp-ev" value="0" min="0" max="252" step="4" />
+      <span id="hp-ev-val">0</span><br />
+      実数値: <span id="hp-actual">-</span>
+    </div>
+
+    <div class="stat-block">
+      <h4>B or D</h4>
+      個体値: <input type="number" id="defense-iv" value="31" min="0" max="31" /><br />
+      努力値: <input type="range" id="defense-ev" value="0" min="0" max="252" step="4" />
+      <span id="defense-ev-val">0</span><br />
+      <div class="inline-flex-group"> 性格:
+        <div class="segmented-control" id="defense-nature-control">
+          <button type="button" data-value="0.9">x0.9</button>
+          <button type="button" data-value="1.0" class="active">x1.0</button>
+          <button type="button" data-value="1.1">x1.1</button>
+        </div>
+      </div>
+      <input type="hidden" id="defense-nature" value="1.0"> <br />
+      ランク:
+      <button onclick="changeRank('defense', -1)" class="rank-btn">-</button>
+      <span id="defense-rank-val">0</span>
+      <button onclick="changeRank('defense', 1)" class="rank-btn">+</button><br />
+      実数値: <span id="defense-actual">-</span>
+    </div>
+  </div>
+</div>
+
+<label class="toggle" for="open">
+  <i class="fa fa-bars" aria-hidden="true"></i>
+</label>
+<input id="open" type="checkbox">
+
+<div id="menu">
+  <h2>条件</h2>
+
+  <div class="menu-section">
+    <label>壁</label>
+    <label class="checkbox"><input type="checkbox" id="aurora-veil"> オーロラベール</label>
+    <label class="checkbox"><input type="checkbox" id="reflect"> リフレクター</label>
+    <label class="checkbox"><input type="checkbox" id="light-screen"> ひかりのかべ</label>
+    <label class="checkbox"><input type="checkbox" id="friend-guard"> フレンドガード</label>
+  </div>
+  
+  <div class="menu-section">
+    <label>天候</label>
+    <div class="segmented-control" id="weatherControl">
+      <button type="button" data-value="sun">晴</button>
+      <button type="button" data-value="rain">雨</button>
+      <button type="button" data-value="sand">砂</button>
+      <button type="button" data-value="hail">雪</button>
+    </div>
+
+    <label>フィールド</label>
+    <div class="segmented-control" id="fieldControl">
+      <button type="button" data-value="grassy">グラス</button>
+      <button type="button" data-value="electric">エレキ</button>
+      <button type="button" data-value="psychic">サイコ</button>
+      <button type="button" data-value="misty">ミスト</button>
+    </div>
+
+    <label>わざわい</label>
+    <div class="segmented-control" id="ruinControl">
+      <button type="button" data-value="tablets">A↓</button>
+      <button type="button" data-value="sword">B↓</button>
+      <button type="button" data-value="vessel">C↓</button>
+      <button type="button" data-value="beads">D↓</button>
+    </div>
+  </div>
+
+  <div class="menu-section">
+    <label>状態</label>
+    <label class="checkbox"><input type="checkbox" id="helping-hand"> てだすけ</label>
+    <label class="checkbox"><input type="checkbox" id="checkbox-burn"> やけど</label> </div>
+</div>
+
+<div id="overlay"></div>
+
+<div id="damage-popup">
+  <h3>ダメージ計算結果</h3>
+  <div class="damage-bar-container">
+    <div class="damage-bar-background">
+      <div id="normal-min" class="damage-segment normal"></div>
+      <div id="normal-max" class="damage-segment normal"></div>
+      <div id="critical" class="damage-segment critical"></div>
+    </div>
+    <div class="damage-labels">
+      <span id="label-normal">通常: --%</span>
+      <span id="label-critical">急所: --%</span>
+    </div>
+    <div class="damage-values">
+      <span id="value-normal">通常: ${damageNormalMin} - ${damageNormalMax} ダメージ</span>
+      <span id="value-critical">急所: ${damageCritical} ダメージ</span>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+<script>
+// ランク変更関数
+function changeRank(type, change) {
+    const rankSpanId = `${type}-rank-val`;
+    const rankSpan = document.getElementById(rankSpanId);
+    let currentRank = parseInt(rankSpan.textContent);
+
+    currentRank += change;
+
+    // 上限と下限を設ける (-6 から +6)
+    if (currentRank < -6) {
+        currentRank = -6;
+    } else if (currentRank > 6) {
+        currentRank = 6;
     }
 
-    document.addEventListener('DOMContentLoaded', () => {
-        function setupNatureControl(controlId, hiddenInputId) {
-            const control = document.getElementById(controlId);
-            const hiddenInput = document.getElementById(hiddenInputId);
+    rankSpan.textContent = currentRank;
+    // 必要であればここで実数値計算などの関数を呼び出す
+    // calculateStats();
+}
 
-            if (control && hiddenInput) {
-                control.querySelectorAll('button').forEach(button => {
-                    button.addEventListener('click', () => {
-                        control.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-                        button.classList.add('active');
-                        hiddenInput.value = button.dataset.value;
-                    });
-                });
-            }
-        }
 
-        setupNatureControl('attack-nature-control', 'attack-nature');
-        setupNatureControl('defense-nature-control', 'defense-nature');
+// 性格ボタンの選択ロジック（JavaScript）
+document.addEventListener('DOMContentLoaded', () => {
+    function setupNatureControl(controlId, hiddenInputId) {
+        const control = document.getElementById(controlId);
+        const hiddenInput = document.getElementById(hiddenInputId);
 
-        document.getElementById('attack-nature-control').querySelector(`button[data-value="${document.getElementById('attack-nature').value}"]`)?.classList.add('active');
-        document.getElementById('defense-nature-control').querySelector(`button[data-value="${document.getElementById('defense-nature').value}"]`)?.classList.add('active');
-
-        const attackerButton1 = document.getElementById('attacker-button-1');
-        const attackerButton2 = document.getElementById('attacker-button-2');
-        const attackerButtons = [attackerButton1, attackerButton2];
-
-        attackerButtons.forEach(button => {
-            if (button) {
+        if (control && hiddenInput) {
+            control.querySelectorAll('button').forEach(button => {
                 button.addEventListener('click', () => {
-                    if (button.classList.contains('selected')) {
-                        button.classList.remove('selected');
-                    } else {
-                        attackerButtons.forEach(btn => btn.classList.remove('selected'));
-                        button.classList.add('selected');
-                    }
+                    // 全てのボタンから 'active' クラスを削除
+                    control.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                    // クリックされたボタンに 'active' クラスを追加
+                    button.classList.add('active');
+                    // hidden input の値を更新
+                    hiddenInput.value = button.dataset.value;
+                    // 必要であればここで計算ロジックを呼び出す
+                    // calculateStats(); // 例: 実数値計算関数
                 });
-            }
-        });
-
-        const toggleSwitch = document.getElementById('toggleSwitch');
-        const speedControl = document.getElementById('speedControl');
-        const controlButtons = speedControl.querySelectorAll('button');
-
-        controlButtons.forEach(button => {
-            button.addEventListener('click', () => {
-                if (button.disabled) {
-                    return;
-                }
-                controlButtons.forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
             });
-        });
-
-        toggleSwitch.addEventListener('change', () => {
-            const isEnabled = toggleSwitch.checked;
-            
-            controlButtons.forEach(button => {
-                button.disabled = !isEnabled;
-            });
-
-            if (isEnabled) {
-                speedControl.classList.remove('disabled-state');
-            } else {
-                speedControl.classList.add('disabled-state');
-                controlButtons.forEach(btn => btn.classList.remove('active'));
-            }
-        });
-        
-        toggleSwitch.dispatchEvent(new Event('change'));
-    });
-
-    function updateDamagePopup({ normalMin, normalMax, critical, damageNormalMin, damageNormalMax, damageCritical, targetHP }) {
-      const normalMinPercent = (normalMin / targetHP) * 100;
-      const normalMaxPercent = (normalMax / targetHP) * 100;
-      const criticalPercent = (critical / targetHP) * 100;
-
-      document.getElementById('normal-min').style.left = '0%';
-      document.getElementById('normal-min').style.width = normalMinPercent + '%';
-
-      document.getElementById('normal-max').style.left = normalMinPercent + '%';
-      document.getElementById('normal-max').style.width = (normalMaxPercent - normalMinPercent) + '%';
-
-      document.getElementById('critical').style.left = normalMaxPercent + '%';
-      document.getElementById('critical').style.width = (criticalPercent - normalMaxPercent) + '%';
-
-      document.getElementById('label-normal').textContent = `通常: ${Math.round(normalMinPercent)}% - ${Math.round(normalMaxPercent)}%`;
-      document.getElementById('label-critical').textContent = `急所: ${Math.round(criticalPercent)}%`;
-      document.getElementById('value-normal').textContent = `通常: ${damageNormalMin} - ${damageNormalMax} ダメージ`;
-      document.getElementById('value-critical').textContent = `急所: ${damageCritical} ダメージ`;
+        }
     }
 
-    updateDamagePopup({
-      normalMin: 30,
-      normalMax: 40,
-      critical: 60,
-      damageNormalMin: 30,
-      damageNormalMax: 40,
-      damageCritical: 60,
-      targetHP: 100
+    setupNatureControl('attack-nature-control', 'attack-nature');
+    setupNatureControl('defense-nature-control', 'defense-nature');
+
+    // 初期選択を反映
+    document.getElementById('attack-nature-control').querySelector(`button[data-value="${document.getElementById('attack-nature').value}"]`)?.classList.add('active');
+    document.getElementById('defense-nature-control').querySelector(`button[data-value="${document.getElementById('defense-nature').value}"]`)?.classList.add('active');
+
+    // テラス・ステラボタンの選択ロジック
+    const attackerButton1 = document.getElementById('attacker-button-1');
+    const attackerButton2 = document.getElementById('attacker-button-2');
+    const attackerButtons = [attackerButton1, attackerButton2]; // ボタンをグループ化
+
+    attackerButtons.forEach(button => {
+        if (button) {
+            button.addEventListener('click', () => {
+                if (button.classList.contains('selected')) {
+                    button.classList.remove('selected');
+                } else {
+                    attackerButtons.forEach(btn => btn.classList.remove('selected'));
+                    button.classList.add('selected');
+                }
+                // calculateDamage(); // 例: ダメージ計算関数
+            });
+        }
     });
-  </script>
-  <script src="ui/app.js" defer></script>
+
+    // --- 新しく追加するスイッチ付きセグメントコントロールのJavaScript ---
+    const toggleSwitch = document.getElementById('toggleSwitch');
+    const speedControl = document.getElementById('speedControl');
+    const controlButtons = speedControl.querySelectorAll('button');
+
+    // セグメントコントロールのボタンクリック処理
+    controlButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.disabled) {
+                return;
+            }
+            controlButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
+
+    // トグルスイッチの切り替え処理
+    toggleSwitch.addEventListener('change', () => {
+        const isEnabled = toggleSwitch.checked;
+        
+        controlButtons.forEach(button => {
+            button.disabled = !isEnabled;
+        });
+
+        if (isEnabled) {
+            speedControl.classList.remove('disabled-state');
+        } else {
+            speedControl.classList.add('disabled-state');
+            // ここに非選択状態にするロジックを追加
+            controlButtons.forEach(btn => btn.classList.remove('active'));
+        }
+    });
+    
+    // 初期状態を反映（スイッチがcheckedではないので、ボタンは無効になります）
+    toggleSwitch.dispatchEvent(new Event('change'));
+    // オプション: 初期選択ボタンを設定したい場合はここに追加
+    // controlButtons[1].classList.add('active'); // 例: x1.0 をデフォルトで選択状態にする
+});
+
+
+function updateDamagePopup({ normalMin, normalMax, critical, damageNormalMin, damageNormalMax, damageCritical, targetHP }) {
+  const barWidth = 100; // %
+  const normalMinPercent = (normalMin / targetHP) * 100;
+  const normalMaxPercent = (normalMax / targetHP) * 100;
+  const criticalPercent = (critical / targetHP) * 100;
+
+  document.getElementById('normal-min').style.left = '0%';
+  document.getElementById('normal-min').style.width = normalMinPercent + '%';
+
+  document.getElementById('normal-max').style.left = normalMinPercent + '%';
+  document.getElementById('normal-max').style.width = (normalMaxPercent - normalMinPercent) + '%';
+
+  document.getElementById('critical').style.left = normalMaxPercent + '%';
+  document.getElementById('critical').style.width = (criticalPercent - normalMaxPercent) + '%';
+
+  document.getElementById('label-normal').textContent = `通常: ${Math.round(normalMinPercent)}% - ${Math.round(normalMaxPercent)}%`;
+  document.getElementById('label-critical').textContent = `急所: ${Math.round(criticalPercent)}%`;
+  document.getElementById('value-normal').textContent = `通常: ${damageNormalMin} - ${damageNormalMax} ダメージ`;
+  document.getElementById('value-critical').textContent = `急所: ${damageCritical} ダメージ`;
+}
+
+// サンプル呼び出し（実際の計算結果で置き換えてください）
+updateDamagePopup({
+  normalMin: 30,
+  normalMax: 40,
+  critical: 60,
+  damageNormalMin: 30,
+  damageNormalMax: 40,
+  damageCritical: 60,
+  targetHP: 100
+});
+</script>
+
+<script src="ui/app.js" defer></script>
 </body>
 </html>
