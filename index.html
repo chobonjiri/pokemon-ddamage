@@ -17,7 +17,7 @@
     .tab-content { display: none; margin-top: 5px; }
     .tab-button.active { font-weight: bold; }
 
-    /* segmented-control のスタイル */
+    /* segmented-control のスタイル (メインツール用) */
     .segmented-control {
       display: flex;
       flex-wrap: nowrap;
@@ -286,6 +286,143 @@
       color: white;
     }
 
+    /* --- 新しいスイッチ付きセグメントコントロールのスタイル --- */
+    /* .defender-control-group は input とスイッチ・セグメントコントロールを並べるためのコンテナ */
+    .defender-control-group {
+        display: flex;
+        align-items: center;
+        /* gap: 15px; /* input とスイッチの間のスペース - 個別に調整 */
+        margin-bottom: 10px; /* 下の要素とのマージン */
+        flex-wrap: wrap; /* 小さい画面で折り返す可能性を考慮 */
+    }
+
+    .defender-control-group .search-input-field {
+        flex-grow: 1; /* 入力フィールドがスペースを占めるように */
+        min-width: 150px; /* 最小幅を設定して小さくなりすぎないように */
+        margin-right: 15px; /* スイッチとの間にスペース */
+    }
+
+    /* --- テキスト付きスイッチのスタイル --- */
+    .switch-with-text {
+        display: flex;
+        flex-direction: row; /* テキストとスイッチを横に並べる */
+        align-items: center;
+        gap: 5px; /* テキストとスイッチの間のスペース */
+        flex-shrink: 0; /* スイッチ部分が縮まないように */
+        margin-right: 15px; /* 右側のセグメントコントロールとの間隔を確保 */
+    }
+
+    .switch-text {
+        font-size: 13px; /* テキストも少し小さく */
+        color: #333;
+        white-space: nowrap; /* テキストの折り返しを防ぐ */
+    }
+
+    /* --- トグルスイッチのスタイル --- */
+    .switch {
+        position: relative;
+        display: inline-block;
+        width: 38px; /* 幅を小さく */
+        height: 22px; /* 高さを小さく */
+        flex-shrink: 0; /* 縮まないように */
+    }
+
+    .switch input {
+        opacity: 0;
+        width: 0;
+        height: 0;
+    }
+
+    .slider {
+        position: absolute;
+        cursor: pointer;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background-color: #ccc;
+        transition: .4s;
+        border-radius: 22px; /* 高さに合わせて角丸を調整 */
+    }
+
+    .slider:before {
+        position: absolute;
+        content: "";
+        height: 16px; /* スライダーの丸のサイズを小さく */
+        width: 16px; /* スライダーの丸のサイズを小さく */
+        left: 3px; /* 位置を調整 */
+        bottom: 3px; /* 位置を調整 */
+        background-color: white;
+        transition: .4s;
+        border-radius: 50%;
+    }
+
+    input:checked + .slider {
+        background-color: #2196F3; /* ONの時の色 */
+    }
+
+    input:checked + .slider:before {
+        transform: translateX(16px); /* スライドする距離を調整 */
+    }
+
+    /* --- セグメントコントロールのスタイル (新たに挿入される側) --- */
+    /* このIDは、メインHTMLの既存のsegmented-controlスタイルと競合しないように注意 */
+    #speedControl { /* Use specific ID for the new control */
+        flex-shrink: 0; /* 縮まないようにする */
+        border: 1px solid #c4c4c4;
+        border-radius: 12px;
+        overflow: hidden; /* 角丸を効かせるため */
+        background-color: #f9f9f9; /* Default background when enabled */
+        transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+    }
+
+    #speedControl button {
+        background-color: transparent; /* Make buttons transparent to show parent background */
+        border: none;
+        padding: 5px 12px; /* パディングを小さく */
+        cursor: pointer;
+        font-size: 0.9em; /* フォントサイズを小さく */
+        color: #333;
+        transition: background-color 0.2s, color 0.2s;
+        font-weight: normal;
+    }
+
+    #speedControl button:not(:last-child) {
+        border-right: 1px solid #c4c4c4;
+    }
+
+    #speedControl button.active {
+        background-color: #e0e0e0;
+        font-weight: bold;
+    }
+
+    #speedControl button:not(:disabled):hover {
+        background-color: #ebebeb;
+    }
+    
+    /* --- Disabled State Specific Styles for speedControl --- */
+
+    #speedControl.disabled-state {
+        background-color: #e9ecef; /* Light gray for the entire inner frame */
+        border-color: #e9ecef; /* Match border color */
+    }
+
+    #speedControl.disabled-state button {
+        background-color: transparent; /* Ensure buttons are transparent to show parent background */
+        color: #888; /* Dim text color */
+        cursor: not-allowed; /* Show 'not allowed' cursor */
+        pointer-events: none; /* Crucial: Prevents click events from firing */
+    }
+
+    #speedControl.disabled-state button:not(:last-child) {
+        border-right: 1px solid #d8dee2; /* Lighter divider color */
+    }
+
+    #speedControl.disabled-state button.active {
+        background-color: #d8dee2; /* Slightly darker gray for disabled active button */
+        color: #888; /* Dim text color */
+    }
+
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
@@ -343,7 +480,21 @@
   </div>
 
   <div class="panel">
-    <input type="text" id="defender" autocomplete="off" placeholder="入力：防御側ポケモン" class="search-input-field" />
+    <div class="defender-control-group">
+      <input type="text" id="defender" autocomplete="off" placeholder="入力：防御側ポケモン" class="search-input-field" />
+      <div class="switch-with-text">
+        <span class="switch-text">テラス</span>
+        <label class="switch">
+          <input type="checkbox" id="toggleSwitch"> <span class="slider"></span>
+        </label>
+      </div>
+      
+      <div class="segmented-control" id="speedControl">
+        <button type="button">x0.5</button>
+        <button type="button">x1.0</button>
+        <button type="button">x2.0</button>
+      </div>
+    </div>
 
     <div id="defender-abilities" class="ability-section">
       <div class="segmented-control">
@@ -450,8 +601,8 @@
       <span id="label-critical">急所: --%</span>
     </div>
     <div class="damage-values">
-      <span id="value-normal">通常: -- ダメージ</span>
-      <span id="value-critical">急所: -- ダメージ</span>
+      <span id="value-normal">通常: ${damageNormalMin} - ${damageNormalMax} ダメージ</span>
+      <span id="value-critical">急所: ${damageCritical} ダメージ</span>
     </div>
   </div>
 </div>
@@ -486,7 +637,7 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('attack-nature-control').querySelector(`button[data-value="${document.getElementById('attack-nature').value}"]`)?.classList.add('active');
     document.getElementById('defense-nature-control').querySelector(`button[data-value="${document.getElementById('defense-nature').value}"]`)?.classList.add('active');
 
-    // テラス・ステラボタンの選択ロジック (変更箇所)
+    // テラス・ステラボタンの選択ロジック
     const attackerButton1 = document.getElementById('attacker-button-1');
     const attackerButton2 = document.getElementById('attacker-button-2');
     const attackerButtons = [attackerButton1, attackerButton2]; // ボタンをグループ化
@@ -494,20 +645,52 @@ document.addEventListener('DOMContentLoaded', () => {
     attackerButtons.forEach(button => {
         if (button) {
             button.addEventListener('click', () => {
-                // クリックされたボタンが既に選択されている場合は、選択を解除
                 if (button.classList.contains('selected')) {
                     button.classList.remove('selected');
                 } else {
-                    // 他の全てのボタンから 'selected' クラスを削除
                     attackerButtons.forEach(btn => btn.classList.remove('selected'));
-                    // クリックされたボタンに 'selected' クラスを追加
                     button.classList.add('selected');
                 }
-                // 必要であればここで計算ロジックを呼び出す
                 // calculateDamage(); // 例: ダメージ計算関数
             });
         }
     });
+
+    // --- 新しく追加するスイッチ付きセグメントコントロールのJavaScript ---
+    const toggleSwitch = document.getElementById('toggleSwitch');
+    const speedControl = document.getElementById('speedControl');
+    const controlButtons = speedControl.querySelectorAll('button');
+
+    // セグメントコントロールのボタンクリック処理
+    controlButtons.forEach(button => {
+        button.addEventListener('click', () => {
+            if (button.disabled) {
+                return;
+            }
+            controlButtons.forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+        });
+    });
+
+    // トグルスイッチの切り替え処理
+    toggleSwitch.addEventListener('change', () => {
+        const isEnabled = toggleSwitch.checked;
+        
+        controlButtons.forEach(button => {
+            button.disabled = !isEnabled;
+        });
+
+        if (isEnabled) {
+            speedControl.classList.remove('disabled-state');
+        } else {
+            speedControl.classList.add('disabled-state');
+        }
+    });
+    
+    // 初期状態を反映（スイッチがcheckedではないので、ボタンは無効になります）
+    toggleSwitch.dispatchEvent(new Event('change'));
+    // オプション: 初期選択ボタンを設定したい場合はここに追加
+    // controlButtons[1].classList.add('active'); // 例: x1.0 をデフォルトで選択状態にする
 });
 
 
