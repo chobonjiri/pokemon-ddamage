@@ -1,0 +1,30 @@
+/* 特性ボタンの共通スタイル */
+.ability-btn {
+  /* ここに特性ボタンの基本的なスタイルを定義します。 */
+  /* 例: */
+  padding: 8px 12px;
+  margin: 2px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+  color: #333;
+  cursor: pointer;
+  font-size: 0.9em;
+  min-width: 80px; /* 必要に応じて調整 */
+  text-align: center;
+}
+
+/* 選択された特性ボタンのスタイル */
+.ability-btn.selected {
+  background-color: #007bff; /* 例: 青色 */
+  color: white;
+  border-color: #007bff;
+}
+
+/* 無効化された特性ボタンのスタイル */
+.ability-btn.disabled-ability {
+  background-color: #ccc; /* 背景色を薄いグレーに */
+  color: #666; /* 文字色を濃いグレーに */
+  cursor: not-allowed; /* カーソルを「禁止」マークに */
+  opacity: 0.7; /* 透明度を少し下げて、無効であることを視覚的に示す */
+}
