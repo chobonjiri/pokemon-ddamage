@@ -2,7 +2,7 @@
 
 .container {
   display: flex;
-  gap: 30px;
+  gap: 1%;
 }
 
 /* New style for attacker-input-group to be in layout.css as it deals with layout */
@@ -10,11 +10,11 @@
   display: flex; /* Flexboxを使って横並びにする */
   align-items: center; /* 垂直方向中央揃え */
   gap: 5px; /* 要素間の隙間 */
-  margin-bottom: 10px; /* 必要に応じて下の要素とのマージンを設定 */
+  margin-bottom: 0.5%; /* 必要に応じて下の要素とのマージンを設定 */
 }
 
 .attacker-input-group .search-input-field {
-  flex-grow: 1; /* 入力欄が利用可能なスペースを占めるようにする */
+  flex-grow: ; /* 入力欄が利用可能なスペースを占めるようにする */
 }
 
 /* Defender control group for input and switch/segmented control */
@@ -30,6 +30,45 @@
   min-width: 150px;
   margin-right: 15px;
 }
+
+/*特性欄*/
+.ability-section {
+  padding: 10px;
+}
+
+#ability-choice {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.ability-row-top {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.ability-btn {
+  padding: 6px 12px;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.ability-nullified {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.ability-row-bottom input {
+  width: 100%;
+  max-width: 200px;
+  padding: 6px;
+  font-size: 14px;
+}
+
+
 
 /* New style for inline-flex-group as it is a layout utility */
 .inline-flex-group {
