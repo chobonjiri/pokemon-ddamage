@@ -3,763 +3,143 @@
 <head>
   <meta charset="UTF-8" />
   <title>ポケモン実数値計算ツール</title>
-  <style>
-    body { font-family: sans-serif; margin: 20px; }
-    .container { display: flex; gap: 30px; }
-    .panel { flex: 1; border: 1px solid #ccc; padding: 10px; border-radius: 8px; }
-    .panel h3 { margin-top: 0; }
-    .stat-block { margin-bottom: 10px; }
-    .stat-block input[type=range] { width: 100px; }
-    .rank-btn { width: 24px; }
-    .ability-btn.selected { background-color: #99ccff; }
-    .ability-section { margin-top: 10px; }
-    .tab-container { margin-top: 10px; }
-    .tab-content { display: none; margin-top: 5px; }
-    .tab-button.active { font-weight: bold; }
-
-    /* segmented-control のスタイル (メインツール用) */
-    .segmented-control {
-      display: flex;
-      flex-wrap: nowrap;
-      align-items: center;
-      border: 1px solid #ccc; /* 親要素のボーダーで全体を囲む */
-      border-radius: 8px;
-      padding: 5px;
-      overflow-x: auto;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    /* 性格補正ボタンの segmented-control には特別なスタイルを適用 */
-    /* 右上の速度補正のセグメントコントロールと同じ形に調整 */
-    #attack-nature-control,
-    #defense-nature-control {
-        flex-shrink: 0;
-        white-space: nowrap;
-        padding: 0; /* paddingを0に */
-        border: 1px solid #c4c4c4; /* 親要素のボーダーを適用 */
-        border-radius: 12px; /* 角丸を適用 */
-        overflow: hidden; /* 角丸を効かせるため */
-        background-color: #f9f9f9; /* Default background when enabled */
-        gap: 0; /* ボタン間の隙間を削除 */
-    }
-
-    /* 新しいCSSクラスを追加 */
-    .inline-flex-group {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        flex-wrap: nowrap;
-    }
-
-    /* 特性ボタンのスタイル（攻撃側・防御側共通） */
-    #ability-choice .ability-btn,
-    #defender-abilities .ability-btn {
-      flex-shrink: 0;
-      width: 50px;
-      padding: 5px 2px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: white;
-      cursor: pointer;
-      white-space: nowrap;
-      text-align: center;
-      font-size: 0.8em;
-      box-sizing: border-box;
-    }
-
-    /* 性格ボタンのスタイル（攻撃側・防御側共通） */
-    #attack-nature-control button,
-    #defense-nature-control button {
-      background-color: transparent; /* 親の背景色が見えるように透明に */
-      border: none; /* 各ボタンのボーダーを削除 */
-      padding: 5px 12px; /* パディングを小さく */
-      cursor: pointer;
-      font-size: 0.9em; /* フォントサイズを小さく */
-      color: #333;
-      transition: background-color 0.2s, color 0.2s;
-      font-weight: normal;
-      /* width: auto; /* 幅を自動調整 */
-      /* height: auto; /* 高さを自動調整 */
-      border-radius: 0; /* 角丸を削除 */
-      display: flex; /* Flexboxを使ってテキストを中央揃え */
-      justify-content: center; /* 水平方向中央揃え */
-      align-items: center; /* 垂直方向中央揃え */
-    }
-
-    /* ボタン間の区切り線 */
-    #attack-nature-control button:not(:last-child),
-    #defense-nature-control button:not(:last-child) {
-        border-right: 1px solid #c4c4c4;
-    }
-
-    /* アクティブ時のスタイル */
-    #attack-nature-control button.active,
-    #defense-nature-control button.active {
-      background-color: #e0e0e0; /* 速度補正と同じアクティブ時の背景色 */
-      font-weight: bold; /* 速度補正と同じフォントウェイト */
-      color: black; /* 速度補正と同じ文字色 */
-    }
-
-    /* 特性入力欄のスタイル (攻撃側、防御側共通) */
-    #custom-ability,
-    #defender-custom-ability {
-      flex-grow: 1;
-      min-width: 100px;
-      padding: 5px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-    }
-
-    /* 無効化チェックボックスのラッパー (攻撃側、防御側共通) */
-    .segmented-control .ability-nullified-checkbox-wrapper {
-      margin-left: auto;
-      flex-shrink: 0;
-      white-space: nowrap;
-    }
-    /* 追加：segmented-control内のinputやlabelのデフォルトスタイルを調整 */
-    .segmented-control input[type="checkbox"],
-    .segmented-control label {
-        margin: 0;
-        padding: 0;
-    }
-
-    /* search-input-field のスタイル */
-    .search-input-field {
-        background-repeat: no-repeat;
-        background-position: 8px center;
-    }
-
-    /* サイドメニューのスタイル */
-    #menu {
-      position: fixed;
-      top: 0;
-      right: -340px;
-      width: 300px;
-      height: 100%;
-      padding: 20px;
-      transition: right 0.5s ease;
-      background-color: rgba(0, 0, 0, 0.85);
-      color: white;
-      z-index: 1001;
-    }
-
-    /* メニュー表示時 */
-    #open:checked + #menu {
-      right: 0;
-    }
-
-    /* 背景暗く */
-    #overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background: rgba(0, 0, 0, 0.3);
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.3s ease;
-      z-index: 1000;
-    }
-
-    #open:checked ~ #overlay {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    /* ハンバーガーボタン */
-    .toggle {
-      position: fixed;
-      top: 16px;
-      right: 16px;
-      font-size: 32px;
-      color: white;
-      cursor: pointer;
-      z-index: 1002;
-    }
-
-    #open {
-      display: none;
-    }
-
-    .menu-section {
-      margin-bottom: 16px;
-    }
-
-    label.checkbox {
-      display: block;
-      margin-bottom: 8px;
-    }
-
-    select {
-      width: 100%;
-      margin-bottom: 12px;
-      padding: 5px;
-      border-radius: 4px;
-    }
-
-    /* ダメージポップアップのスタイル */
-    #damage-popup {
-      position: fixed;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      background-color: rgba(40, 40, 40, 0.9);
-      color: white;
-      padding: 1rem;
-      border-top: 2px solid #444;
-      font-family: sans-serif;
-      z-index: 1000;
-      height: auto;
-      display: block;
-    }
-
-    /* 変更点: h3のみを非表示にする */
-    #damage-popup h3 {
-      display: none;
-    }
-
-    .damage-bar-container {
-      margin-top: 0.5rem;
-      width: 100%;
-      max-width: none;
-    }
-
-    .damage-bar-background {
-      width: 100%;
-      height: 20px;
-      background-color: #eee;
-      position: relative;
-      border-radius: 10px;
-      overflow: hidden;
-    }
-
-    .damage-segment {
-      height: 100%;
-      position: absolute;
-      top: 0;
-    }
-
-    .normal {
-      background-color: #4caf50;
-      opacity: 0.7;
-    }
-
-    .critical {
-      background-color: #f44336;
-      opacity: 0.6;
-    }
-
-    /* 変更点: これらの要素の display: none; を削除する */
-    .damage-labels,
-    .damage-values {
-      display: flex; /* 元の表示方法に戻す */
-      justify-content: space-between;
-      margin-top: 4px;
-      font-size: 0.9rem;
-    }
-
-    /* 新しいスタイル: attacker-input-group */
-    .attacker-input-group {
-      display: flex; /* Flexboxを使って横並びにする */
-      align-items: center; /* 垂直方向中央揃え */
-      gap: 5px; /* 要素間の隙間 */
-      margin-bottom: 10px; /* 必要に応じて下の要素とのマージンを設定 */
-    }
-
-    .attacker-input-group .search-input-field {
-      flex-grow: 1; /* 入力欄が利用可能なスペースを占めるようにする */
-    }
-
-    /* 修正: 真円のボタンにするためのスタイル */
-    .attacker-input-group button {
-      width: 36px; /* 幅を固定 */
-      height: 36px; /* 高さを固定 */
-      padding: 0; /* パディングをなくす */
-      border: 1px solid #ccc;
-      border-radius: 50%; /* 真円にする */
-      background-color: #f0f0f0;
-      cursor: pointer;
-      display: flex; /* Flexboxを使ってテキストを中央揃え */
-      justify-content: center; /* 水平方向中央揃え */
-      align-items: center; /* 垂直方向中央揃え */
-      font-size: 0.75em; /* 文字サイズ調整 */
-      flex-shrink: 0; /* 縮まないようにする */
-    }
-
-    .attacker-input-group button:hover {
-      background-color: #e0e0e0;
-    }
-
-    /* テラス・ステラボタンの選択時のスタイル */
-    .attacker-input-group button.selected {
-      background-color: #99ccff; /* 例: 水色 */
-      border-color: #6699cc;
-      color: white;
-    }
-
-    /* --- 新しいスイッチ付きセグメントコントロールのスタイル --- */
-    /* .defender-control-group は input とスイッチ・セグメントコントロールを並べるためのコンテナ */
-    .defender-control-group {
-        display: flex;
-        align-items: center;
-        /* gap: 15px; /* input とスイッチの間のスペース - 個別に調整 */
-        margin-bottom: 10px; /* 下の要素とのマージン */
-        flex-wrap: wrap; /* 小さい画面で折り返す可能性を考慮 */
-    }
-
-    .defender-control-group .search-input-field {
-        flex-grow: 1; /* 入力フィールドがスペースを占めるように */
-        min-width: 150px; /* 最小幅を設定して小さくなりすぎないように */
-        margin-right: 15px; /* スイッチとの間にスペース */
-    }
-
-    /* --- テキスト付きスイッチのスタイル --- */
-    .switch-with-text {
-        display: flex;
-        flex-direction: row; /* テキストとスイッチを横に並べる */
-        align-items: center;
-        gap: 5px; /* テキストとスイッチの間のスペース */
-        flex-shrink: 0; /* スイッチ部分が縮まないように */
-        margin-right: 15px; /* 右側のセグメントコントロールとの間隔を確保 */
-    }
-
-    .switch-text {
-        font-size: 13px; /* テキストも少し小さく */
-        color: #333;
-        white-space: nowrap; /* テキストの折り返しを防ぐ */
-    }
-
-    /* --- トグルスイッチのスタイル --- */
-    .switch {
-        position: relative;
-        display: inline-block;
-        width: 38px; /* 幅を小さく */
-        height: 22px; /* 高さを小さく */
-        flex-shrink: 0; /* 縮まないように */
-    }
-
-    .switch input {
-        opacity: 0;
-        width: 0;
-        height: 0;
-    }
-
-    .slider {
-        position: absolute;
-        cursor: pointer;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background-color: #ccc;
-        transition: .4s;
-        border-radius: 22px; /* 高さに合わせて角丸を調整 */
-    }
-
-    .slider:before {
-        position: absolute;
-        content: "";
-        height: 16px; /* スライダーの丸のサイズを小さく */
-        width: 16px; /* スライダーの丸のサイズを小さく */
-        left: 3px; /* 位置を調整 */
-        bottom: 3px; /* 位置を調整 */
-        background-color: white;
-        transition: .4s;
-        border-radius: 50%;
-    }
-
-    input:checked + .slider {
-        background-color: #2196F3; /* ONの時の色 */
-    }
-
-    input:checked + .slider:before {
-        transform: translateX(16px); /* スライドする距離を調整 */
-    }
-
-    /* --- セグメントコントロールのスタイル (新たに挿入される側) --- */
-    /* このIDは、メインHTMLの既存のsegmented-controlスタイルと競合しないように注意 */
-    #speedControl { /* Use specific ID for the new control */
-        flex-shrink: 0; /* 縮まないようにする */
-        border: 1px solid #c4c4c4;
-        border-radius: 12px;
-        overflow: hidden; /* 角丸を効かせるため */
-        background-color: #f9f9f9; /* Default background when enabled */
-        transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out;
-    }
-
-    #speedControl button {
-        background-color: transparent; /* Make buttons transparent to show parent background */
-        border: none;
-        padding: 5px 12px; /* パディングを小さく */
-        cursor: pointer;
-        font-size: 0.9em; /* フォントサイズを小さく */
-        color: #333;
-        transition: background-color 0.2s, color 0.2s;
-        font-weight: normal;
-    }
-
-    #speedControl button:not(:last-child) {
-        border-right: 1px solid #c4c4c4;
-    }
-
-    #speedControl button.active {
-        background-color: #e0e0e0;
-        font-weight: bold;
-    }
-
-    #speedControl button:not(:disabled):hover {
-        background-color: #ebebeb;
-    }
-    
-    /* --- Disabled State Specific Styles for speedControl --- */
-
-    #speedControl.disabled-state {
-        background-color: #e9ecef; /* Light gray for the entire inner frame */
-        border-color: #e9ecef; /* Match border color */
-    }
-
-    #speedControl.disabled-state button {
-        background-color: transparent; /* Ensure buttons are transparent to show parent background */
-        color: #888; /* Dim text color */
-        cursor: not-allowed; /* Show 'not allowed' cursor */
-        pointer-events: none; /* Crucial: Prevents click events from firing */
-    }
-
-    #speedControl.disabled-state button:not(:last-child) {
-        border-right: 1px solid #d8dee2; /* Lighter divider color */
-    }
-
-    #speedControl.disabled-state button.active {
-        background-color: #d8dee2; /* Slightly darker gray for disabled active button */
-        color: #888; /* Dim text color */
-    }
-
-  </style>
+  
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css" />
-  <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
-  <link rel="stylesheet" href="style/main.css" />
+
+  <link rel="stylesheet" href="style/base.css" />
+  <link rel="stylesheet" href="style/layout.css" />
+  <link rel="stylesheet" href="style/components/buttons.css" />
+  <link rel="stylesheet" href="style/components/forms.css" />
+  <link rel="stylesheet" href="style/components/segmented-control.css" />
+  <link rel="stylesheet" href="style/modules/panels.css" />
+  <link rel="stylesheet" href="style/modules/damage-popup.css" />
+  <link rel="stylesheet" href="style/menu.css" />
+  <link rel="stylesheet" href="style/main.css" /> 
 </head>
 <body>
+  <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
+  <script>
+    // Your inline JavaScript here (rank, nature, damage popup updates)
+    // It's generally good practice to move this to a separate JS file as well
+    // e.g., script/ui-interactions.js or script/calculator-ui.js
+    function changeRank(type, change) {
+        const rankSpanId = `${type}-rank-val`;
+        const rankSpan = document.getElementById(rankSpanId);
+        let currentRank = parseInt(rankSpan.textContent);
 
-<div class="container">
-  <div class="panel">
-    <div class="attacker-input-group">
-      <input type="text" id="attacker" autocomplete="off" placeholder="入力：攻撃側ポケモン" class="search-input-field" />
-      <button id="attacker-button-1" type="button">テラス</button>
-      <button id="attacker-button-2" type="button">ステラ</button>
-    </div>
+        currentRank += change;
 
-    <input type="text" id="move" autocomplete="off" placeholder="入力：技" class="search-input-field" />
-    <div id="move-double-damage-section" style="margin-top:5px; display:none;">
-      <label><input type="checkbox" id="double-damage-checkbox" /> ダブルダメージとして扱う</label>
-    </div>
+        if (currentRank < -6) {
+            currentRank = -6;
+        } else if (currentRank > 6) {
+            currentRank = 6;
+        }
 
-    <div class="ability-section">
-      <div class="segmented-control" id="ability-choice">
-        <button type="button" class="ability-btn">特性1</button>
-        <button type="button" class="ability-btn">特性2</button>
-        <button type="button" class="ability-btn">特性3</button>
-        <input type="text" id="custom-ability" placeholder="特性入力">
-        <div class="ability-nullified-checkbox-wrapper">
-          <label><input type="checkbox" id="ability-nullified"> 無効化</label>
-        </div>
-      </div>
-    </div>
-
-
-    <div class="stat-block">
-      <h4>A</h4>
-      個体値: <input type="number" id="attack-iv" value="31" min="0" max="31" /><br />
-      努力値: <input type="range" id="attack-ev" value="0" min="0" max="252" step="4" />
-      <span id="attack-ev-val">0</span><br />
-      <div class="inline-flex-group"> 性格:
-        <div class="segmented-control" id="attack-nature-control">
-          <button type="button" data-value="0.9">x0.9</button>
-          <button type="button" data-value="1.0" class="active">x1.0</button>
-          <button type="button" data-value="1.1">x1.1</button>
-        </div>
-      </div>
-      <input type="hidden" id="attack-nature" value="1.0">
-      <br />
-      ランク:
-      <button onclick="changeRank('attack', -1)" class="rank-btn">-</button>
-      <span id="attack-rank-val">0</span>
-      <button onclick="changeRank('attack', 1)" class="rank-btn">+</button><br />
-      実数値: <span id="attack-actual">-</span>
-    </div>
-  </div>
-
-  <div class="panel">
-    <div class="defender-control-group">
-      <input type="text" id="defender" autocomplete="off" placeholder="入力：防御側ポケモン" class="search-input-field" />
-      <div class="switch-with-text">
-        <span class="switch-text">テラス</span>
-        <label class="switch">
-          <input type="checkbox" id="toggleSwitch"> <span class="slider"></span>
-        </label>
-      </div>
-      
-      <div class="segmented-control" id="speedControl">
-        <button type="button">x0.5</button>
-        <button type="button">x1.0</button>
-        <button type="button">x2.0</button>
-      </div>
-    </div>
-
-    <div id="defender-abilities" class="ability-section">
-      <div class="segmented-control">
-        <button type="button" class="ability-btn">特性1</button>
-        <button type="button" class="ability-btn">特性2</button>
-        <button type="button" class="ability-btn">特性3</button>
-        <input type="text" id="defender-custom-ability" placeholder="特性入力">
-        <div class="ability-nullified-checkbox-wrapper">
-          <label><input type="checkbox" id="defender-ability-nullified"> 無効化</label>
-        </div>
-      </div>
-    </div>
-
-    <div class="stat-block">
-      <h4>HP</h4>
-      個体値: <input type="number" id="hp-iv" value="31" min="0" max="31" /><br />
-      努力値: <input type="range" id="hp-ev" value="0" min="0" max="252" step="4" />
-      <span id="hp-ev-val">0</span><br />
-      実数値: <span id="hp-actual">-</span>
-    </div>
-
-    <div class="stat-block">
-      <h4>B or D</h4>
-      個体値: <input type="number" id="defense-iv" value="31" min="0" max="31" /><br />
-      努力値: <input type="range" id="defense-ev" value="0" min="0" max="252" step="4" />
-      <span id="defense-ev-val">0</span><br />
-      <div class="inline-flex-group"> 性格:
-        <div class="segmented-control" id="defense-nature-control">
-          <button type="button" data-value="0.9">x0.9</button>
-          <button type="button" data-value="1.0" class="active">x1.0</button>
-          <button type="button" data-value="1.1">x1.1</button>
-        </div>
-      </div>
-      <input type="hidden" id="defense-nature" value="1.0"> <br />
-      ランク:
-      <button onclick="changeRank('defense', -1)" class="rank-btn">-</button>
-      <span id="defense-rank-val">0</span>
-      <button onclick="changeRank('defense', 1)" class="rank-btn">+</button><br />
-      実数値: <span id="defense-actual">-</span>
-    </div>
-  </div>
-</div>
-
-<label class="toggle" for="open">
-  <i class="fa fa-bars" aria-hidden="true"></i>
-</label>
-<input id="open" type="checkbox">
-
-<div id="menu">
-  <h2>条件</h2>
-
-  <div class="menu-section">
-    <label>壁</label>
-    <label class="checkbox"><input type="checkbox" id="aurora-veil"> オーロラベール</label>
-    <label class="checkbox"><input type="checkbox" id="reflect"> リフレクター</label>
-    <label class="checkbox"><input type="checkbox" id="light-screen"> ひかりのかべ</label>
-    <label class="checkbox"><input type="checkbox" id="friend-guard"> フレンドガード</label>
-  </div>
-  
-  <div class="menu-section">
-    <label>天候</label>
-    <div class="segmented-control" id="weatherControl">
-      <button type="button" data-value="sun">晴</button>
-      <button type="button" data-value="rain">雨</button>
-      <button type="button" data-value="sand">砂</button>
-      <button type="button" data-value="hail">雪</button>
-    </div>
-
-    <label>フィールド</label>
-    <div class="segmented-control" id="fieldControl">
-      <button type="button" data-value="grassy">グラス</button>
-      <button type="button" data-value="electric">エレキ</button>
-      <button type="button" data-value="psychic">サイコ</button>
-      <button type="button" data-value="misty">ミスト</button>
-    </div>
-
-    <label>わざわい</label>
-    <div class="segmented-control" id="ruinControl">
-      <button type="button" data-value="tablets">A↓</button>
-      <button type="button" data-value="sword">B↓</button>
-      <button type="button" data-value="vessel">C↓</button>
-      <button type="button" data-value="beads">D↓</button>
-    </div>
-  </div>
-
-  <div class="menu-section">
-    <label>状態</label>
-    <label class="checkbox"><input type="checkbox" id="helping-hand"> てだすけ</label>
-    <label class="checkbox"><input type="checkbox" id="checkbox-burn"> やけど</label> </div>
-</div>
-
-<div id="overlay"></div>
-
-<div id="damage-popup">
-  <h3>ダメージ計算結果</h3>
-  <div class="damage-bar-container">
-    <div class="damage-bar-background">
-      <div id="normal-min" class="damage-segment normal"></div>
-      <div id="normal-max" class="damage-segment normal"></div>
-      <div id="critical" class="damage-segment critical"></div>
-    </div>
-    <div class="damage-labels">
-      <span id="label-normal">通常: --%</span>
-      <span id="label-critical">急所: --%</span>
-    </div>
-    <div class="damage-values">
-      <span id="value-normal">通常: ${damageNormalMin} - ${damageNormalMax} ダメージ</span>
-      <span id="value-critical">急所: ${damageCritical} ダメージ</span>
-    </div>
-  </div>
-</div>
-
-<script>
-// ランク変更関数
-function changeRank(type, change) {
-    const rankSpanId = `${type}-rank-val`;
-    const rankSpan = document.getElementById(rankSpanId);
-    let currentRank = parseInt(rankSpan.textContent);
-
-    currentRank += change;
-
-    // 上限と下限を設ける (-6 から +6)
-    if (currentRank < -6) {
-        currentRank = -6;
-    } else if (currentRank > 6) {
-        currentRank = 6;
+        rankSpan.textContent = currentRank;
     }
 
-    rankSpan.textContent = currentRank;
-    // 必要であればここで実数値計算などの関数を呼び出す
-    // calculateStats();
-}
+    document.addEventListener('DOMContentLoaded', () => {
+        function setupNatureControl(controlId, hiddenInputId) {
+            const control = document.getElementById(controlId);
+            const hiddenInput = document.getElementById(hiddenInputId);
 
-
-// 性格ボタンの選択ロジック（JavaScript）
-document.addEventListener('DOMContentLoaded', () => {
-    function setupNatureControl(controlId, hiddenInputId) {
-        const control = document.getElementById(controlId);
-        const hiddenInput = document.getElementById(hiddenInputId);
-
-        if (control && hiddenInput) {
-            control.querySelectorAll('button').forEach(button => {
-                button.addEventListener('click', () => {
-                    // 全てのボタンから 'active' クラスを削除
-                    control.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-                    // クリックされたボタンに 'active' クラスを追加
-                    button.classList.add('active');
-                    // hidden input の値を更新
-                    hiddenInput.value = button.dataset.value;
-                    // 必要であればここで計算ロジックを呼び出す
-                    // calculateStats(); // 例: 実数値計算関数
+            if (control && hiddenInput) {
+                control.querySelectorAll('button').forEach(button => {
+                    button.addEventListener('click', () => {
+                        control.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                        button.classList.add('active');
+                        hiddenInput.value = button.dataset.value;
+                    });
                 });
-            });
+            }
         }
+
+        setupNatureControl('attack-nature-control', 'attack-nature');
+        setupNatureControl('defense-nature-control', 'defense-nature');
+
+        document.getElementById('attack-nature-control').querySelector(`button[data-value="${document.getElementById('attack-nature').value}"]`)?.classList.add('active');
+        document.getElementById('defense-nature-control').querySelector(`button[data-value="${document.getElementById('defense-nature').value}"]`)?.classList.add('active');
+
+        const attackerButton1 = document.getElementById('attacker-button-1');
+        const attackerButton2 = document.getElementById('attacker-button-2');
+        const attackerButtons = [attackerButton1, attackerButton2];
+
+        attackerButtons.forEach(button => {
+            if (button) {
+                button.addEventListener('click', () => {
+                    if (button.classList.contains('selected')) {
+                        button.classList.remove('selected');
+                    } else {
+                        attackerButtons.forEach(btn => btn.classList.remove('selected'));
+                        button.classList.add('selected');
+                    }
+                });
+            }
+        });
+
+        const toggleSwitch = document.getElementById('toggleSwitch');
+        const speedControl = document.getElementById('speedControl');
+        const controlButtons = speedControl.querySelectorAll('button');
+
+        controlButtons.forEach(button => {
+            button.addEventListener('click', () => {
+                if (button.disabled) {
+                    return;
+                }
+                controlButtons.forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+            });
+        });
+
+        toggleSwitch.addEventListener('change', () => {
+            const isEnabled = toggleSwitch.checked;
+            
+            controlButtons.forEach(button => {
+                button.disabled = !isEnabled;
+            });
+
+            if (isEnabled) {
+                speedControl.classList.remove('disabled-state');
+            } else {
+                speedControl.classList.add('disabled-state');
+                controlButtons.forEach(btn => btn.classList.remove('active'));
+            }
+        });
+        
+        toggleSwitch.dispatchEvent(new Event('change'));
+    });
+
+    function updateDamagePopup({ normalMin, normalMax, critical, damageNormalMin, damageNormalMax, damageCritical, targetHP }) {
+      const normalMinPercent = (normalMin / targetHP) * 100;
+      const normalMaxPercent = (normalMax / targetHP) * 100;
+      const criticalPercent = (critical / targetHP) * 100;
+
+      document.getElementById('normal-min').style.left = '0%';
+      document.getElementById('normal-min').style.width = normalMinPercent + '%';
+
+      document.getElementById('normal-max').style.left = normalMinPercent + '%';
+      document.getElementById('normal-max').style.width = (normalMaxPercent - normalMinPercent) + '%';
+
+      document.getElementById('critical').style.left = normalMaxPercent + '%';
+      document.getElementById('critical').style.width = (criticalPercent - normalMaxPercent) + '%';
+
+      document.getElementById('label-normal').textContent = `通常: ${Math.round(normalMinPercent)}% - ${Math.round(normalMaxPercent)}%`;
+      document.getElementById('label-critical').textContent = `急所: ${Math.round(criticalPercent)}%`;
+      document.getElementById('value-normal').textContent = `通常: ${damageNormalMin} - ${damageNormalMax} ダメージ`;
+      document.getElementById('value-critical').textContent = `急所: ${damageCritical} ダメージ`;
     }
 
-    setupNatureControl('attack-nature-control', 'attack-nature');
-    setupNatureControl('defense-nature-control', 'defense-nature');
-
-    // 初期選択を反映
-    document.getElementById('attack-nature-control').querySelector(`button[data-value="${document.getElementById('attack-nature').value}"]`)?.classList.add('active');
-    document.getElementById('defense-nature-control').querySelector(`button[data-value="${document.getElementById('defense-nature').value}"]`)?.classList.add('active');
-
-    // テラス・ステラボタンの選択ロジック
-    const attackerButton1 = document.getElementById('attacker-button-1');
-    const attackerButton2 = document.getElementById('attacker-button-2');
-    const attackerButtons = [attackerButton1, attackerButton2]; // ボタンをグループ化
-
-    attackerButtons.forEach(button => {
-        if (button) {
-            button.addEventListener('click', () => {
-                if (button.classList.contains('selected')) {
-                    button.classList.remove('selected');
-                } else {
-                    attackerButtons.forEach(btn => btn.classList.remove('selected'));
-                    button.classList.add('selected');
-                }
-                // calculateDamage(); // 例: ダメージ計算関数
-            });
-        }
+    updateDamagePopup({
+      normalMin: 30,
+      normalMax: 40,
+      critical: 60,
+      damageNormalMin: 30,
+      damageNormalMax: 40,
+      damageCritical: 60,
+      targetHP: 100
     });
-
-    // --- 新しく追加するスイッチ付きセグメントコントロールのJavaScript ---
-    const toggleSwitch = document.getElementById('toggleSwitch');
-    const speedControl = document.getElementById('speedControl');
-    const controlButtons = speedControl.querySelectorAll('button');
-
-    // セグメントコントロールのボタンクリック処理
-    controlButtons.forEach(button => {
-        button.addEventListener('click', () => {
-            if (button.disabled) {
-                return;
-            }
-            controlButtons.forEach(btn => btn.classList.remove('active'));
-            button.classList.add('active');
-        });
-    });
-
-    // トグルスイッチの切り替え処理
-    toggleSwitch.addEventListener('change', () => {
-        const isEnabled = toggleSwitch.checked;
-        
-        controlButtons.forEach(button => {
-            button.disabled = !isEnabled;
-        });
-
-        if (isEnabled) {
-            speedControl.classList.remove('disabled-state');
-        } else {
-            speedControl.classList.add('disabled-state');
-        }
-    });
-    
-    // 初期状態を反映（スイッチがcheckedではないので、ボタンは無効になります）
-    toggleSwitch.dispatchEvent(new Event('change'));
-    // オプション: 初期選択ボタンを設定したい場合はここに追加
-    // controlButtons[1].classList.add('active'); // 例: x1.0 をデフォルトで選択状態にする
-});
-
-
-function updateDamagePopup({ normalMin, normalMax, critical, damageNormalMin, damageNormalMax, damageCritical, targetHP }) {
-  const barWidth = 100; // %
-  const normalMinPercent = (normalMin / targetHP) * 100;
-  const normalMaxPercent = (normalMax / targetHP) * 100;
-  const criticalPercent = (critical / targetHP) * 100;
-
-  document.getElementById('normal-min').style.left = '0%';
-  document.getElementById('normal-min').style.width = normalMinPercent + '%';
-
-  document.getElementById('normal-max').style.left = normalMinPercent + '%';
-  document.getElementById('normal-max').style.width = (normalMaxPercent - normalMinPercent) + '%';
-
-  document.getElementById('critical').style.left = normalMaxPercent + '%';
-  document.getElementById('critical').style.width = (criticalPercent - normalMaxPercent) + '%';
-
-  document.getElementById('label-normal').textContent = `通常: ${Math.round(normalMinPercent)}% - ${Math.round(normalMaxPercent)}%`;
-  document.getElementById('label-critical').textContent = `急所: ${Math.round(criticalPercent)}%`;
-  document.getElementById('value-normal').textContent = `通常: ${damageNormalMin} - ${damageNormalMax} ダメージ`;
-  document.getElementById('value-critical').textContent = `急所: ${damageCritical} ダメージ`;
-}
-
-// サンプル呼び出し（実際の計算結果で置き換えてください）
-updateDamagePopup({
-  normalMin: 30,
-  normalMax: 40,
-  critical: 60,
-  damageNormalMin: 30,
-  damageNormalMax: 40,
-  damageCritical: 60,
-  targetHP: 100
-});
-</script>
-
-<script src="ui/app.js" defer></script>
+  </script>
+  <script src="ui/app.js" defer></script>
 </body>
 </html>

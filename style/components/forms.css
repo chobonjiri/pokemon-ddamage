@@ -1,0 +1,48 @@
+/* style/components/forms.css */
+
+.stat-block input[type=range] {
+  width: 100px;
+}
+
+/* Specific styles for search input fields */
+.search-input-field {
+  background-repeat: no-repeat;
+  background-position: 8px center;
+}
+
+/* Custom ability input fields */
+#custom-ability,
+#defender-custom-ability {
+  flex-grow: 1;
+  min-width: 100px;
+  padding: 5px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+}
+
+/* Checkbox wrapper within segmented control */
+.segmented-control .ability-nullified-checkbox-wrapper {
+  margin-left: auto;
+  flex-shrink: 0;
+  white-space: nowrap;
+}
+
+/* Adjust default styles for input/label inside segmented control */
+.segmented-control input[type="checkbox"],
+.segmented-control label {
+  margin: 0;
+  padding: 0;
+}
+
+/* General select element styles */
+select {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 5px;
+  border-radius: 4px;
+}
+
+label.checkbox {
+  display: block;
+  margin-bottom: 8px;
+}

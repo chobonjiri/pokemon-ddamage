@@ -1,0 +1,38 @@
+/* style/modules/panels.css */
+
+.panel {
+  flex: 1;
+  border: 1px solid #ccc;
+  padding: 10px;
+  border-radius: 8px;
+}
+
+.panel h3 {
+  margin-top: 0;
+}
+
+.stat-block {
+  margin-bottom: 10px;
+}
+
+.ability-section {
+  margin-top: 10px;
+}
+
+.tab-container {
+  margin-top: 10px;
+}
+
+.tab-content {
+  display: none;
+  margin-top: 5px;
+}
+
+.tab-button.active {
+  font-weight: bold;
+}
+
+#move-double-damage-section {
+  margin-top: 5px;
+  display: none;
+}

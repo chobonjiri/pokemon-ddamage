@@ -1,0 +1,32 @@
+/* style/components/buttons.css */
+
+/* General button styles for rank and ability */
+.rank-btn {
+  width: 24px;
+}
+
+/* Attacker input group buttons (Terastal/Stellar) */
+.attacker-input-group button {
+  width: 36px;
+  height: 36px;
+  padding: 0;
+  border: 1px solid #ccc;
+  border-radius: 50%;
+  background-color: #f0f0f0;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 0.75em;
+  flex-shrink: 0;
+}
+
+.attacker-input-group button:hover {
+  background-color: #e0e0e0;
+}
+
+.attacker-input-group button.selected {
+  background-color: #99ccff;
+  border-color: #6699cc;
+  color: white;
+}

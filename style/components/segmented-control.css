@@ -1,0 +1,195 @@
+/* style/components/segmented-control.css */
+
+/* Generic segmented-control styles */
+.segmented-control {
+  display: flex;
+  flex-wrap: nowrap;
+  align-items: center;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 5px;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Nature correction segmented controls */
+#attack-nature-control,
+#defense-nature-control {
+  flex-shrink: 0;
+  white-space: nowrap;
+  padding: 0;
+  border: 1px solid #c4c4c4;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f9f9f9;
+  gap: 0;
+}
+
+/* Ability buttons within segmented control */
+#ability-choice .ability-btn,
+#defender-abilities .ability-btn {
+  flex-shrink: 0;
+  width: 50px;
+  padding: 5px 2px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  background-color: white;
+  cursor: pointer;
+  white-space: nowrap;
+  text-align: center;
+  font-size: 0.8em;
+  box-sizing: border-box;
+}
+
+.ability-btn.selected {
+  background-color: #99ccff;
+}
+
+/* Nature button specific styles */
+#attack-nature-control button,
+#defense-nature-control button {
+  background-color: transparent;
+  border: none;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #333;
+  transition: background-color 0.2s, color 0.2s;
+  font-weight: normal;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Divider between nature buttons */
+#attack-nature-control button:not(:last-child),
+#defense-nature-control button:not(:last-child) {
+  border-right: 1px solid #c4c4c4;
+}
+
+/* Active state for nature buttons */
+#attack-nature-control button.active,
+#defense-nature-control button.active {
+  background-color: #e0e0e0;
+  font-weight: bold;
+  color: black;
+}
+
+/* Speed control (newly inserted) */
+#speedControl {
+  flex-shrink: 0;
+  border: 1px solid #c4c4c4;
+  border-radius: 12px;
+  overflow: hidden;
+  background-color: #f9f9f9;
+  transition: background-color 0.4s ease-in-out, border-color 0.4s ease-in-out;
+}
+
+#speedControl button {
+  background-color: transparent;
+  border: none;
+  padding: 5px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+  color: #333;
+  transition: background-color 0.2s, color 0.2s;
+  font-weight: normal;
+}
+
+#speedControl button:not(:last-child) {
+  border-right: 1px solid #c4c4c4;
+}
+
+#speedControl button.active {
+  background-color: #e0e0e0;
+  font-weight: bold;
+}
+
+#speedControl button:not(:disabled):hover {
+  background-color: #ebebeb;
+}
+
+/* Disabled state for speed control */
+#speedControl.disabled-state {
+  background-color: #e9ecef;
+  border-color: #e9ecef;
+}
+
+#speedControl.disabled-state button {
+  background-color: transparent;
+  color: #888;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+#speedControl.disabled-state button:not(:last-child) {
+  border-right: 1px solid #d8dee2;
+}
+
+#speedControl.disabled-state button.active {
+  background-color: #d8dee2;
+  color: #888;
+}
+
+/* Switch with text (part of segmented control context) */
+.switch-with-text {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 5px;
+  flex-shrink: 0;
+  margin-right: 15px;
+}
+
+.switch-text {
+  font-size: 13px;
+  color: #333;
+  white-space: nowrap;
+}
+
+/* Toggle switch itself */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 38px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: .4s;
+  border-radius: 22px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: .4s;
+  border-radius: 50%;
+}
+
+input:checked + .slider {
+  background-color: #2196F3;
+}
+
+input:checked + .slider:before {
+  transform: translateX(16px);
+}

@@ -1,0 +1,59 @@
+/* style/modules/damage-popup.css */
+
+#damage-popup {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background-color: rgba(40, 40, 40, 0.9);
+  color: white;
+  padding: 1rem;
+  border-top: 2px solid #444;
+  font-family: sans-serif;
+  z-index: 1000;
+  height: auto;
+  display: block;
+}
+
+#damage-popup h3 {
+  display: none;
+}
+
+.damage-bar-container {
+  margin-top: 0.5rem;
+  width: 100%;
+  max-width: none;
+}
+
+.damage-bar-background {
+  width: 100%;
+  height: 20px;
+  background-color: #eee;
+  position: relative;
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.damage-segment {
+  height: 100%;
+  position: absolute;
+  top: 0;
+}
+
+.normal {
+  background-color: #4caf50;
+  opacity: 0.7;
+}
+
+.critical {
+  background-color: #f44336;
+  opacity: 0.6;
+}
+
+.damage-labels,
+.damage-values {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 4px;
+  font-size: 0.9rem;
+}
