@@ -3,7 +3,10 @@
 .container {
   display: flex;
   gap: 1%;
+  min-width: 50%;
+  max-width: 75% ;
 }
+
 
 /* New style for attacker-input-group to be in layout.css as it deals with layout */
 .attacker-input-group {
