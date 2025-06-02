@@ -15,7 +15,8 @@
 #defender-custom-ability {
   flex-grow: 1;
   min-width: 100px;
-  padding: 5px;
+  max-width: 200px;
+  padding: 7px;
   border: 1px solid #ddd;
   border-radius: 5px;
 }
@@ -42,7 +43,6 @@ select {
   border-radius: 4px;
 }
 
-label.checkbox {
-  display: block;
-  margin-bottom: 8px;
+#ability-nullified {
+  text-align: left;
 }
