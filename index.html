@@ -20,7 +20,6 @@
     /* segmented-control のスタイル */
     .segmented-control {
       display: flex;
-      /* gap: 8px; /* 性格補正ボタンの画像を参考に、ギャップを削除 */
       flex-wrap: nowrap;
       align-items: center;
       border: 1px solid #ccc; /* 親要素のボーダーで全体を囲む */
@@ -33,26 +32,27 @@
     /* 性格補正ボタンの segmented-control には特別なスタイルを適用 */
     #attack-nature-control,
     #defense-nature-control {
-        padding: 0; /* 性格補正ボタンの親要素のパディングを削除 */
-        border: none; /* 親要素のボーダーも削除、ボタンでボーダーを表現 */
-        flex-shrink: 0; /* この要素が縮小しないように設定 */
-        white-space: nowrap; /* この要素内のコンテンツが改行されないように設定 */
+        padding: 0;
+        border: none; /* 親要素のボーダーを削除 */
+        flex-shrink: 0;
+        white-space: nowrap;
+        border-radius: 0; /* 親要素の角丸も削除 */
+        gap: 8px; /* 変更点：ボタン間の隙間を追加 */
     }
 
     /* 新しいCSSクラスを追加 */
     .inline-flex-group {
         display: flex;
-        align-items: center; /* 縦方向の中央揃え */
-        gap: 8px; /* 「性格:」とボタンの間に隙間を設ける（適宜調整） */
-        flex-wrap: nowrap; /* 強制的に改行させない */
+        align-items: center;
+        gap: 8px;
+        flex-wrap: nowrap;
     }
-
 
     /* 特性ボタンのスタイル（攻撃側・防御側共通） */
     #ability-choice .ability-btn,
     #defender-abilities .ability-btn {
-      flex-shrink: 0; /* 縮小させない */
-      width: 50px; /* ここを固定幅に設定 */
+      flex-shrink: 0;
+      width: 50px;
       padding: 5px 2px;
       border: 1px solid #ddd;
       border-radius: 5px;
@@ -68,18 +68,20 @@
     #attack-nature-control button,
     #defense-nature-control button {
       flex-shrink: 0;
-      width: 50px; /* 特性ボタンと同じ幅に設定 */
+      width: 50px;
       padding: 5px 0;
-      border: 1px solid #ddd; /* デフォルトのボーダー */
+      border: 1px solid #ddd; /* 変更点: 各ボタンに完全なボーダーを適用 */
       background-color: white;
       cursor: pointer;
       text-align: center;
-      font-size: 0.8em; /* 特性ボタンと同じフォントサイズに調整 */
+      font-size: 0.8em;
       box-sizing: border-box;
-      border-radius: 0; /* デフォルトの角丸を削除 */
+      border-radius: 5px; /* 変更点: 各ボタンに均一な角丸を適用 */
+      /* 以前のborder-rightに関する設定は全て削除 */
     }
 
-    /* 性格ボタンの左右の端の角丸を適用 */
+    /* 以前の左右端のボタンの角丸指定はすべて削除 */
+    /*
     #attack-nature-control button:first-of-type,
     #defense-nature-control button:first-of-type {
         border-top-left-radius: 8px;
@@ -89,23 +91,18 @@
     #defense-nature-control button:last-of-type {
         border-top-right-radius: 8px;
         border-bottom-right-radius: 8px;
+        border-right: 1px solid #ddd;
     }
-
-    /* 中央のボタンの左右のボーダーを調整 */
-    #attack-nature-control button:not(:first-of-type):not(:last-of-type),
-    #defense-nature-control button:not(:first-of-type):not(:last-of-type) {
-        border-left: none; /* 左のボーダーを削除 */
-    }
+    */
 
     /* アクティブ時のスタイル */
     #attack-nature-control button.active,
     #defense-nature-control button.active {
-      background-color: #e0e0e0; /* 画像のような薄い灰色に */
-      color: black; /* テキストの色も調整 */
-      border-color: #ccc; /* アクティブ時のボーダー色も調整 */
-      z-index: 1; /* 重なり順を調整してボーダーが途切れないように */
+      background-color: #e0e0e0;
+      color: black;
+      border-color: #ccc; /* アクティブ時のボーダー色を維持 */
+      z-index: 1;
     }
-
 
     /* 特性入力欄のスタイル (攻撃側、防御側共通) */
     #custom-ability,
