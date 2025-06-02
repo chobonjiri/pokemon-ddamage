@@ -246,6 +246,46 @@
       margin-top: 4px;
       font-size: 0.9rem;
     }
+
+    /* 新しいスタイル: attacker-input-group */
+    .attacker-input-group {
+      display: flex; /* Flexboxを使って横並びにする */
+      align-items: center; /* 垂直方向中央揃え */
+      gap: 5px; /* 要素間の隙間 */
+      margin-bottom: 10px; /* 必要に応じて下の要素とのマージンを設定 */
+    }
+
+    .attacker-input-group .search-input-field {
+      flex-grow: 1; /* 入力欄が利用可能なスペースを占めるようにする */
+    }
+
+    /* 修正: 真円のボタンにするためのスタイル */
+    .attacker-input-group button {
+      width: 36px; /* 幅を固定 */
+      height: 36px; /* 高さを固定 */
+      padding: 0; /* パディングをなくす */
+      border: 1px solid #ccc;
+      border-radius: 50%; /* 真円にする */
+      background-color: #f0f0f0;
+      cursor: pointer;
+      display: flex; /* Flexboxを使ってテキストを中央揃え */
+      justify-content: center; /* 水平方向中央揃え */
+      align-items: center; /* 垂直方向中央揃え */
+      font-size: 0.75em; /* 文字サイズ調整 */
+      flex-shrink: 0; /* 縮まないようにする */
+    }
+
+    .attacker-input-group button:hover {
+      background-color: #e0e0e0;
+    }
+
+    /* テラス・ステラボタンの選択時のスタイル */
+    .attacker-input-group button.selected {
+      background-color: #99ccff; /* 例: 水色 */
+      border-color: #6699cc;
+      color: white;
+    }
+
   </style>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/css/autoComplete.min.css" />
   <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
@@ -256,7 +296,11 @@
 
 <div class="container">
   <div class="panel">
-    <input type="text" id="attacker" autocomplete="off" placeholder="入力：攻撃側ポケモン" class="search-input-field" />
+    <div class="attacker-input-group">
+      <input type="text" id="attacker" autocomplete="off" placeholder="入力：攻撃側ポケモン" class="search-input-field" />
+      <button id="attacker-button-1" type="button">テラス</button>
+      <button id="attacker-button-2" type="button">ステラ</button>
+    </div>
 
     <input type="text" id="move" autocomplete="off" placeholder="入力：技" class="search-input-field" />
     <div id="move-double-damage-section" style="margin-top:5px; display:none;">
@@ -441,6 +485,29 @@ document.addEventListener('DOMContentLoaded', () => {
     // 初期選択を反映
     document.getElementById('attack-nature-control').querySelector(`button[data-value="${document.getElementById('attack-nature').value}"]`)?.classList.add('active');
     document.getElementById('defense-nature-control').querySelector(`button[data-value="${document.getElementById('defense-nature').value}"]`)?.classList.add('active');
+
+    // テラス・ステラボタンの選択ロジック (変更箇所)
+    const attackerButton1 = document.getElementById('attacker-button-1');
+    const attackerButton2 = document.getElementById('attacker-button-2');
+    const attackerButtons = [attackerButton1, attackerButton2]; // ボタンをグループ化
+
+    attackerButtons.forEach(button => {
+        if (button) {
+            button.addEventListener('click', () => {
+                // クリックされたボタンが既に選択されている場合は、選択を解除
+                if (button.classList.contains('selected')) {
+                    button.classList.remove('selected');
+                } else {
+                    // 他の全てのボタンから 'selected' クラスを削除
+                    attackerButtons.forEach(btn => btn.classList.remove('selected'));
+                    // クリックされたボタンに 'selected' クラスを追加
+                    button.classList.add('selected');
+                }
+                // 必要であればここで計算ロジックを呼び出す
+                // calculateDamage(); // 例: ダメージ計算関数
+            });
+        }
+    });
 });
 
 
