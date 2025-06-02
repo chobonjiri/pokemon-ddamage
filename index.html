@@ -37,7 +37,7 @@
         flex-shrink: 0;
         white-space: nowrap;
         border-radius: 0; /* 親要素の角丸も削除 */
-        gap: 8px; /* 変更点：ボタン間の隙間を追加 */
+        gap: 8px; /* ボタン間の隙間を追加 */
     }
 
     /* 新しいCSSクラスを追加 */
@@ -70,30 +70,14 @@
       flex-shrink: 0;
       width: 50px;
       padding: 5px 0;
-      border: 1px solid #ddd; /* 変更点: 各ボタンに完全なボーダーを適用 */
+      border: 1px solid #ddd; /* 各ボタンに完全なボーダーを適用 */
       background-color: white;
       cursor: pointer;
       text-align: center;
       font-size: 0.8em;
       box-sizing: border-box;
-      border-radius: 5px; /* 変更点: 各ボタンに均一な角丸を適用 */
-      /* 以前のborder-rightに関する設定は全て削除 */
+      border-radius: 5px; /* 各ボタンに均一な角丸を適用 */
     }
-
-    /* 以前の左右端のボタンの角丸指定はすべて削除 */
-    /*
-    #attack-nature-control button:first-of-type,
-    #defense-nature-control button:first-of-type {
-        border-top-left-radius: 8px;
-        border-bottom-left-radius: 8px;
-    }
-    #attack-nature-control button:last-of-type,
-    #defense-nature-control button:last-of-type {
-        border-top-right-radius: 8px;
-        border-bottom-right-radius: 8px;
-        border-right: 1px solid #ddd;
-    }
-    */
 
     /* アクティブ時のスタイル */
     #attack-nature-control button.active,
@@ -214,10 +198,19 @@
       border-top: 2px solid #444;
       font-family: sans-serif;
       z-index: 1000;
+      height: auto;
+      display: block;
+    }
+
+    /* 変更点: h3のみを非表示にする */
+    #damage-popup h3 {
+      display: none;
     }
 
     .damage-bar-container {
       margin-top: 0.5rem;
+      width: 100%;
+      max-width: none;
     }
 
     .damage-bar-background {
@@ -245,9 +238,10 @@
       opacity: 0.6;
     }
 
+    /* 変更点: これらの要素の display: none; を削除する */
     .damage-labels,
     .damage-values {
-      display: flex;
+      display: flex; /* 元の表示方法に戻す */
       justify-content: space-between;
       margin-top: 4px;
       font-size: 0.9rem;
@@ -433,7 +427,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // クリックされたボタンに 'active' クラスを追加
                     button.classList.add('active');
                     // hidden input の値を更新
-                    hiddenInput.value = button.dataset.value;
+                    button.closest('.inline-flex-group').querySelector('input[type="hidden"]').value = button.dataset.value;
                     // 必要であればここで計算ロジックを呼び出す
                     // calculateStats(); // 例: 実数値計算関数
                 });
@@ -467,7 +461,6 @@ function updateDamagePopup({ normalMin, normalMax, critical, damageNormalMin, da
 
   document.getElementById('label-normal').textContent = `通常: ${Math.round(normalMinPercent)}% - ${Math.round(normalMaxPercent)}%`;
   document.getElementById('label-critical').textContent = `急所: ${Math.round(criticalPercent)}%`;
-
   document.getElementById('value-normal').textContent = `通常: ${damageNormalMin} - ${damageNormalMax} ダメージ`;
   document.getElementById('value-critical').textContent = `急所: ${damageCritical} ダメージ`;
 }
