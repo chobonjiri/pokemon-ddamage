@@ -472,9 +472,9 @@
       <input type="hidden" id="attack-nature" value="1.0">
       <br />
       ランク:
-      <button onclick="changeAttackRank(-1)" class="rank-btn">-</button>
+      <button onclick="changeRank('attack', -1)" class="rank-btn">-</button>
       <span id="attack-rank-val">0</span>
-      <button onclick="changeAttackRank(1)" class="rank-btn">+</button><br />
+      <button onclick="changeRank('attack', 1)" class="rank-btn">+</button><br />
       実数値: <span id="attack-actual">-</span>
     </div>
   </div>
@@ -530,9 +530,9 @@
       </div>
       <input type="hidden" id="defense-nature" value="1.0"> <br />
       ランク:
-      <button onclick="changeDefenseRank(-1)" class="rank-btn">-</button>
+      <button onclick="changeRank('defense', -1)" class="rank-btn">-</button>
       <span id="defense-rank-val">0</span>
-      <button onclick="changeDefenseRank(1)" class="rank-btn">+</button><br />
+      <button onclick="changeRank('defense', 1)" class="rank-btn">+</button><br />
       実数値: <span id="defense-actual">-</span>
     </div>
   </div>
@@ -608,6 +608,27 @@
 </div>
 
 <script>
+// ランク変更関数
+function changeRank(type, change) {
+    const rankSpanId = `${type}-rank-val`;
+    const rankSpan = document.getElementById(rankSpanId);
+    let currentRank = parseInt(rankSpan.textContent);
+
+    currentRank += change;
+
+    // 上限と下限を設ける (-6 から +6)
+    if (currentRank < -6) {
+        currentRank = -6;
+    } else if (currentRank > 6) {
+        currentRank = 6;
+    }
+
+    rankSpan.textContent = currentRank;
+    // 必要であればここで実数値計算などの関数を呼び出す
+    // calculateStats();
+}
+
+
 // 性格ボタンの選択ロジック（JavaScript）
 document.addEventListener('DOMContentLoaded', () => {
     function setupNatureControl(controlId, hiddenInputId) {
