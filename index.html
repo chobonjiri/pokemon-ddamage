@@ -20,32 +20,98 @@
     /* segmented-control のスタイル */
     .segmented-control {
       display: flex;
-      gap: 8px;
-      flex-wrap: nowrap; /* 1列に収める */
+      /* gap: 8px; /* 性格補正ボタンの画像を参考に、ギャップを削除 */
+      flex-wrap: nowrap;
       align-items: center;
-      border: 1px solid #ccc;
+      border: 1px solid #ccc; /* 親要素のボーダーで全体を囲む */
       border-radius: 8px;
       padding: 5px;
-      overflow-x: auto; /* はみ出たら横スクロール */
+      overflow-x: auto;
       -webkit-overflow-scrolling: touch;
     }
 
-    /* 特性ボタンのスタイル */
-    .ability-btn {
-      flex-shrink: 0;
-      padding: 5px 7px; /* ボタンのサイズを小さく */
+    /* 性格補正ボタンの segmented-control には特別なスタイルを適用 */
+    #attack-nature-control,
+    #defense-nature-control {
+        padding: 0; /* 性格補正ボタンの親要素のパディングを削除 */
+        border: none; /* 親要素のボーダーも削除、ボタンでボーダーを表現 */
+        flex-shrink: 0; /* この要素が縮小しないように設定 */
+        white-space: nowrap; /* この要素内のコンテンツが改行されないように設定 */
+    }
+
+    /* 新しいCSSクラスを追加 */
+    .inline-flex-group {
+        display: flex;
+        align-items: center; /* 縦方向の中央揃え */
+        gap: 8px; /* 「性格:」とボタンの間に隙間を設ける（適宜調整） */
+        flex-wrap: nowrap; /* 強制的に改行させない */
+    }
+
+
+    /* 特性ボタンのスタイル（攻撃側・防御側共通） */
+    #ability-choice .ability-btn,
+    #defender-abilities .ability-btn {
+      flex-shrink: 0; /* 縮小させない */
+      width: 50px; /* ここを固定幅に設定 */
+      padding: 5px 2px;
       border: 1px solid #ddd;
       border-radius: 5px;
       background-color: white;
       cursor: pointer;
       white-space: nowrap;
+      text-align: center;
+      font-size: 0.8em;
+      box-sizing: border-box;
     }
+
+    /* 性格ボタンのスタイル（攻撃側・防御側共通） */
+    #attack-nature-control button,
+    #defense-nature-control button {
+      flex-shrink: 0;
+      width: 50px; /* 特性ボタンと同じ幅に設定 */
+      padding: 5px 0;
+      border: 1px solid #ddd; /* デフォルトのボーダー */
+      background-color: white;
+      cursor: pointer;
+      text-align: center;
+      font-size: 0.8em; /* 特性ボタンと同じフォントサイズに調整 */
+      box-sizing: border-box;
+      border-radius: 0; /* デフォルトの角丸を削除 */
+    }
+
+    /* 性格ボタンの左右の端の角丸を適用 */
+    #attack-nature-control button:first-of-type,
+    #defense-nature-control button:first-of-type {
+        border-top-left-radius: 8px;
+        border-bottom-left-radius: 8px;
+    }
+    #attack-nature-control button:last-of-type,
+    #defense-nature-control button:last-of-type {
+        border-top-right-radius: 8px;
+        border-bottom-right-radius: 8px;
+    }
+
+    /* 中央のボタンの左右のボーダーを調整 */
+    #attack-nature-control button:not(:first-of-type):not(:last-of-type),
+    #defense-nature-control button:not(:first-of-type):not(:last-of-type) {
+        border-left: none; /* 左のボーダーを削除 */
+    }
+
+    /* アクティブ時のスタイル */
+    #attack-nature-control button.active,
+    #defense-nature-control button.active {
+      background-color: #e0e0e0; /* 画像のような薄い灰色に */
+      color: black; /* テキストの色も調整 */
+      border-color: #ccc; /* アクティブ時のボーダー色も調整 */
+      z-index: 1; /* 重なり順を調整してボーダーが途切れないように */
+    }
+
 
     /* 特性入力欄のスタイル (攻撃側、防御側共通) */
     #custom-ability,
-    #defender-custom-ability { /* ここにdefender-custom-abilityを追加 */
-      flex-grow: 1; /* 残りのスペースを埋めるように拡張 */
-      min-width: 100px; /* 最小幅は維持 */
+    #defender-custom-ability {
+      flex-grow: 1;
+      min-width: 100px;
       padding: 5px;
       border: 1px solid #ddd;
       border-radius: 5px;
@@ -53,14 +119,14 @@
 
     /* 無効化チェックボックスのラッパー (攻撃側、防御側共通) */
     .segmented-control .ability-nullified-checkbox-wrapper {
-      margin-left: auto; /* 右端に配置 */
+      margin-left: auto;
       flex-shrink: 0;
       white-space: nowrap;
     }
     /* 追加：segmented-control内のinputやlabelのデフォルトスタイルを調整 */
     .segmented-control input[type="checkbox"],
     .segmented-control label {
-        margin: 0; /* 不要なマージンをリセット */
+        margin: 0;
         padding: 0;
     }
 
@@ -68,11 +134,6 @@
     .search-input-field {
         background-repeat: no-repeat;
         background-position: 8px center;
-        /* padding-left: 35px !important; */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
-        /* width: calc(100% - 10px); */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
-        /* padding: 8px; */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
-        /* border: 1px solid #ddd; */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
-        /* border-radius: 5px; */ /* インラインスタイルで削除されたので、ここで必要なら定義 */
     }
 
     /* サイドメニューのスタイル */
@@ -229,11 +290,12 @@
       個体値: <input type="number" id="attack-iv" value="31" min="0" max="31" /><br />
       努力値: <input type="range" id="attack-ev" value="0" min="0" max="252" step="4" />
       <span id="attack-ev-val">0</span><br />
-      性格:
-      <div class="segmented-control" id="attack-nature-control">
-        <button type="button" data-value="1.1">↑</button>
-        <button type="button" data-value="1.0" class="active">±</button>
-        <button type="button" data-value="0.9">↓</button>
+      <div class="inline-flex-group"> 性格:
+        <div class="segmented-control" id="attack-nature-control">
+          <button type="button" data-value="0.9">x0.9</button>
+          <button type="button" data-value="1.0" class="active">x1.0</button>
+          <button type="button" data-value="1.1">x1.1</button>
+        </div>
       </div>
       <input type="hidden" id="attack-nature" value="1.0">
       <br />
@@ -253,8 +315,10 @@
         <button type="button" class="ability-btn">特性1</button>
         <button type="button" class="ability-btn">特性2</button>
         <button type="button" class="ability-btn">特性3</button>
-        <input type="text" id="defender-custom-ability" placeholder="特性入力"> <div class="ability-nullified-checkbox-wrapper">
-          <label><input type="checkbox" id="defender-ability-nullified"> 無効化</label> </div>
+        <input type="text" id="defender-custom-ability" placeholder="特性入力">
+        <div class="ability-nullified-checkbox-wrapper">
+          <label><input type="checkbox" id="defender-ability-nullified"> 無効化</label>
+        </div>
       </div>
     </div>
 
@@ -271,12 +335,14 @@
       個体値: <input type="number" id="defense-iv" value="31" min="0" max="31" /><br />
       努力値: <input type="range" id="defense-ev" value="0" min="0" max="252" step="4" />
       <span id="defense-ev-val">0</span><br />
-      性格:
-      <select id="defense-nature">
-        <option value="1.1">↑</option>
-        <option value="1.0" selected>±</option>
-        <option value="0.9">↓</option>
-      </select><br />
+      <div class="inline-flex-group"> 性格:
+        <div class="segmented-control" id="defense-nature-control">
+          <button type="button" data-value="0.9">x0.9</button>
+          <button type="button" data-value="1.0" class="active">x1.0</button>
+          <button type="button" data-value="1.1">x1.1</button>
+        </div>
+      </div>
+      <input type="hidden" id="defense-nature" value="1.0"> <br />
       ランク:
       <button onclick="changeDefenseRank(-1)" class="rank-btn">-</button>
       <span id="defense-rank-val">0</span>
@@ -331,8 +397,7 @@
   <div class="menu-section">
     <label>状態</label>
     <label class="checkbox"><input type="checkbox" id="helping-hand"> てだすけ</label>
-    <label class="checkbox"><input type="checkbox" id="burn"> やけど</label>
-  </div>
+    <label class="checkbox"><input type="checkbox" id="checkbox-burn"> やけど</label> </div>
 </div>
 
 <div id="overlay"></div>
@@ -357,6 +422,37 @@
 </div>
 
 <script>
+// 性格ボタンの選択ロジック（JavaScript）
+document.addEventListener('DOMContentLoaded', () => {
+    function setupNatureControl(controlId, hiddenInputId) {
+        const control = document.getElementById(controlId);
+        const hiddenInput = document.getElementById(hiddenInputId);
+
+        if (control && hiddenInput) {
+            control.querySelectorAll('button').forEach(button => {
+                button.addEventListener('click', () => {
+                    // 全てのボタンから 'active' クラスを削除
+                    control.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                    // クリックされたボタンに 'active' クラスを追加
+                    button.classList.add('active');
+                    // hidden input の値を更新
+                    hiddenInput.value = button.dataset.value;
+                    // 必要であればここで計算ロジックを呼び出す
+                    // calculateStats(); // 例: 実数値計算関数
+                });
+            });
+        }
+    }
+
+    setupNatureControl('attack-nature-control', 'attack-nature');
+    setupNatureControl('defense-nature-control', 'defense-nature');
+
+    // 初期選択を反映
+    document.getElementById('attack-nature-control').querySelector(`button[data-value="${document.getElementById('attack-nature').value}"]`)?.classList.add('active');
+    document.getElementById('defense-nature-control').querySelector(`button[data-value="${document.getElementById('defense-nature').value}"]`)?.classList.add('active');
+});
+
+
 function updateDamagePopup({ normalMin, normalMax, critical, damageNormalMin, damageNormalMax, damageCritical, targetHP }) {
   const barWidth = 100; // %
   const normalMinPercent = (normalMin / targetHP) * 100;
