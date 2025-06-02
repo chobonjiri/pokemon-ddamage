@@ -3,7 +3,25 @@
 let pokemonData = [];
 let moveData = [];
 
-// 実数値計算（HP以外）
+// --- データのフェッチ共通関数 (autocomplete.js も利用するため、ここに置くか、別途 utils.js に置く) ---
+// autocomplete.js がこの関数を参照するため、グローバルスコープまたはそれより前のスクリプトで定義が必要
+async function fetchJson(url) {
+  try {
+    const response = await fetch(url);
+    if (!response.ok) {
+      console.error(`HTTPエラー！ステータス: ${response.status} URL: ${url}`);
+      throw new Error(`HTTP error! status: ${response.status} from ${url}`);
+    }
+    const data = await response.json();
+    console.log(`Successfully fetched JSON from ${url}:`, data); // デバッグ用
+    return data;
+  } catch (error) {
+    console.error(`Error fetching JSON from ${url}:`, error);
+    return []; // エラー時は空の配列を返す
+  }
+}
+
+// --- 実数値計算系 ---
 function calcActualStat(base, iv, ev, nature, rank) {
   let val = Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * 50) / 100) + 5;
   val = Math.floor(val * nature);
@@ -11,20 +29,28 @@ function calcActualStat(base, iv, ev, nature, rank) {
   return Math.floor(val * rankMultiplier);
 }
 
-// HP実数値計算
 function calcHPStat(base, iv, ev) {
   return Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * 50) / 100) + 60;
 }
 
-// UI更新系
+// --- UI更新系 ---
 function updateAttackActualStat() {
-  const attackerId = document.getElementById("attacker").value;
-  const selectedPoke = pokemonData.find(p => p.name === attackerId);
-  if (!selectedPoke) return;
+  const attackerInput = document.getElementById("attacker");
+  const attackerName = attackerInput ? attackerInput.value : "";
+  // autocomplete.jsで選択されたポケモンの名前で検索
+  const selectedPoke = pokemonData.find(p => p.name === attackerName);
+  if (!selectedPoke) {
+    document.getElementById("attack-actual").textContent = ""; // 値をクリア
+    return;
+  }
 
-  const moveName = document.getElementById("move").value;
+  const moveInput = document.getElementById("move");
+  const moveName = moveInput ? moveInput.value : "";
   const selectedMove = moveData.find(m => m.name === moveName);
-  if (!selectedMove) return;
+  if (!selectedMove) {
+    document.getElementById("attack-actual").textContent = ""; // 値をクリア
+    return;
+  }
 
   const statKey = selectedMove.category === "特殊" ? "C" : "A";
   const base = parseInt(selectedPoke[statKey], 10);
@@ -38,15 +64,22 @@ function updateAttackActualStat() {
 }
 
 function updateDefenseActualStat() {
-  const defenderId = document.getElementById("defender").value;
-  const selectedPoke = pokemonData.find(p => p.name === defenderId);
-  if (!selectedPoke) return;
+  const defenderInput = document.getElementById("defender");
+  const defenderName = defenderInput ? defenderInput.value : "";
+  const selectedPoke = pokemonData.find(p => p.name === defenderName);
+  if (!selectedPoke) {
+    document.getElementById("defense-actual").textContent = ""; // 値をクリア
+    return;
+  }
 
-  const moveName = document.getElementById("move").value;
+  const moveInput = document.getElementById("move");
+  const moveName = moveInput ? moveInput.value : "";
   const selectedMove = moveData.find(m => m.name === moveName);
-  if (!selectedMove) return;
+  if (!selectedMove) {
+    document.getElementById("defense-actual").textContent = ""; // 値をクリア
+    return;
+  }
 
-  // 防御ステータス（物理:B / 特殊:D）
   const statKey = selectedMove.category === "特殊" ? "D" : "B";
   const base = parseInt(selectedPoke[statKey], 10);
   const iv = parseInt(document.getElementById("defense-iv").value, 10);
@@ -58,9 +91,13 @@ function updateDefenseActualStat() {
 }
 
 function updateHPStat() {
-  const defenderId = document.getElementById("defender").value;
-  const selectedPoke = pokemonData.find(p => p.name === defenderId);
-  if (!selectedPoke) return;
+  const defenderInput = document.getElementById("defender");
+  const defenderName = defenderInput ? defenderInput.value : "";
+  const selectedPoke = pokemonData.find(p => p.name === defenderName);
+  if (!selectedPoke) {
+    document.getElementById("hp-actual").textContent = ""; // 値をクリア
+    return;
+  }
 
   const base = parseInt(selectedPoke.H);
   const iv = parseInt(document.getElementById("hp-iv").value, 10);
@@ -75,20 +112,24 @@ function showAbilities(pokemon, containerId) {
 
   container.innerHTML = "";
 
-  [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean).forEach(ability => {
+  const abilities = [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean);
+
+  abilities.forEach(ability => {
     const btn = document.createElement("button");
     btn.textContent = ability;
     btn.className = "ability-btn";
     btn.onclick = () => {
       container.querySelectorAll("button").forEach(b => b.classList.remove("selected"));
       btn.classList.add("selected");
+      const customInput = container.querySelector('input[type="text"]');
+      if (customInput) customInput.value = "";
     };
     container.appendChild(btn);
   });
 
-  // 自由入力欄と特性無効チェック
   const input = document.createElement("input");
   input.type = "text";
+  input.id = `${containerId}-custom-ability`;
   input.placeholder = "その他の特性を入力";
   container.appendChild(document.createElement("br"));
   container.appendChild(input);
@@ -96,59 +137,21 @@ function showAbilities(pokemon, containerId) {
   const label = document.createElement("label");
   const checkbox = document.createElement("input");
   checkbox.type = "checkbox";
+  checkbox.id = `${containerId}-ability-disable`;
   label.appendChild(checkbox);
   label.appendChild(document.createTextNode(" 特性を無効化する"));
   container.appendChild(document.createElement("br"));
   container.appendChild(label);
 }
-// 事前にボタン3つは固定でHTMLにある想定
-function showAbilities(pokemon) {
-  const container = document.getElementById("ability-choice");
-  if (!container) return;
-
-  const buttons = container.querySelectorAll("button.ability-btn");
-  const abilities = [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean);
-
-  buttons.forEach((btn, i) => {
-    if (abilities[i]) {
-      btn.textContent = abilities[i];
-      btn.disabled = false;
-      btn.style.display = "inline-block";
-    } else {
-      // 特性が無いところは無効化して非表示でもOK
-      btn.textContent = "";
-      btn.disabled = true;
-      btn.style.display = "none";
-    }
-    btn.classList.remove("selected");
-    btn.onclick = () => {
-      buttons.forEach(b => b.classList.remove("selected"));
-      btn.classList.add("selected");
-      // 自由入力欄はクリア（必要なら）
-      document.getElementById("custom-ability").value = "";
-    };
-  });
-}
-
-// ポケモン選択イベント
-document.getElementById("attacker").addEventListener("change", () => {
-  const attackerId = document.getElementById("attacker").value;
-  const selectedPoke = pokemonData.find(p => p.id === attackerId);
-  if (!selectedPoke) return;
-
-  showAbilities(selectedPoke);
-  updateAttackActualStat();
-});
-
-
 
 function updateDoubleDamageCheckbox() {
   const moveName = document.getElementById("move").value;
   const selectedMove = moveData.find(m => m.name === moveName);
-  if (!selectedMove) return;
 
   const section = document.getElementById("move-double-damage-section");
-  if (selectedMove.remark && selectedMove.remark.includes("全体技")) {
+  if (!section) return;
+
+  if (selectedMove && selectedMove.remark && selectedMove.remark.includes("全体技")) {
     section.style.display = "block";
   } else {
     section.style.display = "none";
@@ -157,114 +160,126 @@ function updateDoubleDamageCheckbox() {
 
 function setupEventListeners() {
   ["attack-iv", "attack-ev", "attack-nature"].forEach(id => {
-    document.getElementById(id).addEventListener("input", updateAttackActualStat);
+    const element = document.getElementById(id);
+    if (element) element.addEventListener("input", updateAttackActualStat);
   });
   ["defense-iv", "defense-ev", "defense-nature"].forEach(id => {
-    document.getElementById(id).addEventListener("input", updateDefenseActualStat);
+    const element = document.getElementById(id);
+    if (element) element.addEventListener("input", updateDefenseActualStat);
   });
   ["hp-iv", "hp-ev"].forEach(id => {
-    document.getElementById(id).addEventListener("input", updateHPStat);
+    const element = document.getElementById(id);
+    if (element) element.addEventListener("input", updateHPStat);
   });
-  document.getElementById("move").addEventListener("change", () => {
-    updateAttackActualStat();
-    updateDefenseActualStat();
-    updateDoubleDamageCheckbox();
-  });
+
+  // moveElement.addEventListener("change") は autocomplete.js の selection イベントで発火される
+  const moveElement = document.getElementById("move");
+  if (moveElement) {
+    moveElement.addEventListener("change", () => {
+      updateAttackActualStat();
+      updateDefenseActualStat();
+      updateDoubleDamageCheckbox();
+    });
+  }
+
+  // attackerElement.addEventListener("change") は autocomplete.js の selection イベントで発火される
+  const attackerElement = document.getElementById("attacker");
+  if (attackerElement) {
+    attackerElement.addEventListener("change", () => {
+      const attackerName = attackerElement.value;
+      const selectedPoke = pokemonData.find(p => p.name === attackerName);
+      if (selectedPoke) {
+        showAbilities(selectedPoke, "attacker-ability-container");
+      } else {
+        document.getElementById("attacker-ability-container").innerHTML = "";
+      }
+      updateAttackActualStat();
+    });
+  }
+
+  // defenderElement.addEventListener("change") は autocomplete.js の selection イベントで発火される
+  const defenderElement = document.getElementById("defender");
+  if (defenderElement) {
+    defenderElement.addEventListener("change", () => {
+      const defenderName = defenderElement.value;
+      const selectedPoke = pokemonData.find(p => p.name === defenderName);
+      if (selectedPoke) {
+        showAbilities(selectedPoke, "defender-ability-container");
+      } else {
+        document.getElementById("defender-ability-container").innerHTML = "";
+      }
+      updateDefenseActualStat();
+      updateHPStat();
+    });
+  }
 }
+
+// --- ひらがな・カタカナ変換用ヘルパー関数 (autocomplete.js の searchEngine で利用するため、ここには残す) ---
+// カタカナをひらがなに変換
 function toHiragana(str) {
   return str.replace(/[\u30a1-\u30f6]/g, ch =>
     String.fromCharCode(ch.charCodeAt(0) - 0x60)
   );
 }
 
-function normalize(str) {
+// 文字列を正規化（ひらがな化して小文字にする）
+function normalizeString(str) {
   return toHiragana(str.toLowerCase());
 }
 
-function setupAutoComplete(selector, nameList, onSelectCallback, placeholderText) {
-  new autoComplete({
-    selector,
-    placeHolder: placeholderText || "入力",
-    threshold: 1,
-    data: {
-      src: nameList,
-      cache: true
-    },
-    searchEngine: (query, record) => {
-      const normQuery = normalize(query);
-      const normRecord = normalize(record);
-      return normRecord.startsWith(normQuery) ? 1 : 0;
-    },
-    resultItem: {
-      highlight: true,
-      render: (item, data) => {
-        item.innerHTML = data.value;  // 修正：data.match → data.value（候補の名前表示）
-        return item;
-      }
-    },
-    events: {
-      input: {
-        selection: (e) => {
-          const selection = e.detail.selection.value;
-          document.querySelector(selector).value = selection;
-          document.querySelector(selector).dispatchEvent(new Event("change"));
-          if (onSelectCallback) onSelectCallback(selection);
-        }
-      }
+// --- 初期化処理 ---
+// autocomplete.js がデータフェッチとオートコンプリートの初期化を行うため、
+// app.js の initializeApp ではそれ以外のUI要素とイベントリスナーを設定する
+async function initializeApp() {
+  // autocomplete.js がデータをフェッチし、グローバル変数に代入するのを待つか、
+  // app.js も独自にデータをフェッチする
+  // 依存関係をシンプルにするため、app.jsもここでデータをフェッチするようにします。
+  // これにより、pokemonDataとmoveDataがapp.jsの他の関数で確実に利用できます。
+  pokemonData = await fetchJson('data/pokemonList.json');
+  moveData = await fetchJson('data/moveList.json');
+
+  setupEventListeners();
+
+  // セグメントコントロールの初期化
+  setupSegmentedControl('weatherControl', selected => {
+    console.log('選択された天候:', selected);
+    const select = document.getElementById('weather');
+    if (select) {
+      select.value = selected;
     }
+    updateAttackActualStat();
+    updateDefenseActualStat();
+  });
+
+  setupSegmentedControl('fieldControl', selected => {
+    console.log('選択されたフィールド:', selected);
+    const select = document.getElementById('field');
+    if (select) {
+      select.value = selected;
+    }
+    updateAttackActualStat();
+    updateDefenseActualStat();
   });
 }
 
-function initialize() {
-  fetch("data/pokemonList.json")
-    .then(res => res.json())
-    .then(data => {
-      pokemonData = data;
-
-      // 名前リストだけを抽出して渡す
-      const nameList = pokemonData.map(p => p.name);
-
-      setupAutoComplete("#attacker", nameList, updateAttackActualStat, "入力：攻撃側ポケモン");
-      setupAutoComplete("#defender", nameList, () => {
-        updateDefenseActualStat();
-        updateHPStat();
-      }, "入力：防御側ポケモン");
-    });
-
-  fetch("data/moveList.json")
-    .then(res => res.json())
-    .then(data => {
-      moveData = data;
-
-      const moveNameList = moveData.map(m => m.name);
-      setupAutoComplete("#move", moveNameList, () => {
-        updateAttackActualStat();
-        updateDefenseActualStat();
-        updateDoubleDamageCheckbox();
-      }, "入力：技");
-    });
-
-  setupEventListeners();
-}
-
-document.addEventListener('DOMContentLoaded', function () {
-  // セグメントコントロールの初期化
 function setupSegmentedControl(controlId, onChangeCallback) {
   const control = document.getElementById(controlId);
+  if (!control) {
+    console.warn(`Segmented control with ID "${controlId}" not found.`);
+    return;
+  }
   const buttons = control.querySelectorAll('button');
 
   buttons.forEach(button => {
     button.addEventListener('click', () => {
       const isActive = button.classList.contains('active');
 
-      // すでに active の場合はトグルオフ（非選択にする）
       if (isActive) {
         button.classList.remove('active');
-        if (onChangeCallback) onChangeCallback(""); // 空文字を返す
+        if (onChangeCallback) onChangeCallback("");
         return;
       }
 
-      // 他のボタンを非アクティブにし、これをアクティブにする
       buttons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
 
@@ -276,27 +291,4 @@ function setupSegmentedControl(controlId, onChangeCallback) {
   });
 }
 
-
-  // 天候セグメントの動作
-  setupSegmentedControl('weatherControl', selected => {
-    console.log('選択された天候:', selected);
-    // 例: select要素があれば同期する
-    const select = document.getElementById('weather');
-    if (select) {
-      select.value = selected;
-    }
-  });
-
-  // フィールドセグメントの動作
-  setupSegmentedControl('fieldControl', selected => {
-    console.log('選択されたフィールド:', selected);
-    const select = document.getElementById('field');
-    if (select) {
-      select.value = selected;
-    }
-  });
-});
-
-
-
-document.addEventListener("DOMContentLoaded", initialize);
+document.addEventListener("DOMContentLoaded", initializeApp);
