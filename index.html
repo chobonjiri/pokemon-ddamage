@@ -30,14 +30,17 @@
     }
 
     /* 性格補正ボタンの segmented-control には特別なスタイルを適用 */
+    /* 右上の速度補正のセグメントコントロールと同じ形に調整 */
     #attack-nature-control,
     #defense-nature-control {
-        padding: 0;
-        border: none; /* 親要素のボーダーを削除 */
         flex-shrink: 0;
         white-space: nowrap;
-        border-radius: 0; /* 親要素の角丸も削除 */
-        gap: 8px; /* ボタン間の隙間を追加 */
+        padding: 0; /* paddingを0に */
+        border: 1px solid #c4c4c4; /* 親要素のボーダーを適用 */
+        border-radius: 12px; /* 角丸を適用 */
+        overflow: hidden; /* 角丸を効かせるため */
+        background-color: #f9f9f9; /* Default background when enabled */
+        gap: 0; /* ボタン間の隙間を削除 */
     }
 
     /* 新しいCSSクラスを追加 */
@@ -67,25 +70,34 @@
     /* 性格ボタンのスタイル（攻撃側・防御側共通） */
     #attack-nature-control button,
     #defense-nature-control button {
-      flex-shrink: 0;
-      width: 50px;
-      padding: 5px 0;
-      border: 1px solid #ddd; /* 各ボタンに完全なボーダーを適用 */
-      background-color: white;
+      background-color: transparent; /* 親の背景色が見えるように透明に */
+      border: none; /* 各ボタンのボーダーを削除 */
+      padding: 5px 12px; /* パディングを小さく */
       cursor: pointer;
-      text-align: center;
-      font-size: 0.8em;
-      box-sizing: border-box;
-      border-radius: 5px; /* 各ボタンに均一な角丸を適用 */
+      font-size: 0.9em; /* フォントサイズを小さく */
+      color: #333;
+      transition: background-color 0.2s, color 0.2s;
+      font-weight: normal;
+      /* width: auto; /* 幅を自動調整 */
+      /* height: auto; /* 高さを自動調整 */
+      border-radius: 0; /* 角丸を削除 */
+      display: flex; /* Flexboxを使ってテキストを中央揃え */
+      justify-content: center; /* 水平方向中央揃え */
+      align-items: center; /* 垂直方向中央揃え */
+    }
+
+    /* ボタン間の区切り線 */
+    #attack-nature-control button:not(:last-child),
+    #defense-nature-control button:not(:last-child) {
+        border-right: 1px solid #c4c4c4;
     }
 
     /* アクティブ時のスタイル */
     #attack-nature-control button.active,
     #defense-nature-control button.active {
-      background-color: #e0e0e0;
-      color: black;
-      border-color: #ccc; /* アクティブ時のボーダー色を維持 */
-      z-index: 1;
+      background-color: #e0e0e0; /* 速度補正と同じアクティブ時の背景色 */
+      font-weight: bold; /* 速度補正と同じフォントウェイト */
+      color: black; /* 速度補正と同じ文字色 */
     }
 
     /* 特性入力欄のスタイル (攻撃側、防御側共通) */
@@ -643,7 +655,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // クリックされたボタンに 'active' クラスを追加
                     button.classList.add('active');
                     // hidden input の値を更新
-                    button.closest('.inline-flex-group').querySelector('input[type="hidden"]').value = button.dataset.value;
+                    hiddenInput.value = button.dataset.value;
                     // 必要であればここで計算ロジックを呼び出す
                     // calculateStats(); // 例: 実数値計算関数
                 });
