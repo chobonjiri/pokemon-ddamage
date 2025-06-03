@@ -1,5 +1,5 @@
 // ui/event-handler.js
-import { panelIds, selectedPokemons, selectedMoves, panelStats } from './main.js';
+import { panelIds, selectedPokemons, selectedMoves, panelStats, dispatchMoveCategoryUpdate } from './main.js';
 import { pokemonData, moveData } from './data-loader.js';
 import { updatePanelStats, showAbilities, updateMoveDetails, changeRank as updateRank } from './ui-updater.js';
 
@@ -351,6 +351,7 @@ export function setupEventListeners() {
             panelStats[panelId].moveName = selectedName;
             updateMoveDetails(panelId);
             updatePanelStats(panelId);
+            dispatchMoveCategoryUpdate(panelId); // ★技カテゴリ更新イベントを発行
         });
 
         // (その他のイベントリスナー設定)

@@ -23,6 +23,35 @@ panelIds.forEach(id => {
 // (though ui-updater and event-handler now import directly from data-loader)
 export { pData as pokemonData, mData as moveData };
 
+/**
+ * 選択された技のカテゴリ情報を元に、攻撃/特攻ラベル更新用のカスタムイベントを発行します。
+ * この関数は、技の選択状態 (selectedMoves) が更新された後に呼び出されることを想定しています。
+ * @param {string} panelId - ポケモンのパネルID (例: 'red1')
+ */
+export function dispatchMoveCategoryUpdate(panelId) {
+    const moveInputElement = document.getElementById(`${panelId}-move`);
+    if (!moveInputElement) {
+        // console.warn(`Move input element not found for ID: ${panelId}-move in dispatchMoveCategoryUpdate`);
+        return;
+    }
+
+    const selectedMoveObject = selectedMoves[panelId]; // グローバルな selectedMoves を参照
+    let categoryForEvent = null;
+
+    if (selectedMoveObject && typeof selectedMoveObject.category === 'string') {
+        const actualCategory = selectedMoveObject.category; // mData から取得したカテゴリ ("物理", "特殊", "変化"など)
+        
+        // ラベル更新の対象は "物理" または "特殊" のみ
+        if (actualCategory === '物理' || actualCategory === '特殊') {
+            categoryForEvent = actualCategory;
+        }
+        // "変化" やその他のカテゴリの場合は categoryForEvent は null のままとなり、ラベルは "A or C" になります。
+    }
+    // 技が選択されていない場合 (selectedMoveObject が null) も categoryForEvent は null です。
+
+    const event = new CustomEvent('moveCategoryUpdated', { detail: categoryForEvent });
+    moveInputElement.dispatchEvent(event);
+}
 
 async function initializeApp() {
   await loadAllData(); // データロードを待つ
