@@ -28,7 +28,3 @@
   cursor: not-allowed; /* カーソルを「禁止」マークに */
   opacity: 0.7; /* 透明度を少し下げて、無効であることを視覚的に示す */
 }
-
-.ability-nullified-checkbox-wrapper {
- color: crimson;
-}
