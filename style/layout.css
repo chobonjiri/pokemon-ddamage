@@ -304,3 +304,29 @@
 .field-section-container .segmented-control button {
     flex-grow: 1; /* Allow buttons to take equal width */
 }
+
+/* Styles for panel header row where H3 is to the left of the Pokemon name input */
+.panel-header-row {
+  display: flex;
+  align-items: center; /* Vertically align h3 and input line */
+  gap: 8px; /* Space between the h3 and the input field line */
+  /* margin-bottom is handled by the parent .panel's gap property */
+}
+
+/*
+  Target h3 elements that are direct children of .panel-header-row,
+  itself a child of .panel. This ensures these styles override
+  the more general .panel h3 styles from style/modules/panels.css.
+*/
+.panel > .panel-header-row > h3 {
+  margin: 0; /* Reset default h3 margins */
+  font-size: 1.1em; /* Match font size from panels.css .panel h3 */
+  text-align: left; /* Override text-align: center from panels.css */
+  border-bottom: none; /* Override border-bottom from panels.css */
+  padding-bottom: 0; /* Override padding-bottom from panels.css */
+}
+
+.panel-header-row > .pokemon-info-line {
+  flex-grow: 1; /* The input line should take up available horizontal space */
+  margin-bottom: 0; /* Remove its own bottom margin as spacing is handled by the panel's gap or this row's structure */
+}
