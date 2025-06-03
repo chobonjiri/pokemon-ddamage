@@ -40,3 +40,267 @@
   gap: 8px;
   flex-wrap: nowrap;
 }
+
+/* Ability control group for better layout of buttons and input */
+.ability-control-group {
+  display: flex;
+  flex-wrap: wrap; /* ボタンと入力欄を適切に折り返す */
+  align-items: center;
+  gap: 5px;
+  margin-top: 10px;
+  border: 1px solid #ccc; /* segmented-controlと同じような見た目に */
+  border-radius: 8px;
+  padding: 5px;
+}
+/* style/layout.css */
+
+/* Overall Page Container */
+.page-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* 2 columns for panels */
+    grid-template-rows: auto auto auto; /* Row for Red panels, Row for Field, Row for Blue panels */
+    gap: 15px; /* Gap between all grid items */
+    width: 95%;
+    max-width: 1400px; /* Adjust as needed */
+    margin: 20px auto;
+}
+
+/* Pokemon Panel Styling (Basic layout, specific styling in panels.css and inline in HTML for backgrounds) */
+.panel {
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    /* Background colors like lightcoral, lightblue are set via ID in HTML or specific CSS classes if preferred */
+}
+
+/* Field Section Layout */
+.field-section-container {
+    grid-column: 1 / 3; /* Span across both columns */
+    grid-row: 2 / 3;    /* Place in the second row */
+    display: grid;
+    grid-template-columns: 1fr 1.5fr; /* Left column for statuses (1 part), Right column for HP display (1.5 parts) */
+    gap: 15px;
+    padding: 15px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+}
+
+.field-left-column {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* Distribute space for status areas */
+    gap: 10px;
+}
+
+.field-status-area {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Background colors for status areas in the field section */
+.team-red-status-bg { background-color: #ffefef; } /* Light red for Red team's field status */
+.team-blue-status-bg { background-color: #efefff; } /* Light blue for Blue team's field status */
+.common-field-status-bg { background-color: #f2e6ff; } /* Light purple for common field status (weather/field) */
+
+.field-status-area h4,
+.common-field-status-bg h4, /* Ensure heading style applies to common status area as well */
+.pokemon-hp-display-area > h4 {
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+}
+
+.field-status-area textarea {
+    width: calc(100% - 12px); /* Account for padding */
+    font-size: 0.85em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    padding: 5px;
+    resize: vertical;
+    flex-grow: 1; /* Allow textarea to take available space */
+    min-height: 40px;
+}
+
+/* Pokemon HP Display Area in Field Section */
+.pokemon-hp-display-area {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.team-hp-rows {
+    display: flex;
+    flex-direction: column;
+    gap: 10px; /* Space between Red/Blue HP rows and Icon rows */
+}
+
+.pokemon-hp-row,
+.pokemon-icon-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr; /* Two Pokemon items side-by-side */
+    gap: 10px;
+    align-items: center;
+}
+
+.pokemon-hp-entry,
+.pokemon-icon-entry {
+    display: flex;
+    flex-direction: column; /* Stack name/HP bar or icon */
+    align-items: center;
+    gap: 4px;
+    font-size: 0.85em;
+    text-align: center;
+}
+
+.pokemon-icon {
+    width: 35px;
+    height: 35px;
+    background-color: #cccccc; /* Default grey circle */
+    border-radius: 50%;
+    border: 1px solid #aaa;
+    /* Pokemon sprite will be set as background-image via JS */
+}
+
+.hp-bar-container {
+    width: 90%; /* Relative to its parent (.pokemon-hp-entry) */
+    max-width: 150px; /* Max width for the HP bar */
+    height: 18px;
+    background-color: #e0e0e0; /* Slightly darker background for the bar track */
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+}
+
+.hp-bar {
+    height: 100%;
+    background-color: #4CAF50; /* Green for HP */
+    width: 100%; /* Default to full, JS will update based on HP percentage */
+    transition: width 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.75em;
+    font-weight: bold;
+}
+
+
+/* Panel Content Layout Helpers */
+.pokemon-info-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.pokemon-info-line input[type="text"],
+.pokemon-info-line select {
+  flex-grow: 1; 
+  padding: 5px;
+  font-size: 0.9em;
+  /* Other input/select styling should be in forms.css */
+}
+
+.type-display {
+  font-weight: bold;
+  min-width: 60px; 
+  text-align: center;
+  padding: 3px 5px;
+  border: 1px dashed #ccc;
+  border-radius: 3px;
+  font-size: 0.85em;
+}
+
+.ability-section {
+    flex-grow: 1; /* Allow ability choice segmented control to take space */
+    min-width: 0; /* Allow shrinking if needed for flexbox */
+}
+.ability-section .segmented-control{
+    flex-wrap: nowrap; /* Prevent wrapping of ability buttons */
+    overflow-x: auto;  /* Allow horizontal scrolling for many abilities */
+}
+
+
+.checkbox-inline {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.85em;
+    gap: 3px; /* Space between checkbox and label text */
+    white-space: nowrap; /* Prevent label from wrapping */
+}
+
+/* Stat Block Layout */
+.stat-block {
+    margin-bottom: 8px; 
+}
+
+.stat-block h4 {
+    margin-top: 0; /* Remove default top margin from h4 */
+    margin-bottom: 4px; 
+    font-size: 0.9em;
+}
+
+.stat-block-row {
+  display: flex;
+  flex-wrap: wrap; 
+  align-items: center;
+  gap: 5px; /* Gap between items in the row */
+}
+
+.stat-block-row > * {
+  margin-right: 0; /* Remove individual right margins when using gap */
+}
+
+.stat-block-row .actual-stat {
+    font-weight: bold;
+    min-width: 25px; /* Ensure space for stat value */
+    text-align: right;
+    margin-right: 5px; /* Space before nature control */
+}
+
+.stat-block-row .iv-input,
+.stat-block-row .ev-input {
+  width: 50px; 
+  padding: 3px;
+  font-size: 0.9em;
+  /* Specific input styling in forms.css */
+}
+
+.stat-block-row .rank-value {
+    min-width: 20px; /* Ensure space for rank value */
+    text-align: center;
+}
+
+/* General inline flex utility if still needed */
+.inline-flex-group {
+  display: inline-flex; 
+  align-items: center;
+  gap: 8px;
+}
+
+/* Styles for segmented controls within Field section */
+.field-section-container .menu-section {
+    width: 100%;
+}
+.field-section-container .menu-section label {
+    display: block;
+    margin-bottom: 3px;
+    font-size: 0.9em;
+    font-weight: bold;
+}
+.field-section-container .segmented-control {
+    display: flex;
+    justify-content: space-around; /* Distribute buttons evenly */
+}
+.field-section-container .segmented-control button {
+    flex-grow: 1; /* Allow buttons to take equal width */
+}

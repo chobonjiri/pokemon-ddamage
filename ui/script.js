@@ -1,10 +1,34 @@
-// script.js
+// ui/script.js
 
 let pokemonData = [];
 let moveData = [];
-let attackerSelectedPokemon = null; // 選択された攻撃側ポケモン
-let defenderSelectedPokemon = null; // 選択された防御側ポケモン
-let selectedMove = null; // 選択された技
+
+const panelIds = ['red1', 'red2', 'blue1', 'blue2'];
+let selectedPokemons = {}; // { red1: pokemonObject, red2: ..., ... }
+let selectedMoves = {};    // { red1: moveObject, red2: ..., ... }
+let panelStats = {};       // { panelId: { pokemonName: '', moveName: '', ability: {...}, stats: { hp: {}, attack: {}, ... } } }
+
+panelIds.forEach(id => {
+    selectedPokemons[id] = null;
+    selectedMoves[id] = null;
+    panelStats[id] = {
+        pokemonName: '',
+        moveName: '',
+        ability: { name: '', custom: '', nullified: false, selectedButton: null },
+        typeChange: '',
+        moveTimes: 1,
+        doubleDamage: false,
+        stats: { // 'sp-attack' や 'sp-defense' ではなくキャメルケースで統一
+            hp: { iv: 31, ev: 0, actual: 0 },
+            attack: { iv: 31, ev: 0, nature: 1.0, rank: 0, actual: 0 },
+            defense: { iv: 31, ev: 0, nature: 1.0, rank: 0, actual: 0 },
+            spAttack: { iv: 31, ev: 0, nature: 1.0, rank: 0, actual: 0 }, // spAttack
+            spDefense: { iv: 31, ev: 0, nature: 1.0, rank: 0, actual: 0 } // spDefense
+        },
+        currentHP: 0, 
+        maxHP: 0
+    };
+});
 
 // --- データのフェッチ共通関数 ---
 async function fetchJson(url) {
@@ -14,413 +38,495 @@ async function fetchJson(url) {
       console.error(`HTTPエラー！ステータス: ${response.status} URL: ${url}`);
       throw new Error(`HTTP error! status: ${response.status} from ${url}`);
     }
-    const data = await response.json();
-    return data;
+    return await response.json();
   } catch (error) {
     console.error(`Error fetching JSON from ${url}:`, error);
-    return []; // エラー時は空の配列を返す
+    return [];
   }
 }
 
 // --- 実数値計算系 ---
-function calcActualStat(base, iv, ev, nature, rank, level = 50) {
-  let val;
-  if (base === "HP") { // HPの実数値計算は少し異なる
-    val = Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
-  } else {
-    val = Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + 5;
+function calcHPStat(base, iv, ev, level = 50) {
+  if (isNaN(base) || isNaN(iv) || isNaN(ev)) return 0;
+  return Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
+}
+
+function calcActualStat(baseStat, iv, ev, nature, rank, level = 50, statName = "") {
+  if (statName === "HP") {
+      return calcHPStat(baseStat, iv, ev, level);
   }
+  if (isNaN(baseStat) || isNaN(iv) || isNaN(ev) || isNaN(nature) || isNaN(rank)) return 0;
   
+  let val = Math.floor(((baseStat * 2 + iv + Math.floor(ev / 4)) * level) / 100) + 5;
   val = Math.floor(val * nature);
   const rankMultiplier = rank >= 0 ? (2 + rank) / 2 : 2 / (2 - rank);
   return Math.floor(val * rankMultiplier);
 }
 
-function calcHPStat(base, iv, ev, level = 50) {
-  return Math.floor(((base * 2 + iv + Math.floor(ev / 4)) * level) / 100) + level + 10;
-}
-
-
 // --- UI更新系 ---
-function updatePokemonStats(pokemon, type) {
-  if (!pokemon) return;
+function updatePanelStats(panelId) {
+    const pokemon = selectedPokemons[panelId];
+    const currentPanelInternalStats = panelStats[panelId].stats; // JS内部のステータスオブジェクト
+    const move = selectedMoves[panelId];
 
-  const prefix = type === 'attacker' ? 'attack' : 'defense';
-  const isAttacker = type === 'attacker';
+    if (!pokemon) {
+        // ポケモン未選択時のリセット処理
+        document.getElementById(`${panelId}-pokemon-type`).textContent = 'Type';
+        ['hp', 'attack', 'defense', 'sp-attack', 'sp-defense', 'main-offensive'].forEach(statPart => {
+            const actualEl = document.getElementById(`${panelId}-${statPart}-actual`);
+            if (actualEl) actualEl.textContent = '-';
+            if (statPart === 'main-offensive') {
+                 const labelEl = document.getElementById(`${panelId}-main-offensive-label`);
+                 if(labelEl) labelEl.textContent = 'A or C';
+            }
+        });
+        updatePokemonHPBar(panelId, 0, 1);
+        const hpTableNameEl = document.getElementById(`${panelId}-hp-table-name`);
+        if (hpTableNameEl) hpTableNameEl.textContent = '-';
+        const iconEl = document.getElementById(`${panelId}-icon`);
+        if (iconEl) iconEl.style.backgroundImage = ''; // アイコンリセット
+        return;
+    }
 
-  const moveName = document.getElementById("move").value;
-  const move = moveData.find(m => m.name === moveName);
+    // タイプ表示
+    document.getElementById(`${panelId}-pokemon-type`).textContent = pokemon.Type2 ? `${pokemon.Type1}/${pokemon.Type2}` : pokemon.Type1;
+    
+    // ポケモンアイコン (仮。実際は画像URLなどをpokemonDataから取得)
+    const iconEl = document.getElementById(`${panelId}-icon`);
+    if (iconEl) {
+        // iconEl.style.backgroundImage = `url('path_to_pokemon_icon/${pokemon.id}.png')`; // 例
+        iconEl.style.backgroundColor = '#888'; // ポケモン選択時は色を変えるなど
+    }
 
-  // HPの更新は防御側のみ
-  if (type === 'defender') {
-    const hpBase = parseInt(pokemon.H);
-    const hpIv = parseInt(document.getElementById("hp-iv").value, 10);
-    const hpEv = parseInt(document.getElementById("hp-ev").value, 10);
-    document.getElementById("hp-actual").textContent = calcHPStat(hpBase, hpIv, hpEv);
-  }
 
-  // 攻撃/防御・特攻/特防の更新
-  if ((isAttacker && move) || type === 'defender') { // 攻撃側は技が選択されている場合、防御側は常時
-    let statKey;
-    if (isAttacker) {
-      statKey = move.category === "特殊" ? "C" : "A";
-    } else { // 防御側
-      statKey = move && move.category === "特殊" ? "D" : "B";
+    // HP計算と表示
+    currentPanelInternalStats.hp.actual = calcHPStat(parseInt(pokemon.H), currentPanelInternalStats.hp.iv, currentPanelInternalStats.hp.ev);
+    document.getElementById(`${panelId}-hp-actual`).textContent = currentPanelInternalStats.hp.actual;
+    panelStats[panelId].maxHP = currentPanelInternalStats.hp.actual;
+    panelStats[panelId].currentHP = currentPanelInternalStats.hp.actual; // 初期HPは最大値
+    updatePokemonHPBar(panelId, panelStats[panelId].currentHP, panelStats[panelId].maxHP);
+    const hpTableNameEl = document.getElementById(`${panelId}-hp-table-name`);
+    if (hpTableNameEl) hpTableNameEl.textContent = pokemon.name;
+
+    // A, B, C, D の計算と表示
+    const statKeyMapping = { attack: 'A', defense: 'B', spAttack: 'C', spDefense: 'D' };
+    for (const [jsKey, dataKey] of Object.entries(statKeyMapping)) { // jsKey: attack, spAttack 등, dataKey: A, C 등
+        const htmlStatPart = jsKey.replace('spAttack', 'sp-attack').replace('spDefense', 'sp-defense'); // sp-attack
+        currentPanelInternalStats[jsKey].actual = calcActualStat(
+            parseInt(pokemon[dataKey]),
+            currentPanelInternalStats[jsKey].iv,
+            currentPanelInternalStats[jsKey].ev,
+            currentPanelInternalStats[jsKey].nature,
+            currentPanelInternalStats[jsKey].rank
+        );
+        document.getElementById(`${panelId}-${htmlStatPart}-actual`).textContent = currentPanelInternalStats[jsKey].actual;
     }
     
-    const base = parseInt(pokemon[statKey], 10);
-    const iv = parseInt(document.getElementById(`${prefix}-iv`).value, 10);
-    const ev = parseInt(document.getElementById(`${prefix}-ev`).value, 10);
-    const nature = parseFloat(document.getElementById(`${prefix}-nature`).value);
-    const rank = parseInt(document.getElementById(`${prefix}-rank-val`).textContent);
+    // 「A or C」(main-offensive) ブロックの表示更新
+    const mainOffensiveLabelEl = document.getElementById(`${panelId}-main-offensive-label`);
+    const mainOffensiveActualEl = document.getElementById(`${panelId}-main-offensive-actual`);
+    // main-offensiveブロックのIV, EV, Nature, Rankの各入力要素も技に応じて値を設定し直す
+    const mainOffensiveIvEl = document.getElementById(`${panelId}-main-offensive-iv`);
+    const mainOffensiveEvEl = document.getElementById(`${panelId}-main-offensive-ev`);
+    const mainOffensiveNatureHiddenEl = document.getElementById(`${panelId}-main-offensive-nature`);
+    const mainOffensiveNatureControlEl = document.getElementById(`${panelId}-main-offensive-nature-control`);
+    const mainOffensiveRankValEl = document.getElementById(`${panelId}-main-offensive-rank-val`);
+
+    if (move) {
+        let sourceStatKey = '';
+        if (move.category === "物理") {
+            mainOffensiveLabelEl.textContent = "A";
+            mainOffensiveActualEl.textContent = currentPanelInternalStats.attack.actual;
+            sourceStatKey = 'attack';
+        } else if (move.category === "特殊") {
+            mainOffensiveLabelEl.textContent = "C";
+            mainOffensiveActualEl.textContent = currentPanelInternalStats.spAttack.actual;
+            sourceStatKey = 'spAttack';
+        } else { // 不明または変化技
+            mainOffensiveLabelEl.textContent = "A or C";
+            mainOffensiveActualEl.textContent = "-";
+        }
+
+        if (sourceStatKey && currentPanelInternalStats[sourceStatKey]) {
+            mainOffensiveIvEl.value = currentPanelInternalStats[sourceStatKey].iv;
+            mainOffensiveEvEl.value = currentPanelInternalStats[sourceStatKey].ev;
+            mainOffensiveNatureHiddenEl.value = currentPanelInternalStats[sourceStatKey].nature;
+            mainOffensiveNatureControlEl.querySelectorAll('button').forEach(btn => {
+                btn.classList.toggle('active', parseFloat(btn.dataset.value) === currentPanelInternalStats[sourceStatKey].nature);
+            });
+            mainOffensiveRankValEl.textContent = currentPanelInternalStats[sourceStatKey].rank;
+        }
+    } else {
+        mainOffensiveLabelEl.textContent = "A or C";
+        mainOffensiveActualEl.textContent = "-";
+        // 技未選択時、main-offensive の入力欄は attack の値を表示しておく (例)
+        mainOffensiveIvEl.value = currentPanelInternalStats.attack.iv;
+        mainOffensiveEvEl.value = currentPanelInternalStats.attack.ev;
+        mainOffensiveNatureHiddenEl.value = currentPanelInternalStats.attack.nature;
+        mainOffensiveNatureControlEl.querySelectorAll('button').forEach(btn => {
+             btn.classList.toggle('active', parseFloat(btn.dataset.value) === currentPanelInternalStats.attack.nature);
+        });
+        mainOffensiveRankValEl.textContent = currentPanelInternalStats.attack.rank;
+    }
+}
+
+function updateAllPanelStats() {
+    panelIds.forEach(id => updatePanelStats(id));
+}
+
+function updatePokemonHPBar(panelId, currentHP, maxHP) {
+    const hpBarEl = document.getElementById(`${panelId}-hp-bar`);
+    if (hpBarEl && maxHP > 0) {
+        const percentage = Math.max(0, Math.min(100, (currentHP / maxHP) * 100));
+        hpBarEl.style.width = `${percentage}%`;
+        hpBarEl.textContent = `${Math.round(percentage)}%`;
+        if (percentage <= 20) hpBarEl.style.backgroundColor = 'red';
+        else if (percentage <= 50) hpBarEl.style.backgroundColor = 'orange';
+        else hpBarEl.style.backgroundColor = '#4CAF50';
+    } else if (hpBarEl) {
+        hpBarEl.style.width = '0%';
+        hpBarEl.textContent = '0%';
+         hpBarEl.style.backgroundColor = '#4CAF50'; // Reset color
+    }
+}
+
+function showAbilities(panelId, pokemon) {
+    const container = document.getElementById(`${panelId}-ability-choice`);
+    const nullifiedCheckbox = document.getElementById(`${panelId}-ability-nullified`); // HTMLに直接配置
     
-    document.getElementById(`${prefix}-actual`).textContent = calcActualStat(base, iv, ev, nature, rank);
+    if (!container) return;
+    container.innerHTML = ""; // クリア
+    
+    const currentPanelAbility = panelStats[panelId].ability;
 
-    // 防御側のB/D表示切り替えラベルの更新
-    if (!isAttacker) {
-      const defenseLabel = document.querySelector('.stat-block h4');
-      if (defenseLabel) {
-        defenseLabel.textContent = statKey === "B" ? "B" : "D";
-      }
+    if (!pokemon) { // ポケモンが選択されていない場合は何もしない（またはクリア）
+        if (nullifiedCheckbox) nullifiedCheckbox.checked = false;
+        currentPanelAbility.name = '';
+        currentPanelAbility.custom = '';
+        currentPanelAbility.nullified = false;
+        currentPanelAbility.selectedButton = null;
+        return;
     }
-  } else {
-    // 技が選択されていない場合、攻撃側の実数値は表示しない
-    if (isAttacker) {
-      document.getElementById(`${prefix}-actual`).textContent = "-";
+
+    const abilities = [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean);
+    
+    abilities.forEach((abilityName) => {
+        const btn = document.createElement("button");
+        btn.textContent = abilityName;
+        btn.className = "ability-btn";
+        btn.type = "button";
+        btn.dataset.ability = abilityName;
+
+        if (currentPanelAbility.selectedButton === abilityName && !currentPanelAbility.custom && !currentPanelAbility.nullified) {
+            btn.classList.add("selected");
+        }
+
+        btn.onclick = () => {
+            container.querySelectorAll(".ability-btn").forEach(b => b.classList.remove("selected"));
+            btn.classList.add("selected");
+            currentPanelAbility.name = abilityName;
+            currentPanelAbility.custom = "";
+            currentPanelAbility.nullified = false;
+            currentPanelAbility.selectedButton = abilityName;
+            if (customInput) customInput.value = "";
+            if (nullifiedCheckbox) nullifiedCheckbox.checked = false;
+            console.log(`${panelId} Ability: ${currentPanelAbility.name}`);
+        };
+        container.appendChild(btn);
+    });
+
+    // カスタム特性入力欄 (動的に生成するか、HTMLにプレースホルダを置く)
+    // ここでは動的に生成する例
+    const customInputId = `${panelId}-custom-ability-input-dynamic`; // 動的生成なのでIDもユニークに
+    let customInput = container.querySelector(`#${customInputId}`); // 既に存在するか確認
+    if (!customInput) {
+        customInput = document.createElement("input");
+        customInput.type = "text";
+        customInput.id = customInputId;
+        customInput.placeholder = "特性入力";
+        customInput.className = "custom-ability-input";
+        customInput.style.flexGrow = "1"; // 他のボタンとのバランス
+        customInput.style.minWidth = "80px";
+        container.appendChild(customInput); // コンテナに追加
     }
-  }
-}
-
-function updateAllStats() {
-  updatePokemonStats(attackerSelectedPokemon, 'attacker');
-  updatePokemonStats(defenderSelectedPokemon, 'defender');
-}
-
-function showAbilities(pokemon, containerId) {
-  const container = document.getElementById(containerId);
-  if (!container) return;
-
-  container.innerHTML = ""; // クリア
-
-  // セグメントコントロールのラッパーを生成
-  const segmentedControl = document.createElement("div");
-  segmentedControl.className = "segmented-control";
-  segmentedControl.id = `${containerId}-segmented-control`; // 新しいIDを付与
-
-  const abilities = [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean);
-
-  abilities.forEach((ability, index) => {
-    const btn = document.createElement("button");
-    btn.textContent = ability;
-    btn.className = "ability-btn";
-    btn.type = "button"; // typeをbuttonに設定
-    btn.dataset.ability = ability; // 特性名をデータ属性に保存
-    btn.onclick = () => {
-      // 他のボタンの選択状態を解除
-      segmentedControl.querySelectorAll(".ability-btn").forEach(b => b.classList.remove("selected"));
-      // 自由入力欄をクリア
-      const customInput = segmentedControl.querySelector('input[type="text"]');
-      if (customInput) customInput.value = "";
-      // 無効化チェックボックスを解除
-      const nullifiedCheckbox = segmentedControl.querySelector('input[type="checkbox"]');
-      if (nullifiedCheckbox) nullifiedCheckbox.checked = false;
-
-      btn.classList.add("selected");
+    customInput.value = currentPanelAbility.custom;
+    customInput.oninput = () => {
+        container.querySelectorAll(".ability-btn").forEach(b => b.classList.remove("selected"));
+        currentPanelAbility.name = customInput.value;
+        currentPanelAbility.custom = customInput.value;
+        currentPanelAbility.nullified = false;
+        currentPanelAbility.selectedButton = null;
+        if (nullifiedCheckbox) nullifiedCheckbox.checked = false;
+        console.log(`${panelId} Custom Ability: ${currentPanelAbility.name}`);
     };
-    segmentedControl.appendChild(btn);
-  });
 
-  // 自由入力欄
-  const customInput = document.createElement("input");
-  customInput.type = "text";
-  customInput.id = `${containerId}-custom-ability`;
-  customInput.placeholder = "特性を入力";
-  customInput.className = "custom-ability-input"; // CSSのためにクラス追加
-  customInput.oninput = () => {
-    // 自由入力時にボタンの選択を解除
-    segmentedControl.querySelectorAll(".ability-btn").forEach(b => b.classList.remove("selected"));
-    // 無効化チェックボックスを解除
-    const nullifiedCheckbox = segmentedControl.querySelector('input[type="checkbox"]');
-    if (nullifiedCheckbox) nullifiedCheckbox.checked = false;
-  };
-  segmentedControl.appendChild(customInput);
 
-  // 無効化チェックボックス
-  const nullifiedWrapper = document.createElement("div");
-  nullifiedWrapper.className = "ability-nullified-checkbox-wrapper";
-  const nullifiedLabel = document.createElement("label");
-  const nullifiedCheckbox = document.createElement("input");
-  nullifiedCheckbox.type = "checkbox";
-  nullifiedCheckbox.id = `${containerId}-ability-nullified`;
-  nullifiedCheckbox.onchange = () => {
-    // 無効化チェックボックスが選択されたら、ボタンと自由入力の選択を解除
-    if (nullifiedCheckbox.checked) {
-      segmentedControl.querySelectorAll(".ability-btn").forEach(b => b.classList.remove("selected"));
-      if (customInput) customInput.value = "";
+    // 無効化チェックボックスのイベントリスナーは setupEventListeners で設定済み
+    if (nullifiedCheckbox) {
+        nullifiedCheckbox.checked = currentPanelAbility.nullified;
     }
-  };
-  nullifiedLabel.appendChild(nullifiedCheckbox);
-  nullifiedLabel.appendChild(document.createTextNode(" 無効化"));
-  nullifiedWrapper.appendChild(nullifiedLabel);
-  segmentedControl.appendChild(nullifiedWrapper);
-
-  container.appendChild(segmentedControl);
 }
 
 
-function updateDoubleDamageCheckbox() {
-  const moveName = document.getElementById("move").value;
-  selectedMove = moveData.find(m => m.name === moveName); // グローバル変数に代入
+function updateMoveDetails(panelId) {
+    const move = selectedMoves[panelId];
+    const doubleDamageSection = document.getElementById(`${panelId}-move-double-damage-section`);
+    const moveTypeDisplay = document.getElementById(`${panelId}-move-type`);
 
-  const section = document.getElementById("move-double-damage-section");
-  if (!section) return;
-
-  if (selectedMove && selectedMove.memo && selectedMove.memo.includes("全体")) {
-    section.style.display = "block";
-  } else {
-    section.style.display = "none";
-  }
+    if (move) {
+        if (moveTypeDisplay) moveTypeDisplay.textContent = move.Type || "???";
+        if (doubleDamageSection) {
+            doubleDamageSection.style.display = (move.memo && move.memo.includes("全体")) ? "block" : "none";
+            if (!(move.memo && move.memo.includes("全体"))) {
+                document.getElementById(`${panelId}-double-damage-checkbox`).checked = false;
+                panelStats[panelId].doubleDamage = false;
+            }
+        }
+    } else {
+        if (moveTypeDisplay) moveTypeDisplay.textContent = "MoveType";
+        if (doubleDamageSection) {
+            doubleDamageSection.style.display = "none";
+            document.getElementById(`${panelId}-double-damage-checkbox`).checked = false;
+            panelStats[panelId].doubleDamage = false;
+        }
+    }
 }
+
 
 // --- イベントリスナー設定 ---
 function setupEventListeners() {
-  // 実数値計算に関連する入力フィールド
-  const statInputs = [
-    "attack-iv", "attack-ev",
-    "defense-iv", "defense-ev",
-    "hp-iv", "hp-ev"
-  ];
-
-  statInputs.forEach(id => {
-    const element = document.getElementById(id);
-    if (element) {
-      // type="range"のinputの場合、valueの表示も更新
-      if (element.type === 'range') {
-        const valueSpanId = `${id}-val`;
-        const valueSpan = document.getElementById(valueSpanId);
-        element.addEventListener('input', () => {
-          valueSpan.textContent = element.value;
-          updateAllStats();
+    panelIds.forEach(panelId => {
+        // Pokemon Name Autocomplete
+        initializeAutoComplete(`${panelId}-pokemon-name`, pokemonData, 'name', (selectedName) => {
+            selectedPokemons[panelId] = pokemonData.find(p => p.name === selectedName);
+            panelStats[panelId].pokemonName = selectedName;
+            showAbilities(panelId, selectedPokemons[panelId]); // ポケモン選択時に特性表示更新
+            updatePanelStats(panelId);
         });
-      } else {
-        element.addEventListener("input", updateAllStats);
-      }
+
+        // Move Name Autocomplete
+        initializeAutoComplete(`${panelId}-move`, moveData, 'name', (selectedName) => {
+            selectedMoves[panelId] = moveData.find(m => m.name === selectedName);
+            panelStats[panelId].moveName = selectedName;
+            updateMoveDetails(panelId);
+            updatePanelStats(panelId); // AorC表示更新のため
+        });
+
+        // Stat Inputs (IV, EV for H, B, D and also A, C separately for direct input)
+        // HP, B, D は専用の入力欄がある
+        ['hp', 'defense', 'sp-defense'].forEach(statPart => {
+            const jsStatKey = statPart.replace('sp-defense', 'spDefense'); // spDefense
+            const ivEl = document.getElementById(`${panelId}-${statPart}-iv`);
+            const evEl = document.getElementById(`${panelId}-${statPart}-ev`);
+            if (ivEl) ivEl.addEventListener('input', () => { panelStats[panelId].stats[jsStatKey].iv = parseInt(ivEl.value) || 0; updatePanelStats(panelId); });
+            if (evEl) evEl.addEventListener('input', () => { panelStats[panelId].stats[jsStatKey].ev = parseInt(evEl.value) || 0; updatePanelStats(panelId); });
+        });
+
+        // A or C (main-offensive) block inputs
+        const mainOffensiveIvEl = document.getElementById(`${panelId}-main-offensive-iv`);
+        const mainOffensiveEvEl = document.getElementById(`${panelId}-main-offensive-ev`);
+
+        if (mainOffensiveIvEl) mainOffensiveIvEl.addEventListener('input', () => {
+            const move = selectedMoves[panelId];
+            const targetStatKey = (move && move.category === "特殊") ? 'spAttack' : 'attack';
+            panelStats[panelId].stats[targetStatKey].iv = parseInt(mainOffensiveIvEl.value) || 0;
+            updatePanelStats(panelId);
+        });
+        if (mainOffensiveEvEl) mainOffensiveEvEl.addEventListener('input', () => {
+            const move = selectedMoves[panelId];
+            const targetStatKey = (move && move.category === "特殊") ? 'spAttack' : 'attack';
+            panelStats[panelId].stats[targetStatKey].ev = parseInt(mainOffensiveEvEl.value) || 0;
+            updatePanelStats(panelId);
+        });
+        
+        // Nature Controls for A, B, C, D, and main-offensive (which delegates to A or C)
+        ['attack', 'defense', 'sp-attack', 'sp-defense'].forEach(statName => {
+            const jsStatKey = statName.replace('sp-attack', 'spAttack').replace('sp-defense', 'spDefense');
+            setupNatureControl(panelId, jsStatKey, `${panelId}-${statName}-nature-control`, `${panelId}-${statName}-nature`, () => updatePanelStats(panelId));
+        });
+        // main-offensiveの性格コントロール
+        setupNatureControl(panelId, 'main-offensive', `${panelId}-main-offensive-nature-control`, `${panelId}-main-offensive-nature`, () => updatePanelStats(panelId));
+
+
+        // Ability Nullified Checkbox
+        const abilityNullifiedCheckbox = document.getElementById(`${panelId}-ability-nullified`);
+        if (abilityNullifiedCheckbox) {
+            abilityNullifiedCheckbox.addEventListener('change', () => {
+                panelStats[panelId].ability.nullified = abilityNullifiedCheckbox.checked;
+                if (abilityNullifiedCheckbox.checked) {
+                    panelStats[panelId].ability.name = "";
+                    panelStats[panelId].ability.custom = "";
+                    panelStats[panelId].ability.selectedButton = null;
+                    // ボタンとカスタム入力の選択状態を解除
+                    const choiceContainer = document.getElementById(`${panelId}-ability-choice`);
+                    if(choiceContainer) choiceContainer.querySelectorAll(".ability-btn.selected").forEach(b => b.classList.remove("selected"));
+                    const customInput = choiceContainer ? choiceContainer.querySelector(".custom-ability-input") : null;
+                    if(customInput) customInput.value = "";
+                }
+                console.log(`${panelId} Ability Nullified: ${panelStats[panelId].ability.nullified}`);
+            });
+        }
+
+        // Type Change, Move Times, Double Damage
+        const typeChangeEl = document.getElementById(`${panelId}-type-change`);
+        if (typeChangeEl) typeChangeEl.addEventListener('change', () => { panelStats[panelId].typeChange = typeChangeEl.value; });
+        
+        const moveTimesEl = document.getElementById(`${panelId}-move-times`);
+        if (moveTimesEl) moveTimesEl.addEventListener('input', () => { panelStats[panelId].moveTimes = parseInt(moveTimesEl.value) || 1; });
+        
+        const doubleDamageCheckbox = document.getElementById(`${panelId}-double-damage-checkbox`);
+        if (doubleDamageCheckbox) doubleDamageCheckbox.addEventListener('change', () => { panelStats[panelId].doubleDamage = doubleDamageCheckbox.checked; });
+    });
+
+    setupSegmentedControl('center-weatherControl', selectedValue => console.log('Selected Weather:', selectedValue));
+    setupSegmentedControl('center-fieldControl', selectedValue => console.log('Selected Field:', selectedValue));
+}
+
+
+function changeRank(panelAndStat, change) {
+    const parts = panelAndStat.split('-'); // e.g., "red1-main-offensive" or "blue2-defense"
+    const panelId = parts[0];
+    let statKeyForPanelStats = parts.slice(1).join('-'); // e.g., "main-offensive", "defense", "sp-attack"
+
+    let actualStatKey = ""; // 'attack', 'spAttack', 'defense', 'spDefense', 'hp'
+    let rankSpanIdSuffix = statKeyForPanelStats; // HTMLのIDに使われる部分
+
+    if (statKeyForPanelStats === 'main-offensive') {
+        const move = selectedMoves[panelId];
+        if (move && move.category === "物理") {
+            actualStatKey = 'attack';
+        } else if (move && move.category === "特殊") {
+            actualStatKey = 'spAttack';
+        } else {
+            return; // 技未選択またはカテゴリ不明時はランク変更不可
+        }
+    } else if (statKeyForPanelStats === 'sp-attack') {
+        actualStatKey = 'spAttack';
+    } else if (statKeyForPanelStats === 'sp-defense') {
+        actualStatKey = 'spDefense';
+    } else {
+        actualStatKey = statKeyForPanelStats; // 'hp', 'attack', 'defense'
     }
-  });
+    
+    if (!panelStats[panelId] || !panelStats[panelId].stats[actualStatKey]) {
+        console.warn(`Stats object not found for ${panelId}.${actualStatKey}`);
+        return;
+    }
 
-  // 性格補正ボタンのロジック
-  setupNatureControl('attack-nature-control', 'attack-nature', updateAllStats);
-  setupNatureControl('defense-nature-control', 'defense-nature', updateAllStats);
+    const rankSpanId = `${panelId}-${rankSpanIdSuffix}-rank-val`;
+    const rankSpan = document.getElementById(rankSpanId);
+     if (!rankSpan) {
+        console.warn(`Rank span not found for ID: ${rankSpanId}`);
+        return;
+    }
 
-  // ランク変更ボタン
-  document.querySelectorAll('.rank-btn').forEach(button => {
-    button.addEventListener('click', (event) => {
-      const type = event.target.nextElementSibling.id.includes('attack') ? 'attack' : 'defense';
-      const change = event.target.textContent === '+' ? 1 : -1;
-      changeRank(type, change);
-      updateAllStats();
-    });
-  });
-
-  // 攻撃側ポケモン入力欄のイベント (autocomplete.jsのselectionイベントで発火)
-  const attackerElement = document.getElementById("attacker");
-  if (attackerElement) {
-    attackerElement.addEventListener("change", () => {
-      attackerSelectedPokemon = pokemonData.find(p => p.name === attackerElement.value);
-      if (attackerSelectedPokemon) {
-        showAbilities(attackerSelectedPokemon, "ability-choice");
-      } else {
-        document.getElementById("ability-choice").innerHTML = ""; // クリア
-      }
-      updateAllStats();
-    });
-  }
-
-  // 防御側ポケモン入力欄のイベント (autocomplete.jsのselectionイベントで発火)
-  const defenderElement = document.getElementById("defender");
-  if (defenderElement) {
-    defenderElement.addEventListener("change", () => {
-      defenderSelectedPokemon = pokemonData.find(p => p.name === defenderElement.value);
-      if (defenderSelectedPokemon) {
-        showAbilities(defenderSelectedPokemon, "defender-abilities");
-      } else {
-        document.getElementById("defender-abilities").innerHTML = ""; // クリア
-      }
-      updateAllStats();
-    });
-  }
-
-  // 技入力欄のイベント (autocomplete.jsのselectionイベントで発火)
-  const moveElement = document.getElementById("move");
-  if (moveElement) {
-    moveElement.addEventListener("change", () => {
-      selectedMove = moveData.find(m => m.name === moveElement.value);
-      updateDoubleDamageCheckbox();
-      updateAllStats();
-    });
-  }
-
-  // テラス・ステラボタンの選択ロジック
-  const attackerButton1 = document.getElementById('attacker-button-1');
-  const attackerButton2 = document.getElementById('attacker-button-2');
-  const attackerButtons = [attackerButton1, attackerButton2].filter(Boolean);
-
-  attackerButtons.forEach(button => {
-      if (button) {
-          button.addEventListener('click', () => {
-              if (button.classList.contains('selected')) {
-                  button.classList.remove('selected');
-              } else {
-                  attackerButtons.forEach(btn => btn.classList.remove('selected'));
-                  button.classList.add('selected');
-              }
-              // ダメージ計算関数があればここで呼び出す
-              // calculateDamage();
-          });
-      }
-  });
-
-  // 防御側テラススイッチと速度コントロールの連動
-  const toggleSwitch = document.getElementById('toggleSwitch');
-  const speedControl = document.getElementById('speedControl');
-  
-  if (toggleSwitch && speedControl) {
-      const controlButtons = speedControl.querySelectorAll('button');
-
-      controlButtons.forEach(button => {
-          button.addEventListener('click', () => {
-              if (button.disabled) {
-                  return;
-              }
-              controlButtons.forEach(btn => btn.classList.remove('active'));
-              button.classList.add('active');
-          });
-      });
-
-      toggleSwitch.addEventListener('change', () => {
-          const isEnabled = toggleSwitch.checked;
-          
-          controlButtons.forEach(button => {
-              button.disabled = !isEnabled;
-          });
-
-          if (isEnabled) {
-              speedControl.classList.remove('disabled-state');
-          } else {
-              speedControl.classList.add('disabled-state');
-              controlButtons.forEach(btn => btn.classList.remove('active'));
-          }
-      });
-      toggleSwitch.dispatchEvent(new Event('change'));
-  }
-
-  // 壁、天候、フィールド、わざわい、状態などのセグメントコントロール
-  setupSegmentedControl('weatherControl', selected => {
-    console.log('選択された天候:', selected);
-    // 天候の値を処理するロジック（例: ダメージ計算に影響）
-  });
-
-  setupSegmentedControl('fieldControl', selected => {
-    console.log('選択されたフィールド:', selected);
-    // フィールドの値を処理するロジック
-  });
-
-  setupSegmentedControl('ruinControl', selected => {
-    console.log('選択されたわざわい:', selected);
-    // わざわいの値を処理するロジック
-  });
-
-  // その他の状態チェックボックス
-  document.getElementById('helping-hand')?.addEventListener('change', (e) => console.log('てだすけ:', e.target.checked));
-  document.getElementById('checkbox-burn')?.addEventListener('change', (e) => console.log('やけど:', e.target.checked));
-  document.getElementById('aurora-veil')?.addEventListener('change', (e) => console.log('オーロラベール:', e.target.checked));
-  document.getElementById('reflect')?.addEventListener('change', (e) => console.log('リフレクター:', e.target.checked));
-  document.getElementById('light-screen')?.addEventListener('change', (e) => console.log('ひかりのかべ:', e.target.checked));
-  document.getElementById('friend-guard')?.addEventListener('change', (e) => console.log('フレンドガード:', e.target.checked));
+    let currentRank = panelStats[panelId].stats[actualStatKey].rank;
+    currentRank = Math.max(-6, Math.min(6, currentRank + change));
+    
+    panelStats[panelId].stats[actualStatKey].rank = currentRank;
+    rankSpan.textContent = currentRank;
+    updatePanelStats(panelId);
 }
 
-// ランク変更関数
-function changeRank(type, change) {
-  const rankSpanId = `${type}-rank-val`;
-  const rankSpan = document.getElementById(rankSpanId);
-  let currentRank = parseInt(rankSpan.textContent);
+function setupNatureControl(panelId, statKeyOrType, controlId, hiddenInputId, callback) {
+    const control = document.getElementById(controlId);
+    const hiddenInput = document.getElementById(hiddenInputId);
+    if (!control || !hiddenInput) return;
 
-  currentRank += change;
+    let targetStatKeyInPanelStats; // 'attack', 'spAttack', 'defense', 'spDefense'
 
-  // 上限と下限を設ける (-6 から +6)
-  if (currentRank < -6) {
-      currentRank = -6;
-  } else if (currentRank > 6) {
-      currentRank = 6;
-  }
+    if (statKeyOrType === 'main-offensive') {
+        // main-offensive の性格コントロールは、技に応じて A または C の性格に影響を与える
+        // この関数が呼び出される時点では技が未定の場合もあるため、
+        // イベント発生時に技カテゴリを確認して適切なステータスを更新する。
+        // ただし、表示の初期化は A に合わせておくなど工夫が必要。
+        // ここでは、イベント時に技に応じてpanelStatsの該当箇所を更新すると仮定。
+        // 初期表示はAに合わせておく。
+        targetStatKeyInPanelStats = 'attack'; // デフォルト
+    } else {
+        targetStatKeyInPanelStats = statKeyOrType; // 'attack', 'defense', 'spAttack', 'spDefense'
+    }
+     if (!panelStats[panelId] || !panelStats[panelId].stats[targetStatKeyInPanelStats] && statKeyOrType !== 'main-offensive') {
+        // main-offensive以外でpanelStatsに該当キーがなければ何もしない
+        console.warn(`panelStats for ${panelId}.${targetStatKeyInPanelStats} not found.`);
+        return;
+    }
 
-  rankSpan.textContent = currentRank;
+
+    // 初期値設定
+    let initialNature = 1.0;
+    if (statKeyOrType === 'main-offensive') {
+        initialNature = panelStats[panelId].stats.attack.nature; // デフォルトはAの性格
+    } else {
+        initialNature = panelStats[panelId].stats[targetStatKeyInPanelStats].nature;
+    }
+    hiddenInput.value = initialNature;
+    control.querySelectorAll('button').forEach(button => {
+        button.classList.toggle('active', parseFloat(button.dataset.value) === initialNature);
+    });
+    
+    control.querySelectorAll('button').forEach(button => {
+        button.addEventListener('click', () => {
+            control.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+            button.classList.add('active');
+            const newNature = parseFloat(button.dataset.value);
+            hiddenInput.value = newNature;
+
+            if (statKeyOrType === 'main-offensive') {
+                const move = selectedMoves[panelId];
+                const actualTargetKey = (move && move.category === "特殊") ? 'spAttack' : 'attack';
+                panelStats[panelId].stats[actualTargetKey].nature = newNature;
+            } else {
+                panelStats[panelId].stats[targetStatKeyInPanelStats].nature = newNature;
+            }
+            if (callback) callback();
+        });
+    });
 }
 
-// 性格補正ボタンのセットアップ関数
-function setupNatureControl(controlId, hiddenInputId, callback) {
-  const control = document.getElementById(controlId);
-  const hiddenInput = document.getElementById(hiddenInputId);
-
-  if (control && hiddenInput) {
-      control.querySelectorAll('button').forEach(button => {
-          button.addEventListener('click', () => {
-              control.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
-              button.classList.add('active');
-              hiddenInput.value = button.dataset.value;
-              if (callback) callback();
-          });
-      });
-  }
-}
-
-// セグメントコントロールのセットアップ関数 (app.jsから移動)
 function setupSegmentedControl(controlId, onChangeCallback) {
   const control = document.getElementById(controlId);
-  if (!control) {
-    console.warn(`Segmented control with ID "${controlId}" not found.`);
-    return;
-  }
+  if (!control) return;
   const buttons = control.querySelectorAll('button');
-
+  
   buttons.forEach(button => {
     button.addEventListener('click', () => {
       const isActive = button.classList.contains('active');
+      const selectedValue = button.dataset.value;
 
-      if (isActive) {
-        button.classList.remove('active');
-        if (onChangeCallback) onChangeCallback("");
-        return;
+      if (isActive && selectedValue !== "none") { // 「なし」以外でアクティブなものを再度クリックしても解除しない
+          if(controlId === 'center-weatherControl' || controlId === 'center-fieldControl'){
+              // 天候・フィールドはトグルオフ（「なし」に戻る）を許可しない
+          } else {
+            return;
+          }
       }
+      
+      let valueToCallBack = selectedValue;
+      if (isActive && selectedValue === "none" && (controlId === 'center-weatherControl' || controlId === 'center-fieldControl') ) {
+          // 「なし」がアクティブな時に「なし」をクリックしても何も変わらない
+          return;
+      }
+
 
       buttons.forEach(btn => btn.classList.remove('active'));
       button.classList.add('active');
-
-      const selectedValue = button.dataset.value;
+      
       if (onChangeCallback) {
-        onChangeCallback(selectedValue);
+        onChangeCallback(valueToCallBack);
       }
     });
   });
 }
 
-
-// autoComplete.js のインスタンスを初期化する汎用関数
-function initializeAutoComplete(elementId, dataSrc, key, onChangeCallback) {
+function initializeAutoComplete(elementId, dataSrc, key, onSelectionCallback) {
   const inputElement = document.getElementById(elementId);
-  if (!inputElement) {
-      console.warn(`Input element with ID "${elementId}" not found. Skipping autoComplete initialization.`);
-      return;
-  }
+  if (!inputElement) return;
 
   new autoComplete({
       selector: `#${elementId}`,
       placeHolder: inputElement.placeholder,
-      data: {
-          src: dataSrc,
-          keys: [key],
-          cache: true
-      },
+      data: { src: dataSrc, keys: [key], cache: true },
       resultsList: {
           element: (list, data) => {
               if (!data.results.length) {
@@ -435,123 +541,84 @@ function initializeAutoComplete(elementId, dataSrc, key, onChangeCallback) {
       },
       resultItem: {
           highlight: true,
-          render: (item, data) => {
-              item.innerHTML = data.value[key];
-              return item;
+          element: (item, data) => { // Ensure this matches autoComplete.js v10.x API
+              item.innerHTML = `<span>${data.value[key]}</span>`; // Display the full name
           }
       },
       events: {
           input: {
               selection: (event) => {
                   const feedback = event.detail;
-                  inputElement.value = feedback.selection.value[key];
-                  if (onChangeCallback) {
-                    onChangeCallback(inputElement.value);
+                  const selectedValue = feedback.selection.value[key];
+                  inputElement.value = selectedValue;
+                  if (onSelectionCallback) {
+                    onSelectionCallback(selectedValue);
                   }
-                  inputElement.dispatchEvent(new Event('change')); // 手動でchangeイベントを発火
               }
           }
       },
       searchEngine: (query, record) => {
-        // ひらがな・カタカナ変換 & 小文字化
         const normalizedQuery = toHiragana(query.toLowerCase());
-        const normalizedRecord = toHiragana(record.toLowerCase());
-        return normalizedRecord.includes(normalizedQuery);
+        const recordValue = record && record[key] ? record[key] : "";
+        const normalizedRecordKey = toHiragana(recordValue.toLowerCase());
+        return normalizedRecordKey.includes(normalizedQuery);
       },
+       threshold: 1,
+       debounce: 300
   });
 }
 
-// カタカナをひらがなに変換
 function toHiragana(str) {
-  return str.replace(/[\u30a1-\u30f6]/g, ch =>
-    String.fromCharCode(ch.charCodeAt(0) - 0x60)
-  );
+  return str.replace(/[\u30a1-\u30f6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 }
 
-// --- 初期化処理 ---
 async function initializeApp() {
   pokemonData = await fetchJson('data/pokemonList.json');
   moveData = await fetchJson('data/moveList.json');
 
-  // autocomplete.js の初期化をここで行う
-  initializeAutoComplete('attacker', pokemonData, 'name', (selectedName) => {
-    attackerSelectedPokemon = pokemonData.find(p => p.name === selectedName);
-    if (attackerSelectedPokemon) {
-      showAbilities(attackerSelectedPokemon, "ability-choice");
-    } else {
-      document.getElementById("ability-choice").innerHTML = ""; // クリア
-    }
-    updateAllStats();
-  });
-  initializeAutoComplete('defender', pokemonData, 'name', (selectedName) => {
-    defenderSelectedPokemon = pokemonData.find(p => p.name === selectedName);
-    if (defenderSelectedPokemon) {
-      showAbilities(defenderSelectedPokemon, "defender-abilities");
-    } else {
-      document.getElementById("defender-abilities").innerHTML = ""; // クリア
-    }
-    updateAllStats();
-  });
-  initializeAutoComplete('move', moveData, 'name', (selectedName) => {
-    selectedMove = moveData.find(m => m.name === selectedName);
-    updateDoubleDamageCheckbox();
-    updateAllStats();
-  });
+  panelIds.forEach(panelId => {
+      const currentPanelInternalStats = panelStats[panelId].stats;
+      // IVs
+      document.getElementById(`${panelId}-hp-iv`).value = currentPanelInternalStats.hp.iv;
+      document.getElementById(`${panelId}-main-offensive-iv`).value = currentPanelInternalStats.attack.iv; // Default main offensive to attack
+      document.getElementById(`${panelId}-defense-iv`).value = currentPanelInternalStats.defense.iv;
+      document.getElementById(`${panelId}-sp-defense-iv`).value = currentPanelInternalStats.spDefense.iv;
+      // HTMLに 'attack-iv', 'sp-attack-iv' があればそれらも初期化
+      if(document.getElementById(`${panelId}-attack-iv`)) document.getElementById(`${panelId}-attack-iv`).value = currentPanelInternalStats.attack.iv;
+      if(document.getElementById(`${panelId}-sp-attack-iv`)) document.getElementById(`${panelId}-sp-attack-iv`).value = currentPanelInternalStats.spAttack.iv;
 
-  setupEventListeners();
 
-  // 初期ロード時の実数値更新
-  updateAllStats();
+      // EVs
+      document.getElementById(`${panelId}-hp-ev`).value = currentPanelInternalStats.hp.ev;
+      document.getElementById(`${panelId}-main-offensive-ev`).value = currentPanelInternalStats.attack.ev; // Default main offensive to attack
+      document.getElementById(`${panelId}-defense-ev`).value = currentPanelInternalStats.defense.ev;
+      document.getElementById(`${panelId}-sp-defense-ev`).value = currentPanelInternalStats.spDefense.ev;
+      if(document.getElementById(`${panelId}-attack-ev`)) document.getElementById(`${panelId}-attack-ev`).value = currentPanelInternalStats.attack.ev;
+      if(document.getElementById(`${panelId}-sp-attack-ev`)) document.getElementById(`${panelId}-sp-attack-ev`).value = currentPanelInternalStats.spAttack.ev;
+
+      // Natures (hidden inputs and button states)
+      // (setupNatureControl 内で初期化されるが、panelStats の値が正しいことが前提)
+      // Ranks
+      document.getElementById(`${panelId}-main-offensive-rank-val`).textContent = currentPanelInternalStats.attack.rank; // Default
+      document.getElementById(`${panelId}-defense-rank-val`).textContent = currentPanelInternalStats.defense.rank;
+      document.getElementById(`${panelId}-sp-defense-rank-val`).textContent = currentPanelInternalStats.spDefense.rank;
+      if(document.getElementById(`${panelId}-attack-rank-val`)) document.getElementById(`${panelId}-attack-rank-val`).textContent = currentPanelInternalStats.attack.rank;
+      if(document.getElementById(`${panelId}-sp-attack-rank-val`)) document.getElementById(`${panelId}-sp-attack-rank-val`).textContent = currentPanelInternalStats.spAttack.rank;
+
+
+      // Initial HP Bar and Icon
+      updatePokemonHPBar(panelId, 0, 1);
+      const hpTableNameEl = document.getElementById(`${panelId}-hp-table-name`);
+      if(hpTableNameEl) hpTableNameEl.textContent = '-';
+      const iconEl = document.getElementById(`${panelId}-icon`);
+      if (iconEl) iconEl.style.backgroundColor = '#cccccc'; // Default grey
+      
+      // Initialize ability section as empty
+      showAbilities(panelId, null);
+  });
+  
+  setupEventListeners(); // Call after panelStats might be referenced in setupNatureControl
+  updateAllPanelStats(); 
 }
 
-// ダメージポップアップを更新する関数 (damage-calculator-ui.jsから移動)
-function updateDamagePopup({ normalMin, normalMax, critical, damageNormalMin, damageNormalMax, damageCritical, targetHP }) {
-  // すべての要素が存在するか確認
-  const normalMinElem = document.getElementById('normal-min');
-  const normalMaxElem = document.getElementById('normal-max');
-  const criticalElem = document.getElementById('critical');
-  const labelNormalElem = document.getElementById('label-normal');
-  const labelCriticalElem = document.getElementById('label-critical');
-  const valueNormalElem = document.getElementById('value-normal');
-  const valueCriticalElem = document.getElementById('value-critical');
-
-  if (!normalMinElem || !normalMaxElem || !criticalElem || !labelNormalElem || !labelCriticalElem || !valueNormalElem || !valueCriticalElem) {
-      console.warn("Damage popup elements not found. Skipping update.");
-      return; // 要素が見つからない場合は処理を中断
-  }
-
-  const normalMinPercent = (normalMin / targetHP) * 100;
-  const normalMaxPercent = (normalMax / targetHP) * 100;
-  const criticalPercent = (critical / targetHP) * 100;
-
-  normalMinElem.style.left = '0%';
-  normalMinElem.style.width = normalMinPercent + '%';
-
-  normalMaxElem.style.left = normalMinPercent + '%';
-  normalMaxElem.style.width = (normalMaxPercent - normalMinPercent) + '%';
-
-  criticalElem.style.left = normalMaxPercent + '%';
-  criticalElem.style.width = (criticalPercent - normalMaxPercent) + '%';
-
-  labelNormalElem.textContent = `通常: ${Math.round(normalMinPercent)}% - ${Math.round(normalMaxPercent)}%`;
-  labelCriticalElem.textContent = `急所: ${Math.round(criticalPercent)}%`;
-  valueNormalElem.textContent = `通常: ${damageNormalMin} - ${damageNormalMax} ダメージ`;
-  valueCriticalElem.textContent = `急所: ${damageCritical} ダメージ`;
-}
-
-
-// --- ページロード時に初期化 ---
 document.addEventListener("DOMContentLoaded", initializeApp);
-
-// 初期表示のダメージポップアップのサンプルデータ
-document.addEventListener('DOMContentLoaded', () => {
-  updateDamagePopup({
-    normalMin: 30,
-    normalMax: 40,
-    critical: 60,
-    damageNormalMin: 30,
-    damageNormalMax: 40,
-    damageCritical: 60,
-    targetHP: 100
-  });
-});

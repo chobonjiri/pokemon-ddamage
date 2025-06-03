@@ -1,24 +1,138 @@
 /* style/modules/panels.css */
 
 .panel {
-  flex: 1;
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 8px;
+  /* flex: 1; /* layout.css の Grid 設定に依存するため、ここでは削除または調整 */
+  border: 1px solid #ccc; /* これは維持 */
+  padding: 15px; /* HTMLのインラインスタイルと重複する場合は統一 */
+  border-radius: 8px; /* これは維持 */
+  /* background-color はパネルごとにIDで指定されているため、デフォルトは不要か、#f9f9f9 などに設定 */
+  display: flex;
+  flex-direction: column; /* パネル内の要素を縦に積む */
+  gap: 10px; /* パネル内の主要セクション間のギャップ */
 }
 
 .panel h3 {
   margin-top: 0;
+  margin-bottom: 10px; /* 見出しとコンテンツの間のスペース */
+  font-size: 1.1em;
+  text-align: center;
+  border-bottom: 1px solid #eee;
+  padding-bottom: 5px;
 }
 
-.stat-block {
-  margin-bottom: 10px;
+/* ポケモン名、特性、技などの情報入力ライン */
+.pokemon-info-line {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 8px; /* 各情報ライン間のスペース */
 }
 
+.pokemon-info-line .search-input-field,
+.pokemon-info-line select,
+.pokemon-info-line input[type="number"] {
+  flex-grow: 1; /* 入力フィールドがスペースを埋めるように */
+  /* forms.css でのスタイルを継承または上書き */
+}
+.pokemon-info-line .type-display {
+  font-weight: bold;
+  min-width: 70px; 
+  text-align: center;
+  padding: 5px; /* layout.cssから微調整 */
+  border: 1px solid #e0e0e0; /* 少し目立たせる */
+  border-radius: 4px;
+  background-color: #f5f5f5;
+  font-size: 0.8em;
+}
+
+
+/* 特性セクション */
 .ability-section {
-  margin-top: 10px;
+  margin-top: 5px; /* 上の要素とのスペース */
+  margin-bottom: 5px;
+  display: flex; /* 特性選択肢と無効化チェックボックスを横に並べるため */
+  align-items: center;
+  gap: 10px; /* 特性選択肢とチェックボックスの間のスペース */
+  flex-grow: 1; /* .pokemon-info-line内でスペースを埋める */
 }
 
+.ability-section .segmented-control { /* 特性ボタンのコンテナ */
+  flex-grow: 1; /* 利用可能なスペースを特性ボタンが使う */
+  overflow-x: auto; /* 特性が多い場合にスクロール可能に */
+  flex-wrap: nowrap;
+  padding: 3px; /* 内側のパディング */
+  /* border と border-radius は segmented-control.css で定義されている想定 */
+}
+
+/* 特性無効化チェックボックスのラベル */
+.checkbox-inline { 
+  /* layout.css にも定義があるが、こちらで微調整も可能 */
+  font-size: 0.85em;
+  white-space: nowrap; /* ラベルが折り返さないように */
+}
+
+
+/* 技関連 */
+.move-double-damage-section { /* IDからクラスセレクタに変更 */
+  margin-top: 5px;
+  display: none; /* 初期非表示はJSで制御 */
+  font-size: 0.85em;
+}
+
+/* ステータスブロック */
+.stat-block {
+  margin-bottom: 8px; /* 各ステータスブロック間のマージン */
+  padding: 8px;
+  border: 1px solid #e9e9e9;
+  border-radius: 6px;
+  background-color: #fff; /* ステータスブロックの背景を白に */
+}
+
+.stat-block h4 {
+  margin-top: 0;
+  margin-bottom: 6px; /* 見出しと入力行の間のスペース */
+  font-size: 0.9em;
+  font-weight: bold;
+  color: #333;
+}
+
+/* ステータス入力行のレイアウト */
+.stat-block-row {
+  display: flex;
+  flex-wrap: wrap; /* 小画面で折り返すように */
+  align-items: center;
+  gap: 6px; /* 要素間のギャップ */
+}
+.stat-block-row > span.actual-stat {
+    min-width: 30px; /* 実数値表示エリアの最小幅 */
+    font-weight: bold;
+    text-align: right;
+}
+.stat-block-row .segmented-control { /* 性格補正 */
+    /* スタイルは segmented-control.css で定義 */
+}
+.stat-block-row input[type="number"].iv-input,
+.stat-block-row input[type="number"].ev-input {
+    width: 55px; /* 個体値・努力値入力欄の幅 */
+    text-align: center;
+    /* forms.css でのスタイルを継承または上書き */
+}
+.stat-block-row .rank-btn {
+    /* buttons.css でのスタイルを継承 */
+}
+.stat-block-row span.rank-value {
+    min-width: 15px; /* ランク表示の最小幅 */
+    text-align: center;
+    font-weight: bold;
+}
+.stat-block-row input[type="hidden"].nature-value {
+    /* 非表示要素なのでスタイルは不要 */
+}
+
+
+/* 以下のタブ関連スタイルは現在のHTML構造では直接使われていないため、
+   もしJSで動的に生成するUIで使用していなければ削除またはコメントアウトを検討 */
+/*
 .tab-container {
   margin-top: 10px;
 }
@@ -31,8 +145,4 @@
 .tab-button.active {
   font-weight: bold;
 }
-
-#move-double-damage-section {
-  margin-top: 5px;
-  display: none;
-}
+*/

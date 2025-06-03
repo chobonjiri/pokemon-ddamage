@@ -11,8 +11,8 @@
 }
 
 /* Custom ability input fields */
-#custom-ability,
-#defender-custom-ability {
+/* ability-control-group内のinputに適用 */
+.ability-control-group .custom-ability-input {
   flex-grow: 1;
   min-width: 100px;
   max-width: 200px;
