@@ -125,9 +125,7 @@
     text-align: center;
     font-weight: bold;
 }
-.stat-block-row input[type="hidden"].nature-value {
-    /* 非表示要素なのでスタイルは不要 */
-}
+
 
 
 /* 以下のタブ関連スタイルは現在のHTML構造では直接使われていないため、
@@ -184,3 +182,44 @@
 /* 例: .pokemon-info-line { position: relative; } */
 /* これは、.suggestions-list が入力欄の真下に正しく表示されるために重要です。 */
 /* 上記で .pokemon-info-line に追加しました。 */
+
+/* Custom Autocomplete Suggestions List (既存のスタイルに追記・修正) */
+.suggestions-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  position: absolute;
+  z-index: 100;
+  background-color: white;
+  max-height: 200px;
+  overflow-y: auto;
+  width: calc(100% - 2px); /* 親の入力欄に合わせる (border分調整) */
+  box-sizing: border-box;
+}
+
+.pokemon-info-line { /* suggestions-listの基準点 */
+  position: relative;
+}
+
+.suggestions-list li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.suggestions-list li:hover,
+.suggestions-list li.suggestion-highlight { /* ハイライト用クラス */
+  background-color: #e0e0e0; /* より明確なハイライト色に変更 */
+}
+
+.suggestions-list.no-results li.no-results-message { /* 「見つかりませんでした」のスタイル */
+    padding: 8px 12px;
+    font-size: 0.9em;
+    color: #777;
+    cursor: default;
+}
+.suggestions-list.no-results li.no-results-message:hover {
+    background-color: transparent; /* ホバー効果を無効化 */
+}
