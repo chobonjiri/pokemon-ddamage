@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>ポケモン実数値計算ツール</title>
   
   <link rel="stylesheet" href="style/base.css" />
@@ -9,6 +10,103 @@
   <link rel="stylesheet" href="style/components/buttons.css" />
   <link rel="stylesheet" href="style/components/forms.css" />
   <link rel="stylesheet" href="style/components/segmented-control.css" />
+  <style>
+        /* CSS (style.css の内容をここに貼り付けます) */
+        /* body { */
+            /* display: flex; */
+            /* justify-content: center; */
+            /* align-items: flex-start; */ /* 上部に寄せる */
+            /* min-height: 100vh; */
+            /* background-color: #f0f0f0; */
+            /* margin: 20px; */ /* 上部に余白 */
+            /* font-family: 'Roboto', sans-serif; */ /* Google Fontsなどを使用するとより綺麗になります */
+        /* } */
+
+        .attack-rank-selector {
+            display: flex;
+            /* flex-direction: column; */ /* タイトルの横に配置するため行方向 */
+            align-items: center; /* 垂直方向中央揃え */
+            gap: 8px; /* ラベルとセレクタ間のスペース */
+        }
+
+        /* .attack-rank-selector label { */
+            /* font-size: 14px; */
+            /* color: #555; */
+            /* font-weight: bold; */
+        /* } */
+
+        .selector-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px; /* 各コントロール間のスペース */
+        }
+
+        /* ドロップダウンボタンのスタイル */
+        .dropdown-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .dropdown-toggle {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            padding: 4px 8px; /* パディングを調整 */
+            font-size: 14px; /* フォントサイズを調整 */
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            min-width: 60px; /* 最小幅を調整 */
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* シャドウを調整 */
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .dropdown-toggle:hover {
+            border-color: #007bff;
+        }
+
+        .dropdown-toggle.active {
+            border-color: #007bff;
+            box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.25);
+        }
+
+        .arrow-icon {
+            margin-left: 4px; /* マージンを調整 */
+            font-size: 10px; /* フォントサイズを調整 */
+            transition: transform 0.3s ease;
+        }
+
+        .dropdown-toggle.active .arrow-icon {
+            transform: rotate(180deg); /* ドロップダウンが開いたら矢印を逆さまにする */
+        }
+
+        /* ドロップダウンメニューのスタイル */
+        .dropdown-menu {
+            position: absolute;
+            top: 100%; /* ボタンのすぐ下に配置 */
+            left: 0;
+            width: 100%; /* ボタンと同じ幅 */
+            background-color: #fff;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            list-style: none;
+            padding: 0;
+            margin-top: 4px; /* ボタンとの間のスペース */
+            z-index: 100;
+            max-height: 150px; /* スクロール可能にする */
+            overflow-y: auto;
+            display: none; /* 初期状態では非表示 */
+        }
+
+        .dropdown-menu.show {
+            display: block;
+        }
+
+        /* プラス・マイナスボタンのスタイルは既存の.rank-btnを使用 */
+    </style>
   <link rel="stylesheet" href="style/modules/panels.css" />
   
 </head>
@@ -45,21 +143,57 @@
     <div class="stat-block" id="red2-main-offensive-stat-block">
       <div style="display: flex; align-items: center;">
         <h4 id="red2-main-offensive-label" style="margin-right: 8px; margin-bottom: 0;">A or C</h4>
-        <button onclick="changeRank('red2-main-offensive', -1)" class="rank-btn">-</button><span id="red2-main-offensive-rank-val">0</span><button onclick="changeRank('red2-main-offensive', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="red2-main-offensive-dropdownBtn" class="dropdown-toggle">
+                <span id="red2-main-offensive-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="red2-main-offensive-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="red2-main-offensive-minusBtn" class="rank-btn minus">-</button>
+            <button id="red2-main-offensive-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="red2-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="red2-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-main-offensive-nature" value="1.0"/> <input type="number" id="red2-main-offensive-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="red2-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
     <div class="stat-block">
       <div style="display: flex; align-items: center;">
         <h4 style="margin-right: 8px; margin-bottom: 0;">B</h4>
-        <button onclick="changeRank('red2-defense', -1)" class="rank-btn">-</button><span id="red2-defense-rank-val">0</span><button onclick="changeRank('red2-defense', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="red2-defense-dropdownBtn" class="dropdown-toggle">
+                <span id="red2-defense-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="red2-defense-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="red2-defense-minusBtn" class="rank-btn minus">-</button>
+            <button id="red2-defense-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="red2-defense-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="red2-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-defense-nature" value="1.0"/> <input type="number" id="red2-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="red2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
     <div class="stat-block">
       <div style="display: flex; align-items: center;">
         <h4 style="margin-right: 8px; margin-bottom: 0;">D</h4>
-        <button onclick="changeRank('red2-sp-defense', -1)" class="rank-btn">-</button><span id="red2-sp-defense-rank-val">0</span><button onclick="changeRank('red2-sp-defense', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="red2-sp-defense-dropdownBtn" class="dropdown-toggle">
+                <span id="red2-sp-defense-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="red2-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="red2-sp-defense-minusBtn" class="rank-btn minus">-</button>
+            <button id="red2-sp-defense-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="red2-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="red2-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-sp-defense-nature" value="1.0"/> <input type="number" id="red2-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="red2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
@@ -96,21 +230,57 @@
     <div class="stat-block" id="red1-main-offensive-stat-block">
       <div style="display: flex; align-items: center;">
         <h4 id="red1-main-offensive-label" style="margin-right: 8px; margin-bottom: 0;">A or C</h4>
-        <button onclick="changeRank('red1-main-offensive', -1)" class="rank-btn">-</button><span id="red1-main-offensive-rank-val">0</span><button onclick="changeRank('red1-main-offensive', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="red1-main-offensive-dropdownBtn" class="dropdown-toggle">
+                <span id="red1-main-offensive-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="red1-main-offensive-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="red1-main-offensive-minusBtn" class="rank-btn minus">-</button>
+            <button id="red1-main-offensive-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="red1-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="red1-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-main-offensive-nature" value="1.0"/> <input type="number" id="red1-main-offensive-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="red1-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
     <div class="stat-block">
       <div style="display: flex; align-items: center;">
         <h4 style="margin-right: 8px; margin-bottom: 0;">B</h4>
-        <button onclick="changeRank('red1-defense', -1)" class="rank-btn">-</button><span id="red1-defense-rank-val">0</span><button onclick="changeRank('red1-defense', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="red1-defense-dropdownBtn" class="dropdown-toggle">
+                <span id="red1-defense-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="red1-defense-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="red1-defense-minusBtn" class="rank-btn minus">-</button>
+            <button id="red1-defense-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="red1-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red1-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-defense-nature" value="1.0"/> <input type="number" id="red1-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="red1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
     <div class="stat-block">
       <div style="display: flex; align-items: center;">
         <h4 style="margin-right: 8px; margin-bottom: 0;">D</h4>
-        <button onclick="changeRank('red1-sp-defense', -1)" class="rank-btn">-</button><span id="red1-sp-defense-rank-val">0</span><button onclick="changeRank('red1-sp-defense', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="red1-sp-defense-dropdownBtn" class="dropdown-toggle">
+                <span id="red1-sp-defense-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="red1-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="red1-sp-defense-minusBtn" class="rank-btn minus">-</button>
+            <button id="red1-sp-defense-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="red1-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red1-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-sp-defense-nature" value="1.0"/> <input type="number" id="red1-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="red1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
@@ -216,21 +386,57 @@
     <div class="stat-block" id="blue1-main-offensive-stat-block">
       <div style="display: flex; align-items: center;">
         <h4 id="blue1-main-offensive-label" style="margin-right: 8px; margin-bottom: 0;">A or C</h4>
-        <button onclick="changeRank('blue1-main-offensive', -1)" class="rank-btn">-</button><span id="blue1-main-offensive-rank-val">0</span><button onclick="changeRank('blue1-main-offensive', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="blue1-main-offensive-dropdownBtn" class="dropdown-toggle">
+                <span id="blue1-main-offensive-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="blue1-main-offensive-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="blue1-main-offensive-minusBtn" class="rank-btn minus">-</button>
+            <button id="blue1-main-offensive-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="blue1-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="blue1-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-main-offensive-nature" value="1.0"/> <input type="number" id="blue1-main-offensive-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="blue1-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
     <div class="stat-block">
       <div style="display: flex; align-items: center;">
         <h4 style="margin-right: 8px; margin-bottom: 0;">B</h4>
-        <button onclick="changeRank('blue1-defense', -1)" class="rank-btn">-</button><span id="blue1-defense-rank-val">0</span><button onclick="changeRank('blue1-defense', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="blue1-defense-dropdownBtn" class="dropdown-toggle">
+                <span id="blue1-defense-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="blue1-defense-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="blue1-defense-minusBtn" class="rank-btn minus">-</button>
+            <button id="blue1-defense-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="blue1-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue1-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-defense-nature" value="1.0"/> <input type="number" id="blue1-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="blue1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
     <div class="stat-block">
       <div style="display: flex; align-items: center;">
         <h4 style="margin-right: 8px; margin-bottom: 0;">D</h4>
-        <button onclick="changeRank('blue1-sp-defense', -1)" class="rank-btn">-</button><span id="blue1-sp-defense-rank-val">0</span><button onclick="changeRank('blue1-sp-defense', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="blue1-sp-defense-dropdownBtn" class="dropdown-toggle">
+                <span id="blue1-sp-defense-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="blue1-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="blue1-sp-defense-minusBtn" class="rank-btn minus">-</button>
+            <button id="blue1-sp-defense-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="blue1-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue1-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-sp-defense-nature" value="1.0"/> <input type="number" id="blue1-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="blue1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
@@ -267,21 +473,57 @@
     <div class="stat-block" id="blue2-main-offensive-stat-block">
       <div style="display: flex; align-items: center;">
         <h4 id="blue2-main-offensive-label" style="margin-right: 8px; margin-bottom: 0;">A or C</h4>
-        <button onclick="changeRank('blue2-main-offensive', -1)" class="rank-btn">-</button><span id="blue2-main-offensive-rank-val">0</span><button onclick="changeRank('blue2-main-offensive', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="blue2-main-offensive-dropdownBtn" class="dropdown-toggle">
+                <span id="blue2-main-offensive-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="blue2-main-offensive-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="blue2-main-offensive-minusBtn" class="rank-btn minus">-</button>
+            <button id="blue2-main-offensive-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="blue2-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="blue2-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-main-offensive-nature" value="1.0"/> <input type="number" id="blue2-main-offensive-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="blue2-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
     <div class="stat-block">
       <div style="display: flex; align-items: center;">
         <h4 style="margin-right: 8px; margin-bottom: 0;">B</h4>
-        <button onclick="changeRank('blue2-defense', -1)" class="rank-btn">-</button><span id="blue2-defense-rank-val">0</span><button onclick="changeRank('blue2-defense', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="blue2-defense-dropdownBtn" class="dropdown-toggle">
+                <span id="blue2-defense-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="blue2-defense-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="blue2-defense-minusBtn" class="rank-btn minus">-</button>
+            <button id="blue2-defense-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="blue2-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue2-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-defense-nature" value="1.0"/> <input type="number" id="blue2-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="blue2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
     <div class="stat-block">
       <div style="display: flex; align-items: center;">
         <h4 style="margin-right: 8px; margin-bottom: 0;">D</h4>
-        <button onclick="changeRank('blue2-sp-defense', -1)" class="rank-btn">-</button><span id="blue2-sp-defense-rank-val">0</span><button onclick="changeRank('blue2-sp-defense', 1)" class="rank-btn">+</button>
+        <div class="attack-rank-selector">
+          <div class="selector-controls">
+            <div class="dropdown-wrapper">
+              <button id="blue2-sp-defense-dropdownBtn" class="dropdown-toggle">
+                <span id="blue2-sp-defense-selectedValue">±0</span>
+                <span class="arrow-icon">▲</span>
+              </button>
+              <ul id="blue2-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
+            </div>
+            <button id="blue2-sp-defense-minusBtn" class="rank-btn minus">-</button>
+            <button id="blue2-sp-defense-plusBtn" class="rank-btn plus">+</button>
+          </div>
+        </div>
       </div>
       <div class="stat-block-row"><span id="blue2-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue2-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-sp-defense-nature" value="1.0"/> <input type="number" id="blue2-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/> <input type="number" id="blue2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/></div>
     </div>
@@ -291,6 +533,120 @@
 
 </div>
 
+<script>
+    // JavaScript (script.js の内容をここに貼り付けます)
+    document.addEventListener('DOMContentLoaded', () => {
+
+        // ランクセレクタを初期化する関数
+        function initializeRankSelector(pokemonId, statType) {
+            const dropdownBtn = document.getElementById(`${pokemonId}-${statType}-dropdownBtn`);
+            const dropdownMenu = document.getElementById(`${pokemonId}-${statType}-dropdownMenu`);
+            const selectedValueSpan = document.getElementById(`${pokemonId}-${statType}-selectedValue`);
+            const minusBtn = document.getElementById(`${pokemonId}-${statType}-minusBtn`);
+            const plusBtn = document.getElementById(`${pokemonId}-${statType}-plusBtn`);
+            const dropdownWrapper = dropdownBtn.closest('.dropdown-wrapper');
+
+            const MIN_VALUE = -6;
+            const MAX_VALUE = 6;
+            let currentValue = 0; // デフォルト値
+
+            // ドロップダウンメニューの項目を生成する関数
+            function createDropdownItems() {
+                dropdownMenu.innerHTML = ''; // 既存の項目をクリア
+                // +6から-6まで降順で表示
+                for (let i = MAX_VALUE; i >= MIN_VALUE; i--) {
+                    const listItem = document.createElement('li');
+                    const displayValue = i === 0 ? '±0' : (i > 0 ? `+${i}` : `${i}`);
+                    listItem.textContent = displayValue;
+                    listItem.dataset.value = i; // データ属性に実際の数値を保持
+                    dropdownMenu.appendChild(listItem);
+
+                    listItem.addEventListener('click', () => {
+                        setCurrentValue(i);
+                        toggleDropdown(); // 選択したらドロップダウンを閉じる
+                    });
+                }
+            }
+
+            // 現在の値を設定し、UIを更新する関数
+            function setCurrentValue(newValue) {
+                if (newValue >= MIN_VALUE && newValue <= MAX_VALUE) {
+                    currentValue = newValue;
+                    updateUI();
+                    // TODO: ここで計算ロジックをトリガーする処理を追加
+                    // 例: changeRank(statType, newValue); // 元のchangeRank関数を呼び出す場合
+                    console.log(`${pokemonId} ${statType} Rank changed to: ${currentValue}`);
+                }
+            }
+
+            // UIを更新する関数
+            function updateUI() {
+                const displayValue = currentValue === 0 ? '±0' : (currentValue > 0 ? `+${currentValue}` : `${currentValue}`);
+                selectedValueSpan.textContent = displayValue;
+
+                // ドロップダウンメニュー内の選択状態を更新
+                const listItems = dropdownMenu.querySelectorAll('li');
+                listItems.forEach(item => {
+                    item.classList.remove('selected');
+                    if (parseInt(item.dataset.value) === currentValue) {
+                        item.classList.add('selected');
+                        // 選択された項目が見えるようにスクロール
+                        // item.scrollIntoView({ behavior: 'smooth', block: 'nearest' }); // スクロールは不要かもしれないのでコメントアウト
+                    }
+                });
+
+                // ボタンの有効/無効を切り替える
+                minusBtn.disabled = currentValue <= MIN_VALUE;
+                plusBtn.disabled = currentValue >= MAX_VALUE;
+            }
+
+            // ドロップダウンの表示/非表示を切り替える関数
+            function toggleDropdown() {
+                dropdownMenu.classList.toggle('show');
+                dropdownBtn.classList.toggle('active');
+            }
+
+            // ドロップダウンボタンのクリックイベント
+            dropdownBtn.addEventListener('click', toggleDropdown);
+
+            // マイナスボタンのクリックイベント
+            minusBtn.addEventListener('click', () => {
+                setCurrentValue(currentValue - 1);
+            });
+
+            // プラスボタンのクリックイベント
+            plusBtn.addEventListener('click', () => {
+                setCurrentValue(currentValue + 1);
+            });
+
+            // ドロップダウンメニュー以外をクリックしたら閉じる
+            document.addEventListener('click', (event) => {
+                // dropdownWrapper.contains(event.target) でクリックがドロップダウン全体の内側か確認
+                if (dropdownMenu.classList.contains('show') && !dropdownWrapper.contains(event.target)) {
+                     toggleDropdown();
+                }
+            });
+
+            // 初期化
+            createDropdownItems();
+            setCurrentValue(0); // デフォルト値を設定
+        }
+
+        // 各ポケモンの各ステータスに対して初期化を実行
+        const pokemonIds = ['red2', 'red1', 'blue1', 'blue2'];
+        const statTypes = ['main-offensive', 'defense', 'sp-defense'];
+
+        pokemonIds.forEach(pokemonId => {
+            statTypes.forEach(statType => {
+                // main-offensive の場合はIDが red2-main-offensive-stat-block のように stat-block に付いているのでチェック
+                // defense, sp-defense は stat-block にIDが付いていないので、 statType を使って要素を特定する必要がある
+                // 今回はシンプルにIDで要素を取得するように修正したので、statType はID生成にのみ使用
+                initializeRankSelector(pokemonId, statType);
+            });
+        });
+
+    });
+</script>
 <script type="module" src="ui/main.js" defer></script>
 </body>
 </html> 
