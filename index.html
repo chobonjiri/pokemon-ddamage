@@ -13,66 +13,78 @@
   <link rel="stylesheet" href="style/components/forms.css" />
   <link rel="stylesheet" href="style/components/segmented-control.css" />
   <link rel="stylesheet" href="style/modules/panels.css" />
-  <link rel="stylesheet" href="style/modules/damage-popup.css" />
   <style>
-    /* Basic styling for 2x2 grid and center field (layout.css で調整・拡充推奨) */
+    /* Basic styling for the new layout (layout.css で調整・拡充推奨) */
     body {
       display: flex;
       flex-direction: column;
       align-items: center;
     }
-    .panels-and-field-container {
+    .page-container {
       display: grid;
-      grid-template-columns: 1fr auto 1fr; /* red | field | blue */
-      grid-template-rows: auto auto; /* row1, row2 for panels */
-      gap: 10px; /* ギャップを調整 */
-      width: 90%; /* 全体の幅を調整 */
-      max-width: 1200px; /* 最大幅を設定 */
+      grid-template-columns: 1fr 1fr; /* 2列 */
+      grid-template-rows: auto auto auto; /* 3行: Redチーム, Field, Blueチーム */
+      gap: 15px; /* 全体のギャップ */
+      width: 95%;
+      max-width: 1400px; /* 最大幅を少し広げる */
       margin: 20px auto;
-    }
-
-    .panel-column {
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
     }
 
     .panel {
       border: 1px solid #ccc;
-      padding: 10px;
+      padding: 15px; /* 少しパディングを増やす */
       border-radius: 8px;
-      background-color: #f9f9f9;
+      background-color: #f9f9f9; /* デフォルトの背景色 */
+      min-width: 300px; /* パネルの最小幅 */
     }
 
+    /* Panel specific background colors */
+    #red2-panel, #red1-panel {
+        background-color: lightcoral; /* 薄い赤色 */
+    }
+    #blue1-panel, #blue2-panel {
+        background-color: lightblue; /* 薄い青色 */
+    }
+
+
     .field-section-container {
-      grid-column: 2 / 3;
-      grid-row: 1 / 3; /* 2行にまたがるように */
+      grid-column: 1 / 3; /* 2列にまたがる */
+      grid-row: 2 / 3;    /* 2行目に配置 */
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center; /* 中央揃え */
-      padding: 10px;
+      justify-content: center;
+      padding: 15px;
       border: 1px solid #ccc;
       border-radius: 8px;
       background-color: #f0f0f0;
-      gap: 10px;
+      gap: 15px;
     }
     .field-status-area {
-      width: 100%;
-      padding: 5px;
+      width: 45%; /* RedとBlueの場の状態を横並びにするため幅調整 */
+      padding: 8px;
       border: 1px solid #ddd;
       border-radius: 4px;
-      margin-bottom: 5px;
     }
     .field-status-area h4 {
       margin-top: 0;
-      margin-bottom: 5px;
-      font-size: 0.9em;
+      margin-bottom: 8px;
+      font-size: 1em; /* 少しフォントサイズ調整 */
     }
     .field-status-area textarea {
-      width: calc(100% - 10px);
-      min-height: 40px;
-      font-size: 0.8em;
+      width: calc(100% - 16px); /* padding考慮 */
+      min-height: 50px;
+      font-size: 0.9em;
+    }
+    .field-battle-conditions {
+        display: flex;
+        justify-content: space-around;
+        width: 100%;
+        margin-bottom: 10px;
+    }
+    .pokemon-hp-table-container {
+        width: 100%;
+        margin-bottom: 10px;
     }
     .pokemon-hp-table {
       width: 100%;
@@ -80,276 +92,278 @@
     }
     .pokemon-hp-table th, .pokemon-hp-table td {
       border: 1px solid #ddd;
-      padding: 4px;
-      font-size: 0.8em;
+      padding: 5px; /* 少しパディング調整 */
+      font-size: 0.9em;
       text-align: left;
     }
     .hp-bar-container {
       width: 100%;
-      height: 15px;
-      background-color: #eee;
-      border-radius: 3px;
+      height: 18px; /* 少し高さを増やす */
+      background-color: #e0e0e0; /* 背景色を少し濃く */
+      border-radius: 4px; /* 角丸を少し大きく */
       overflow: hidden;
       position: relative;
     }
     .hp-bar {
       height: 100%;
       background-color: #4CAF50;
-      width: 100%; /* JSで割合に応じて変更 */
+      width: 100%; 
       transition: width 0.3s ease;
       text-align: center;
       color: white;
-      font-size: 0.7em;
-      line-height: 15px;
+      font-size: 0.8em; /* 少しフォントサイズ調整 */
+      line-height: 18px; /* 高さに合わせる */
+      font-weight: bold;
     }
     .stat-block-row {
       display: flex;
-      flex-wrap: wrap; /* 折り返しを許可 */
+      flex-wrap: wrap;
       align-items: center;
-      gap: 5px; /* 要素間のスペース */
-      margin-bottom: 8px;
+      gap: 8px; 
+      margin-bottom: 10px;
     }
     .stat-block-row > * {
-      margin-right: 5px; /* 右マージン */
+      margin-right: 8px;
     }
     .stat-block-row .iv-input, .stat-block-row .ev-input {
-      width: 50px; /* 幅を調整 */
+      width: 60px; 
     }
     .pokemon-info-line {
       display: flex;
       align-items: center;
       gap: 10px;
-      margin-bottom: 5px;
+      margin-bottom: 8px;
     }
     .pokemon-info-line input[type="text"], .pokemon-info-line select {
       flex-grow: 1;
+      padding: 6px; /* 入力欄のパディング調整 */
     }
     .type-display {
       font-weight: bold;
-      min-width: 60px; /* タイプ表示幅 */
+      min-width: 70px; 
+      text-align: center; /* タイプ表示を中央揃え */
+      padding: 4px;
+      border: 1px dashed #ccc; /* タイプ表示を囲む（任意） */
+      border-radius: 4px;
+    }
+    .checkbox-inline {
+        display: inline-flex;
+        align-items: center;
+        font-size: 0.9em;
+    }
+    .field-global-conditions {
+        display: flex;
+        flex-direction: column; /* 天候とフィールドを縦に並べる */
+        align-items: center;
+        gap: 10px;
+        width: 100%;
     }
   </style>
 </head>
 <body>
 
-<div class="panels-and-field-container">
-  <div class="panel-column" id="red-team-column">
-    <div class="panel" id="red1-panel">
-      <h3>Red 1</h3>
-      <div class="pokemon-info-line">
-        <input type="text" id="red1-pokemon-name" autocomplete="off" placeholder="ポケモン名" class="search-input-field pokemon-name-input" />
-        <span id="red1-pokemon-type" class="type-display">Type</span>
-      </div>
-      <div class="pokemon-info-line">
-        <div class="ability-section" id="red1-ability-section">
-          <div class="segmented-control" id="red1-ability-choice"></div>
-        </div>
-        <label class="checkbox-inline"><input type="checkbox" id="red1-ability-nullified" /> 特性無効</label>
-      </div>
-      <div class="pokemon-info-line">
-        <input type="text" id="red1-move" autocomplete="off" placeholder="技" class="search-input-field move-input" />
-        <span id="red1-move-type" class="type-display">MoveType</span>
-      </div>
-      <div class="pokemon-info-line">
-        <select id="red1-type-change">
-          <option value="">タイプ変更なし</option>
-          <option value="terastal">テラスタル</option>
-          <option value="stellar">ステラ</option>
-          </select>
-        <input type="number" id="red1-move-times" placeholder="回数" value="1" min="1" max="5" style="width: 60px;"/>
-      </div>
-       <div id="red1-move-double-damage-section" class="move-double-damage-section" style="display:none;">
-        <label><input type="checkbox" id="red1-double-damage-checkbox" /> ダブルダメージ</label>
-      </div>
-
-      <div class="stat-block" id="red1-main-offensive-stat-block"><h4>A or C</h4> <div class="stat-block-row"><span id="red1-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="red1-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-main-offensive-nature" value="1.0"/> <input type="number" id="red1-main-offensive-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red1-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red1-main-offensive', -1)" class="rank-btn">-</button><span id="red1-main-offensive-rank-val">0</span><button onclick="changeRank('red1-main-offensive', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>B</h4> <div class="stat-block-row"><span id="red1-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red1-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-defense-nature" value="1.0"/> <input type="number" id="red1-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red1-defense', -1)" class="rank-btn">-</button><span id="red1-defense-rank-val">0</span><button onclick="changeRank('red1-defense', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>D</h4> <div class="stat-block-row"><span id="red1-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red1-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-sp-defense-nature" value="1.0"/> <input type="number" id="red1-sp-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red1-sp-defense', -1)" class="rank-btn">-</button><span id="red1-sp-defense-rank-val">0</span><button onclick="changeRank('red1-sp-defense', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>HP</h4> <div class="stat-block-row"><span id="red1-hp-actual" class="actual-stat">-</span> <input type="number" id="red1-hp-iv" value="31" min="0" max="31" class="iv-input" style="margin-left:auto;"/> <input type="number" id="red1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input"/></div></div>
+<div class="page-container">
+  <div class="panel" id="red2-panel">
+    <h3>Red 2</h3>
+    <div class="pokemon-info-line">
+      <input type="text" id="red2-pokemon-name" autocomplete="off" placeholder="ポケモン名" class="search-input-field pokemon-name-input" />
+      <span id="red2-pokemon-type" class="type-display">Type</span>
     </div>
-
-    <div class="panel" id="red2-panel">
-      <h3>Red 2</h3>
-      <div class="pokemon-info-line">
-        <input type="text" id="red2-pokemon-name" autocomplete="off" placeholder="ポケモン名" class="search-input-field pokemon-name-input" />
-        <span id="red2-pokemon-type" class="type-display">Type</span>
+    <div class="pokemon-info-line">
+      <div class="ability-section" id="red2-ability-section">
+          <div class="segmented-control" id="red2-ability-choice"></div>
       </div>
-      <div class="pokemon-info-line">
-        <div class="ability-section" id="red2-ability-section">
-            <div class="segmented-control" id="red2-ability-choice"></div>
-        </div>
-        <label class="checkbox-inline"><input type="checkbox" id="red2-ability-nullified" /> 特性無効</label>
-      </div>
-      <div class="pokemon-info-line">
-        <input type="text" id="red2-move" autocomplete="off" placeholder="技" class="search-input-field move-input" />
-        <span id="red2-move-type" class="type-display">MoveType</span>
-      </div>
-      <div class="pokemon-info-line">
-        <select id="red2-type-change">
-          <option value="">タイプ変更なし</option>
-          <option value="terastal">テラスタル</option>
-          <option value="stellar">ステラ</option>
-        </select>
-        <input type="number" id="red2-move-times" placeholder="回数" value="1" min="1" max="5" style="width: 60px;"/>
-      </div>
-      <div id="red2-move-double-damage-section" class="move-double-damage-section" style="display:none;">
-        <label><input type="checkbox" id="red2-double-damage-checkbox" /> ダブルダメージ</label>
-      </div>
-      <div class="stat-block" id="red2-main-offensive-stat-block"><h4>A or C</h4> <div class="stat-block-row"><span id="red2-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="red2-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-main-offensive-nature" value="1.0"/> <input type="number" id="red2-main-offensive-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red2-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red2-main-offensive', -1)" class="rank-btn">-</button><span id="red2-main-offensive-rank-val">0</span><button onclick="changeRank('red2-main-offensive', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>B</h4> <div class="stat-block-row"><span id="red2-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red2-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-defense-nature" value="1.0"/> <input type="number" id="red2-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red2-defense', -1)" class="rank-btn">-</button><span id="red2-defense-rank-val">0</span><button onclick="changeRank('red2-defense', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>D</h4> <div class="stat-block-row"><span id="red2-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red2-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-sp-defense-nature" value="1.0"/> <input type="number" id="red2-sp-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red2-sp-defense', -1)" class="rank-btn">-</button><span id="red2-sp-defense-rank-val">0</span><button onclick="changeRank('red2-sp-defense', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>HP</h4> <div class="stat-block-row"><span id="red2-hp-actual" class="actual-stat">-</span> <input type="number" id="red2-hp-iv" value="31" min="0" max="31" class="iv-input" style="margin-left:auto;"/> <input type="number" id="red2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input"/></div></div>
+      <label class="checkbox-inline"><input type="checkbox" id="red2-ability-nullified" /> 特性無効</label>
     </div>
+    <div class="pokemon-info-line">
+      <input type="text" id="red2-move" autocomplete="off" placeholder="技" class="search-input-field move-input" />
+      <span id="red2-move-type" class="type-display">MoveType</span>
+    </div>
+    <div class="pokemon-info-line">
+      <select id="red2-type-change">
+        <option value="">タイプ変更なし</option>
+        <option value="terastal-normal">テラス(ノ)</option>
+        <option value="terastal-fire">テラス(炎)</option>
+        <option value="terastal-water">テラス(水)</option>
+        <option value="stellar">ステラ</option>
+      </select>
+      <input type="number" id="red2-move-times" placeholder="回数" value="1" min="1" max="5" style="width: 60px;"/>
+    </div>
+    <div id="red2-move-double-damage-section" class="move-double-damage-section" style="display:none;">
+      <label><input type="checkbox" id="red2-double-damage-checkbox" /> ダブルダメージ</label>
+    </div>
+    <div class="stat-block" id="red2-main-offensive-stat-block"><h4 id="red2-main-offensive-label">A or C</h4> <div class="stat-block-row"><span id="red2-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="red2-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-main-offensive-nature" value="1.0"/> <input type="number" id="red2-main-offensive-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red2-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red2-main-offensive', -1)" class="rank-btn">-</button><span id="red2-main-offensive-rank-val">0</span><button onclick="changeRank('red2-main-offensive', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>B</h4> <div class="stat-block-row"><span id="red2-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red2-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-defense-nature" value="1.0"/> <input type="number" id="red2-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red2-defense', -1)" class="rank-btn">-</button><span id="red2-defense-rank-val">0</span><button onclick="changeRank('red2-defense', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>D</h4> <div class="stat-block-row"><span id="red2-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red2-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red2-sp-defense-nature" value="1.0"/> <input type="number" id="red2-sp-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red2-sp-defense', -1)" class="rank-btn">-</button><span id="red2-sp-defense-rank-val">0</span><button onclick="changeRank('red2-sp-defense', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>HP</h4> <div class="stat-block-row"><span id="red2-hp-actual" class="actual-stat">-</span> <input type="number" id="red2-hp-iv" value="31" min="0" max="31" class="iv-input" style="margin-left:auto;"/> <input type="number" id="red2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input"/></div></div>
+  </div>
+
+  <div class="panel" id="red1-panel">
+    <h3>Red 1</h3>
+    <div class="pokemon-info-line">
+      <input type="text" id="red1-pokemon-name" autocomplete="off" placeholder="ポケモン名" class="search-input-field pokemon-name-input" />
+      <span id="red1-pokemon-type" class="type-display">Type</span>
+    </div>
+    <div class="pokemon-info-line">
+      <div class="ability-section" id="red1-ability-section">
+        <div class="segmented-control" id="red1-ability-choice"></div>
+      </div>
+      <label class="checkbox-inline"><input type="checkbox" id="red1-ability-nullified" /> 特性無効</label>
+    </div>
+    <div class="pokemon-info-line">
+      <input type="text" id="red1-move" autocomplete="off" placeholder="技" class="search-input-field move-input" />
+      <span id="red1-move-type" class="type-display">MoveType</span>
+    </div>
+    <div class="pokemon-info-line">
+      <select id="red1-type-change">
+        <option value="">タイプ変更なし</option>
+        <option value="terastal-normal">テラス(ノ)</option>
+        <option value="terastal-fire">テラス(炎)</option>
+        <option value="terastal-water">テラス(水)</option>
+        <option value="stellar">ステラ</option>
+      </select>
+      <input type="number" id="red1-move-times" placeholder="回数" value="1" min="1" max="5" style="width: 60px;"/>
+    </div>
+     <div id="red1-move-double-damage-section" class="move-double-damage-section" style="display:none;">
+      <label><input type="checkbox" id="red1-double-damage-checkbox" /> ダブルダメージ</label>
+    </div>
+    <div class="stat-block" id="red1-main-offensive-stat-block"><h4 id="red1-main-offensive-label">A or C</h4> <div class="stat-block-row"><span id="red1-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="red1-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-main-offensive-nature" value="1.0"/> <input type="number" id="red1-main-offensive-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red1-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red1-main-offensive', -1)" class="rank-btn">-</button><span id="red1-main-offensive-rank-val">0</span><button onclick="changeRank('red1-main-offensive', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>B</h4> <div class="stat-block-row"><span id="red1-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red1-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-defense-nature" value="1.0"/> <input type="number" id="red1-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red1-defense', -1)" class="rank-btn">-</button><span id="red1-defense-rank-val">0</span><button onclick="changeRank('red1-defense', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>D</h4> <div class="stat-block-row"><span id="red1-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="red1-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="red1-sp-defense-nature" value="1.0"/> <input type="number" id="red1-sp-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="red1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('red1-sp-defense', -1)" class="rank-btn">-</button><span id="red1-sp-defense-rank-val">0</span><button onclick="changeRank('red1-sp-defense', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>HP</h4> <div class="stat-block-row"><span id="red1-hp-actual" class="actual-stat">-</span> <input type="number" id="red1-hp-iv" value="31" min="0" max="31" class="iv-input" style="margin-left:auto;"/> <input type="number" id="red1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input"/></div></div>
   </div>
 
   <div class="field-section-container" id="field-section">
     <h3>Field</h3>
-    <div class="field-status-area">
-      <h4>Red場の状態</h4>
-      <textarea id="red-field-status" rows="2" placeholder="例: リフレクター、おいかぜ..."></textarea>
+    <div class="field-battle-conditions">
+        <div class="field-status-area">
+        <h4>Red場の状態</h4>
+        <textarea id="red-field-status" rows="2" placeholder="例: リフレクター、おいかぜ..."></textarea>
+        </div>
+        <div class="field-status-area">
+        <h4>Blue場の状態</h4>
+        <textarea id="blue-field-status" rows="2" placeholder="例: ひかりのかべ、トリックルーム..."></textarea>
+        </div>
     </div>
-    <div class="pokemon-hp-table">
-      <table>
-        <thead>
-          <tr>
-            <th>ポケモン</th>
-            <th>HP</th>
-          </tr>
-        </thead>
+    <div class="pokemon-hp-table-container">
+      <h4>ポケモンHP</h4>
+      <table class="pokemon-hp-table">
         <tbody>
           <tr>
             <td>Red 2: <span id="red2-hp-table-name">-</span></td>
-            <td><div class="hp-bar-container"><div id="red2-hp-bar" class="hp-bar">100%</div></div></td>
+            <td><div class="hp-bar-container"><div id="red2-hp-bar" class="hp-bar" style="width: 100%;">100%</div></div></td>
           </tr>
           <tr>
             <td>Red 1: <span id="red1-hp-table-name">-</span></td>
-            <td><div class="hp-bar-container"><div id="red1-hp-bar" class="hp-bar">100%</div></div></td>
+            <td><div class="hp-bar-container"><div id="red1-hp-bar" class="hp-bar" style="width: 100%;">100%</div></div></td>
           </tr>
           <tr>
             <td>Blue 1: <span id="blue1-hp-table-name">-</span></td>
-            <td><div class="hp-bar-container"><div id="blue1-hp-bar" class="hp-bar">100%</div></div></td>
+            <td><div class="hp-bar-container"><div id="blue1-hp-bar" class="hp-bar" style="width: 100%;">100%</div></div></td>
           </tr>
           <tr>
             <td>Blue 2: <span id="blue2-hp-table-name">-</span></td>
-            <td><div class="hp-bar-container"><div id="blue2-hp-bar" class="hp-bar">100%</div></div></td>
+            <td><div class="hp-bar-container"><div id="blue2-hp-bar" class="hp-bar" style="width: 100%;">100%</div></div></td>
           </tr>
         </tbody>
       </table>
     </div>
-    <div class="field-status-area">
-      <h4>Blue場の状態</h4>
-      <textarea id="blue-field-status" rows="2" placeholder="例: ひかりのかべ、トリックルーム..."></textarea>
-    </div>
-    <div class="menu-section">
-      <label>天候</label>
-      <div class="segmented-control" id="center-weatherControl">
-        <button type="button" data-value="none" class="active">なし</button>
-        <button type="button" data-value="sun">晴</button>
-        <button type="button" data-value="rain">雨</button>
-        <button type="button" data-value="sand">砂</button>
-        <button type="button" data-value="hail">雪</button>
-      </div>
-    </div>
-    <div class="menu-section">
-      <label>フィールド</label>
-      <div class="segmented-control" id="center-fieldControl">
-        <button type="button" data-value="none" class="active">なし</button>
-        <button type="button" data-value="grassy">グラス</button>
-        <button type="button" data-value="electric">エレキ</button>
-        <button type="button" data-value="psychic">サイコ</button>
-        <button type="button" data-value="misty">ミスト</button>
-      </div>
+    <div class="field-global-conditions">
+        <div class="menu-section">
+        <label>天候</label>
+        <div class="segmented-control" id="center-weatherControl">
+            <button type="button" data-value="none" class="active">なし</button>
+            <button type="button" data-value="sun">晴</button>
+            <button type="button" data-value="rain">雨</button>
+            <button type="button" data-value="sand">砂</button>
+            <button type="button" data-value="hail">雪</button>
+        </div>
+        </div>
+        <div class="menu-section">
+        <label>フィールド</label>
+        <div class="segmented-control" id="center-fieldControl">
+            <button type="button" data-value="none" class="active">なし</button>
+            <button type="button" data-value="grassy">グラス</button>
+            <button type="button" data-value="electric">エレキ</button>
+            <button type="button" data-value="psychic">サイコ</button>
+            <button type="button" data-value="misty">ミスト</button>
+        </div>
+        </div>
     </div>
   </div>
 
-  <div class="panel-column" id="blue-team-column">
-    <div class="panel" id="blue1-panel">
-      <h3>Blue 1</h3>
-      <div class="pokemon-info-line">
-        <input type="text" id="blue1-pokemon-name" autocomplete="off" placeholder="ポケモン名" class="search-input-field pokemon-name-input" />
-        <span id="blue1-pokemon-type" class="type-display">Type</span>
-      </div>
-      <div class="pokemon-info-line">
-        <div class="ability-section" id="blue1-ability-section">
-            <div class="segmented-control" id="blue1-ability-choice"></div>
-        </div>
-        <label class="checkbox-inline"><input type="checkbox" id="blue1-ability-nullified" /> 特性無効</label>
-      </div>
-      <div class="pokemon-info-line">
-        <input type="text" id="blue1-move" autocomplete="off" placeholder="技" class="search-input-field move-input" />
-        <span id="blue1-move-type" class="type-display">MoveType</span>
-      </div>
-      <div class="pokemon-info-line">
-        <select id="blue1-type-change">
-          <option value="">タイプ変更なし</option>
-          <option value="terastal">テラスタル</option>
-          <option value="stellar">ステラ</option>
-        </select>
-        <input type="number" id="blue1-move-times" placeholder="回数" value="1" min="1" max="5" style="width: 60px;"/>
-      </div>
-       <div id="blue1-move-double-damage-section" class="move-double-damage-section" style="display:none;">
-        <label><input type="checkbox" id="blue1-double-damage-checkbox" /> ダブルダメージ</label>
-      </div>
-      <div class="stat-block" id="blue1-main-offensive-stat-block"><h4>A or C</h4> <div class="stat-block-row"><span id="blue1-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="blue1-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-main-offensive-nature" value="1.0"/> <input type="number" id="blue1-main-offensive-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue1-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue1-main-offensive', -1)" class="rank-btn">-</button><span id="blue1-main-offensive-rank-val">0</span><button onclick="changeRank('blue1-main-offensive', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>B</h4> <div class="stat-block-row"><span id="blue1-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue1-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-defense-nature" value="1.0"/> <input type="number" id="blue1-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue1-defense', -1)" class="rank-btn">-</button><span id="blue1-defense-rank-val">0</span><button onclick="changeRank('blue1-defense', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>D</h4> <div class="stat-block-row"><span id="blue1-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue1-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-sp-defense-nature" value="1.0"/> <input type="number" id="blue1-sp-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue1-sp-defense', -1)" class="rank-btn">-</button><span id="blue1-sp-defense-rank-val">0</span><button onclick="changeRank('blue1-sp-defense', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>HP</h4> <div class="stat-block-row"><span id="blue1-hp-actual" class="actual-stat">-</span> <input type="number" id="blue1-hp-iv" value="31" min="0" max="31" class="iv-input" style="margin-left:auto;"/> <input type="number" id="blue1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input"/></div></div>
+  <div class="panel" id="blue1-panel">
+    <h3>Blue 1</h3>
+    <div class="pokemon-info-line">
+      <input type="text" id="blue1-pokemon-name" autocomplete="off" placeholder="ポケモン名" class="search-input-field pokemon-name-input" />
+      <span id="blue1-pokemon-type" class="type-display">Type</span>
     </div>
-
-    <div class="panel" id="blue2-panel">
-      <h3>Blue 2</h3>
-      <div class="pokemon-info-line">
-        <input type="text" id="blue2-pokemon-name" autocomplete="off" placeholder="ポケモン名" class="search-input-field pokemon-name-input" />
-        <span id="blue2-pokemon-type" class="type-display">Type</span>
+    <div class="pokemon-info-line">
+      <div class="ability-section" id="blue1-ability-section">
+          <div class="segmented-control" id="blue1-ability-choice"></div>
       </div>
-      <div class="pokemon-info-line">
-        <div class="ability-section" id="blue2-ability-section">
-            <div class="segmented-control" id="blue2-ability-choice"></div>
-        </div>
-        <label class="checkbox-inline"><input type="checkbox" id="blue2-ability-nullified" /> 特性無効</label>
-      </div>
-      <div class="pokemon-info-line">
-        <input type="text" id="blue2-move" autocomplete="off" placeholder="技" class="search-input-field move-input" />
-        <span id="blue2-move-type" class="type-display">MoveType</span>
-      </div>
-      <div class="pokemon-info-line">
-        <select id="blue2-type-change">
-          <option value="">タイプ変更なし</option>
-          <option value="terastal">テラスタル</option>
-          <option value="stellar">ステラ</option>
-        </select>
-        <input type="number" id="blue2-move-times" placeholder="回数" value="1" min="1" max="5" style="width: 60px;"/>
-      </div>
-      <div id="blue2-move-double-damage-section" class="move-double-damage-section" style="display:none;">
-        <label><input type="checkbox" id="blue2-double-damage-checkbox" /> ダブルダメージ</label>
-      </div>
-      <div class="stat-block" id="blue2-main-offensive-stat-block"><h4>A or C</h4> <div class="stat-block-row"><span id="blue2-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="blue2-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-main-offensive-nature" value="1.0"/> <input type="number" id="blue2-main-offensive-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue2-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue2-main-offensive', -1)" class="rank-btn">-</button><span id="blue2-main-offensive-rank-val">0</span><button onclick="changeRank('blue2-main-offensive', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>B</h4> <div class="stat-block-row"><span id="blue2-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue2-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-defense-nature" value="1.0"/> <input type="number" id="blue2-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue2-defense', -1)" class="rank-btn">-</button><span id="blue2-defense-rank-val">0</span><button onclick="changeRank('blue2-defense', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>D</h4> <div class="stat-block-row"><span id="blue2-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue2-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-sp-defense-nature" value="1.0"/> <input type="number" id="blue2-sp-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue2-sp-defense', -1)" class="rank-btn">-</button><span id="blue2-sp-defense-rank-val">0</span><button onclick="changeRank('blue2-sp-defense', 1)" class="rank-btn">+</button></div></div>
-      <div class="stat-block"><h4>HP</h4> <div class="stat-block-row"><span id="blue2-hp-actual" class="actual-stat">-</span> <input type="number" id="blue2-hp-iv" value="31" min="0" max="31" class="iv-input" style="margin-left:auto;"/> <input type="number" id="blue2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input"/></div></div>
+      <label class="checkbox-inline"><input type="checkbox" id="blue1-ability-nullified" /> 特性無効</label>
     </div>
+    <div class="pokemon-info-line">
+      <input type="text" id="blue1-move" autocomplete="off" placeholder="技" class="search-input-field move-input" />
+      <span id="blue1-move-type" class="type-display">MoveType</span>
+    </div>
+    <div class="pokemon-info-line">
+      <select id="blue1-type-change">
+        <option value="">タイプ変更なし</option>
+        <option value="terastal-normal">テラス(ノ)</option>
+        <option value="terastal-fire">テラス(炎)</option>
+        <option value="terastal-water">テラス(水)</option>
+        <option value="stellar">ステラ</option>
+      </select>
+      <input type="number" id="blue1-move-times" placeholder="回数" value="1" min="1" max="5" style="width: 60px;"/>
+    </div>
+     <div id="blue1-move-double-damage-section" class="move-double-damage-section" style="display:none;">
+      <label><input type="checkbox" id="blue1-double-damage-checkbox" /> ダブルダメージ</label>
+    </div>
+    <div class="stat-block" id="blue1-main-offensive-stat-block"><h4 id="blue1-main-offensive-label">A or C</h4> <div class="stat-block-row"><span id="blue1-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="blue1-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-main-offensive-nature" value="1.0"/> <input type="number" id="blue1-main-offensive-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue1-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue1-main-offensive', -1)" class="rank-btn">-</button><span id="blue1-main-offensive-rank-val">0</span><button onclick="changeRank('blue1-main-offensive', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>B</h4> <div class="stat-block-row"><span id="blue1-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue1-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-defense-nature" value="1.0"/> <input type="number" id="blue1-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue1-defense', -1)" class="rank-btn">-</button><span id="blue1-defense-rank-val">0</span><button onclick="changeRank('blue1-defense', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>D</h4> <div class="stat-block-row"><span id="blue1-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue1-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue1-sp-defense-nature" value="1.0"/> <input type="number" id="blue1-sp-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue1-sp-defense', -1)" class="rank-btn">-</button><span id="blue1-sp-defense-rank-val">0</span><button onclick="changeRank('blue1-sp-defense', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>HP</h4> <div class="stat-block-row"><span id="blue1-hp-actual" class="actual-stat">-</span> <input type="number" id="blue1-hp-iv" value="31" min="0" max="31" class="iv-input" style="margin-left:auto;"/> <input type="number" id="blue1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input"/></div></div>
   </div>
+
+  <div class="panel" id="blue2-panel">
+    <h3>Blue 2</h3>
+    <div class="pokemon-info-line">
+      <input type="text" id="blue2-pokemon-name" autocomplete="off" placeholder="ポケモン名" class="search-input-field pokemon-name-input" />
+      <span id="blue2-pokemon-type" class="type-display">Type</span>
+    </div>
+    <div class="pokemon-info-line">
+      <div class="ability-section" id="blue2-ability-section">
+          <div class="segmented-control" id="blue2-ability-choice"></div>
+      </div>
+      <label class="checkbox-inline"><input type="checkbox" id="blue2-ability-nullified" /> 特性無効</label>
+    </div>
+    <div class="pokemon-info-line">
+      <input type="text" id="blue2-move" autocomplete="off" placeholder="技" class="search-input-field move-input" />
+      <span id="blue2-move-type" class="type-display">MoveType</span>
+    </div>
+    <div class="pokemon-info-line">
+      <select id="blue2-type-change">
+        <option value="">タイプ変更なし</option>
+        <option value="terastal-normal">テラス(ノ)</option>
+        <option value="terastal-fire">テラス(炎)</option>
+        <option value="terastal-water">テラス(水)</option>
+        <option value="stellar">ステラ</option>
+      </select>
+      <input type="number" id="blue2-move-times" placeholder="回数" value="1" min="1" max="5" style="width: 60px;"/>
+    </div>
+    <div id="blue2-move-double-damage-section" class="move-double-damage-section" style="display:none;">
+      <label><input type="checkbox" id="blue2-double-damage-checkbox" /> ダブルダメージ</label>
+    </div>
+    <div class="stat-block" id="blue2-main-offensive-stat-block"><h4 id="blue2-main-offensive-label">A or C</h4> <div class="stat-block-row"><span id="blue2-main-offensive-actual" class="actual-stat">-</span> <div class="segmented-control nature-control" id="blue2-main-offensive-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-main-offensive-nature" value="1.0"/> <input type="number" id="blue2-main-offensive-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue2-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue2-main-offensive', -1)" class="rank-btn">-</button><span id="blue2-main-offensive-rank-val">0</span><button onclick="changeRank('blue2-main-offensive', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>B</h4> <div class="stat-block-row"><span id="blue2-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue2-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-defense-nature" value="1.0"/> <input type="number" id="blue2-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue2-defense', -1)" class="rank-btn">-</button><span id="blue2-defense-rank-val">0</span><button onclick="changeRank('blue2-defense', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>D</h4> <div class="stat-block-row"><span id="blue2-sp-defense-actual" class="actual-stat">-</span> <div class="segmented-control" id="blue2-sp-defense-nature-control"><button type="button" data-value="0.9">x0.9</button><button type="button" data-value="1.0" class="active">x1.0</button><button type="button" data-value="1.1">x1.1</button></div><input type="hidden" id="blue2-sp-defense-nature" value="1.0"/> <input type="number" id="blue2-sp-defense-iv" value="31" min="0" max="31" class="iv-input"/> <input type="number" id="blue2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input"/> <button onclick="changeRank('blue2-sp-defense', -1)" class="rank-btn">-</button><span id="blue2-sp-defense-rank-val">0</span><button onclick="changeRank('blue2-sp-defense', 1)" class="rank-btn">+</button></div></div>
+    <div class="stat-block"><h4>HP</h4> <div class="stat-block-row"><span id="blue2-hp-actual" class="actual-stat">-</span> <input type="number" id="blue2-hp-iv" value="31" min="0" max="31" class="iv-input" style="margin-left:auto;"/> <input type="number" id="blue2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input"/></div></div>
+  </div>
+
 </div>
 
-
-<div id="damage-popup">
-  <h3>ダメージ計算結果</h3>
-  <div class="damage-bar-container">
-    <div class="damage-bar-background">
-      <div id="normal-min" class="damage-segment normal"></div>
-      <div id="normal-max" class="damage-segment normal"></div>
-      <div id="critical" class="damage-segment critical"></div>
-    </div>
-    <div class="damage-labels">
-      <span id="label-normal">通常: --%</span>
-      <span id="label-critical">急所: --%</span>
-    </div>
-    <div class="damage-values">
-      <span id="value-normal">通常: - - - ダメージ</span>
-      <span id="value-critical">急所: - ダメージ</span>
-    </div>
-  </div>
-</div>
 
 <script src="https://cdn.jsdelivr.net/npm/@tarekraafat/autocomplete.js@10.2.7/dist/autoComplete.min.js"></script>
 <script src="ui/script.js" defer></script>
