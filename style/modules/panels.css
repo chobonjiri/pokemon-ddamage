@@ -146,3 +146,41 @@
   font-weight: bold;
 }
 */
+
+/* Custom Autocomplete Suggestions List */
+.suggestions-list {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  border: 1px solid #ccc;
+  border-top: none;
+  position: absolute; /* 親要素に対して絶対配置 */
+  z-index: 100;      /* 他の要素より手前に表示 */
+  background-color: white;
+  max-height: 200px; /* 最大の高さ */
+  overflow-y: auto;  /* 候補が多い場合にスクロール */
+  width: calc(100% - 2px); /* 親の入力欄に合わせる (border分調整) */
+  box-sizing: border-box;
+}
+
+/* .pokemon-info-line を relative にして suggestions-list の基準にする */
+.pokemon-info-line {
+  position: relative; /* suggestions-listの基準点 */
+  /* (既存のスタイルはそのまま) */
+}
+
+
+.suggestions-list li {
+  padding: 8px 12px;
+  cursor: pointer;
+  font-size: 0.9em;
+}
+
+.suggestions-list li:hover {
+  background-color: #f0f0f0;
+}
+
+/* 必要に応じて入力フィールドの親要素の position を relative に設定 */
+/* 例: .pokemon-info-line { position: relative; } */
+/* これは、.suggestions-list が入力欄の真下に正しく表示されるために重要です。 */
+/* 上記で .pokemon-info-line に追加しました。 */

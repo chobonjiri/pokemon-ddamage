@@ -1,62 +1,90 @@
 // ui/event-handler.js
-import { panelIds, selectedPokemons, selectedMoves, panelStats } from './main.js'; // main.js から状態をインポート
+import { panelIds, selectedPokemons, selectedMoves, panelStats } from './main.js';
 import { pokemonData, moveData } from './data-loader.js';
 import { updatePanelStats, showAbilities, updateMoveDetails, changeRank as updateRank } from './ui-updater.js';
 
-function initializeAutoComplete(elementId, dataSrc, key, onSelectionCallback) {
-  const inputElement = document.getElementById(elementId);
-  if (!inputElement) return;
-
-  new autoComplete({
-      selector: `#${elementId}`,
-      placeHolder: inputElement.placeholder,
-      data: { src: dataSrc, keys: [key], cache: true },
-      resultsList: {
-          element: (list, data) => {
-              if (!data.results.length) {
-                  const message = document.createElement("div");
-                  message.setAttribute("class", "no-results");
-                  message.textContent = "見つかりませんでした";
-                  list.prepend(message);
-              }
-          },
-          noResults: true,
-          maxResults: 10,
-      },
-      resultItem: {
-          highlight: true,
-          element: (item, data) => {
-              item.innerHTML = `<span>${data.value[key]}</span>`;
-          }
-      },
-      events: {
-          input: {
-              selection: (event) => {
-                  const feedback = event.detail;
-                  const selectedValue = feedback.selection.value[key];
-                  inputElement.value = selectedValue;
-                  if (onSelectionCallback) {
-                    onSelectionCallback(selectedValue);
-                  }
-              }
-          }
-      },
-      searchEngine: (query, record) => {
-        const normalizedQuery = toHiragana(query.toLowerCase());
-        const recordValue = record && record[key] ? record[key] : "";
-        const normalizedRecordKey = toHiragana(recordValue.toLowerCase());
-        return normalizedRecordKey.includes(normalizedQuery);
-      },
-       threshold: 1,
-       debounce: 300
-  });
-}
-
-function toHiragana(str) {
+// --- 文字変換ユーティリティ ---
+function toHiragana(str) { //
   return str.replace(/[\u30a1-\u30f6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 }
 
+function toKatakana(str) {
+  return str.replace(/[\u3041-\u3096]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60));
+}
+
+// --- オートコンプリート候補のフィルタリング ---
+function filterSuggestions(query, dataArray, key) {
+  if (!query) {
+    return [];
+  }
+  const normalizedQueryHiragana = toHiragana(query.toLowerCase());
+  const normalizedQueryKatakana = toKatakana(query.toLowerCase());
+  
+  const suggestions = [];
+  for (const item of dataArray) {
+    const recordValue = item[key] || "";
+    const normalizedRecordHiragana = toHiragana(recordValue.toLowerCase());
+    const normalizedRecordKatakana = toKatakana(recordValue.toLowerCase());
+
+    if (normalizedRecordHiragana.startsWith(normalizedQueryHiragana) || 
+        normalizedRecordKatakana.startsWith(normalizedQueryKatakana) ||
+        normalizedRecordHiragana.startsWith(normalizedQueryKatakana) || // カタカナ入力 -> ひらがなデータ検索
+        normalizedRecordKatakana.startsWith(normalizedQueryHiragana)    // ひらがな入力 -> カタカナデータ検索
+       ) {
+      suggestions.push(recordValue);
+      if (suggestions.length >= 10) { // 最大候補数を10件に制限
+        break;
+      }
+    }
+  }
+  return suggestions;
+}
+
+// --- オートコンプリート候補の表示 ---
+function displaySuggestions(inputElement, suggestions, onSelectCallback) {
+  // 既存の候補リストを削除
+  let suggestionsList = inputElement.parentNode.querySelector('.suggestions-list');
+  if (suggestionsList) {
+    suggestionsList.remove();
+  }
+
+  if (suggestions.length === 0) {
+    return;
+  }
+
+  suggestionsList = document.createElement('ul');
+  suggestionsList.className = 'suggestions-list'; // CSSでスタイリングするため
+
+  suggestions.forEach(suggestionText => {
+    const listItem = document.createElement('li');
+    listItem.textContent = suggestionText;
+    listItem.addEventListener('click', () => {
+      inputElement.value = suggestionText;
+      if (onSelectCallback) {
+        onSelectCallback(suggestionText);
+      }
+      suggestionsList.remove(); // 選択後にリストを削除
+    });
+    suggestionsList.appendChild(listItem);
+  });
+
+  // inputElementの直後に候補リストを挿入（または適切な親要素に）
+  inputElement.parentNode.insertBefore(suggestionsList, inputElement.nextSibling);
+
+  // 他の場所をクリックしたらリストを削除するイベントリスナー (一度だけ設定)
+  const clickOutsideHandler = (event) => {
+    if (!inputElement.contains(event.target) && !suggestionsList.contains(event.target)) {
+      suggestionsList.remove();
+      document.removeEventListener('click', clickOutsideHandler, true);
+    }
+  };
+  // capture: true を使うことで、リストアイテムのクリックより先に発火し、
+  // リストアイテムのクリックが正常に処理される前にリストが消えるのを防ぐ
+  document.addEventListener('click', clickOutsideHandler, true); 
+}
+
 function setupNatureControl(panelId, statKeyOrType, controlId, hiddenInputId, callback) {
+    // (既存の setupNatureControl 関数の内容は変更なし)
     const control = document.getElementById(controlId);
     const hiddenInput = document.getElementById(hiddenInputId);
     if (!control || !hiddenInput) return;
@@ -104,6 +132,7 @@ function setupNatureControl(panelId, statKeyOrType, controlId, hiddenInputId, ca
 }
 
 function setupSegmentedControl(controlId, onChangeCallback) {
+  // (既存の setupSegmentedControl 関数の内容は変更なし)
   const control = document.getElementById(controlId);
   if (!control) return;
   const buttons = control.querySelectorAll('button');
@@ -138,20 +167,35 @@ function setupSegmentedControl(controlId, onChangeCallback) {
 
 export function setupEventListeners() {
     panelIds.forEach(panelId => {
-        initializeAutoComplete(`${panelId}-pokemon-name`, pokemonData, 'name', (selectedName) => {
-            selectedPokemons[panelId] = pokemonData.find(p => p.name === selectedName);
-            panelStats[panelId].pokemonName = selectedName;
-            showAbilities(panelId, selectedPokemons[panelId]);
-            updatePanelStats(panelId);
-        });
+        const pokemonNameInput = document.getElementById(`${panelId}-pokemon-name`);
+        if (pokemonNameInput) {
+            pokemonNameInput.addEventListener('input', () => {
+                const query = pokemonNameInput.value;
+                const suggestions = filterSuggestions(query, pokemonData, 'name');
+                displaySuggestions(pokemonNameInput, suggestions, (selectedName) => {
+                    selectedPokemons[panelId] = pokemonData.find(p => p.name === selectedName);
+                    panelStats[panelId].pokemonName = selectedName;
+                    showAbilities(panelId, selectedPokemons[panelId]);
+                    updatePanelStats(panelId);
+                });
+            });
+        }
 
-        initializeAutoComplete(`${panelId}-move`, moveData, 'name', (selectedName) => {
-            selectedMoves[panelId] = moveData.find(m => m.name === selectedName);
-            panelStats[panelId].moveName = selectedName;
-            updateMoveDetails(panelId);
-            updatePanelStats(panelId);
-        });
+        const moveInput = document.getElementById(`${panelId}-move`);
+        if (moveInput) {
+            moveInput.addEventListener('input', () => {
+                const query = moveInput.value;
+                const suggestions = filterSuggestions(query, moveData, 'name');
+                displaySuggestions(moveInput, suggestions, (selectedName) => {
+                    selectedMoves[panelId] = moveData.find(m => m.name === selectedName);
+                    panelStats[panelId].moveName = selectedName;
+                    updateMoveDetails(panelId);
+                    updatePanelStats(panelId);
+                });
+            });
+        }
 
+        // (既存のIV, EV, Nature, Ability, TypeChange, MoveTimes, DoubleDamageなどのイベントリスナー設定は変更なし)
         ['hp', 'defense', 'sp-defense'].forEach(statPart => {
             const jsStatKey = statPart.replace('sp-defense', 'spDefense');
             const ivEl = document.getElementById(`${panelId}-${statPart}-iv`);
@@ -207,18 +251,6 @@ export function setupEventListeners() {
         
         const doubleDamageCheckbox = document.getElementById(`${panelId}-double-damage-checkbox`);
         if (doubleDamageCheckbox) doubleDamageCheckbox.addEventListener('change', () => { panelStats[panelId].doubleDamage = doubleDamageCheckbox.checked; });
-
-        // Rank change buttons (assuming changeRank is globally available or imported if it's moved)
-        // Ensure changeRank function is accessible, it's currently in ui-updater.js
-        // We'll expose it globally for the inline onclick or refactor HTML to use addEventListener
-        // For simplicity, we will make `updateRank` (alias for changeRank) globally available from main.js
-        // Or, better, we select the buttons here and add event listeners.
-        const rankUpButtons = document.querySelectorAll(`button[onclick^="changeRank('${panelId}-"]`); // Rough selector
-        const rankDownButtons = document.querySelectorAll(`button[onclick^="changeRank('${panelId}-"]`); // Rough selector
-
-        // Example for one rank button type, repeat for others or make a more generic selector
-        // This part needs careful refactoring of how changeRank is called from HTML or a new setup here.
-        // For now, we rely on the global `changeRank` which will be attached to window object in main.js
     });
 
     setupSegmentedControl('center-weatherControl', selectedValue => console.log('Selected Weather:', selectedValue));
@@ -226,5 +258,4 @@ export function setupEventListeners() {
 }
 
 // Expose changeRank to global scope for inline HTML onclick attributes.
-// This is generally not recommended, but for compatibility with existing HTML:
 window.changeRank = updateRank;
