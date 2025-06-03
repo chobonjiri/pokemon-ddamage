@@ -25,12 +25,10 @@
   gap: 0;
 }
 
-/* Ability buttons within segmented control */
-#ability-choice .ability-btn,
-#defender-abilities .ability-btn {
+/* Ability buttons within ability-control-group */
+.ability-control-group .ability-btn { /* 新しいクラス名を使用 */
   flex-shrink: 0;
-  width: 50px;
-  padding: 5px 2px;
+  padding: 5px 12px; /* 少しパディングを調整 */
   border: 1px solid #ddd;
   border-radius: 5px;
   background-color: white;
