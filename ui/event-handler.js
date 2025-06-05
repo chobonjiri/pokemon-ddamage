@@ -1,18 +1,17 @@
 // ui/event-handler.js
-import { panelIds, selectedPokemons, selectedMoves, panelStats, dispatchMoveCategoryUpdate } from './main.js';
+import { panelIds, selectedPokemons, selectedMoves, panelStats, dispatchMoveCategoryUpdate, fieldState } from './main.js';
 import { pokemonData, moveData } from './data-loader.js';
-import { updatePanelStats, showAbilities, updateMoveDetails, changeRank as updateRank } from './ui-updater.js';
+import { updatePanelStats, showAbilities, updateMoveDetails, updateRankDisplay } from './ui-updater.js';
 
 // --- 文字変換ユーティリティ ---
-function toHiragana(str) { //
+function toHiragana(str) {
   return str.replace(/[\u30a1-\u30f6]/g, ch => String.fromCharCode(ch.charCodeAt(0) - 0x60));
 }
 
-function toKatakana(str) {
-  return str.replace(/[\u3041-\u3096]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60));
-}
+// function toKatakana(str) { // 未使用のためコメントアウト
+//   return str.replace(/[\u3041-\u3096]/g, ch => String.fromCharCode(ch.charCodeAt(0) + 0x60));
+// }
 
-// ローマ字からひらがなへの変換関数 (ユーザー提供のマップを含む)
 function romajiToHiragana(romaji) {
   romaji = romaji.toLowerCase();
   const map = {
@@ -43,34 +42,25 @@ function romajiToHiragana(romaji) {
     'dja': 'ぢゃ', 'dju': 'ぢゅ', 'djo': 'ぢょ',
     'bya': 'びゃ', 'byu': 'びゅ', 'byo': 'びょ',
     'pya': 'ぴゃ', 'pyu': 'ぴゅ', 'pyo': 'ぴょ',
-    // ユーザー提供の追加マップ
     'tya': 'ちゃ', 'tyi': 'ちぃ', 'tyu': 'ちゅ', 'tye': 'ちぇ', 'tyo': 'ちょ',
     'zya': 'じゃ', 'zyi': 'じぃ', 'zyu': 'じゅ', 'zye': 'じぇ', 'zyo': 'じょ',
-    'fa': 'ふぁ', /* 'fu': 'ふ' は重複 */ 'fo': 'ふぉ',
-    'la': 'ぁ', 'li': 'ぃ', 'lu': 'ぅ', 'le': 'ぇ', 'lo': 'ぉ', // これらは小文字の「あいうえお」
+    'fa': 'ふぁ', 'fo': 'ふぉ',
+    'la': 'ぁ', 'li': 'ぃ', 'lu': 'ぅ', 'le': 'ぇ', 'lo': 'ぉ',
     '-': 'ー',
-    // 'n': 'ん' は末尾または子音の前で処理
   };
 
   let hiragana = '';
   let i = 0;
   while (i < romaji.length) {
     let foundMatch = false;
-    // 促音: 連続する同じ子音 (k,s,t,p,c,h - c,hはcha,shiなどのため注意)
     if (i + 1 < romaji.length && romaji[i] === romaji[i+1] && "kstpc".includes(romaji[i])) {
-        // ssh (っし), cch (っち) は map での tiga-graph でカバーされるべきだが、
-        // マップに ssh, cch がない場合は、ここで 'っ' を追加し、次の文字は通常通り処理。
-        let isSpecialDouble = (romaji[i] === 's' && romaji[i+1] === 's' && i + 2 < romaji.length && romaji[i+2] === 'h'); // ssh
-        isSpecialDouble = isSpecialDouble || (romaji[i] === 'c' && romaji[i+1] === 'c' && i + 2 < romaji.length && romaji[i+2] === 'h'); // cch
-
+        let isSpecialDouble = (romaji[i] === 's' && romaji[i+1] === 's' && i + 2 < romaji.length && romaji[i+2] === 'h');
+        isSpecialDouble = isSpecialDouble || (romaji[i] === 'c' && romaji[i+1] === 'c' && i + 2 < romaji.length && romaji[i+2] === 'h');
         if (!isSpecialDouble) {
             hiragana += 'っ';
-            i++; // 1文字進める
-            // foundMatch は false のままにして、次の文字 (例: "ka") を map から探させる
+            i++;
         }
     }
-
-    // 最長の候補から順に試す (3文字、2文字、1文字)
     for (let len = 3; len >= 1; len--) {
       if (i + len <= romaji.length) {
         const sub = romaji.substring(i, i + len);
@@ -82,45 +72,38 @@ function romajiToHiragana(romaji) {
         }
       }
     }
-
     if (foundMatch) continue;
-
-    // 'n' の処理: 次が母音・'y'・'n' でなく、文末の場合に「ん」
     if (romaji[i] === 'n') {
       if (i + 1 === romaji.length || (!"aiueoyn'".includes(romaji[i + 1]))) {
         hiragana += 'ん';
       } else {
-        // 'n' が母音の前に来るが na, ni などで処理されなかった場合 (例: 単独のn)
-        // 基本的にはありえないが、フォールバックとして 'n' をそのまま残すか、エラーとするか。
-        // ここでは、他の変換にかからなかった 'n' は 'ん' とする。
-        hiragana += 'ん';
+        hiragana += 'ん'; // Default to ん if not part of a valid sequence handled by the map
       }
     } else {
-      hiragana += romaji[i]; // マップにない文字はそのまま出力
+      hiragana += romaji[i];
     }
     i++;
   }
   return hiragana;
 }
 
-
 // --- オートコンプリート候補のフィルタリング ---
-function filterSuggestions(query, dataArray, key) {
+function filterSuggestions(query, dataArray, dataKey) {
   if (!query) {
     return [];
   }
   const queryLower = query.toLowerCase();
   const queryAsHiraganaFromRomaji = romajiToHiragana(queryLower);
-  const finalQueryAsHiragana = toHiragana(queryAsHiraganaFromRomaji);
+  const finalQueryAsHiragana = toHiragana(queryAsHiraganaFromRomaji); // カタカナもひらがなに統一して比較
 
   const suggestions = [];
   for (const item of dataArray) {
-    const recordValue = item[key] || "";
-    const recordValueAsHiragana = toHiragana(recordValue.toLowerCase());
+    const recordValue = item[dataKey] || "";
+    const recordValueAsHiragana = toHiragana(recordValue.toLowerCase()); // データもひらがなに統一
 
     if (recordValueAsHiragana.startsWith(finalQueryAsHiragana)) {
       suggestions.push(recordValue);
-      if (suggestions.length >= 10) {
+      if (suggestions.length >= 10) { // Limit to 10 suggestions
         break;
       }
     }
@@ -131,11 +114,7 @@ function filterSuggestions(query, dataArray, key) {
 // --- オートコンプリート候補の表示とハイライト更新 ---
 function updateSuggestionHighlight(listItems, highlightedIndex) {
   listItems.forEach((item, index) => {
-    if (index === highlightedIndex) {
-      item.classList.add('suggestion-highlight');
-    } else {
-      item.classList.remove('suggestion-highlight');
-    }
+    item.classList.toggle('suggestion-highlight', index === highlightedIndex);
   });
 }
 
@@ -144,14 +123,14 @@ function displaySuggestions(inputElement, suggestions, onSelectCallback, highlig
   if (suggestionsList) {
     suggestionsList.remove();
   }
-  highlightedIndexState.index = -1;
+  highlightedIndexState.index = -1; // Reset highlight index
 
   if (suggestions.length === 0 && inputElement.value.trim() !== "") {
     suggestionsList = document.createElement('ul');
     suggestionsList.className = 'suggestions-list no-results';
     const listItem = document.createElement('li');
     listItem.textContent = "見つかりませんでした";
-    listItem.classList.add('no-results-message'); // CSSでカーソルなどを調整するため
+    listItem.classList.add('no-results-message');
     suggestionsList.appendChild(listItem);
     inputElement.parentNode.insertBefore(suggestionsList, inputElement.nextSibling);
     return;
@@ -167,7 +146,7 @@ function displaySuggestions(inputElement, suggestions, onSelectCallback, highlig
   suggestions.forEach((suggestionText, index) => {
     const listItem = document.createElement('li');
     listItem.textContent = suggestionText;
-    listItem.dataset.index = index;
+    listItem.dataset.index = index; // For keyboard navigation
     listItem.addEventListener('click', () => {
       inputElement.value = suggestionText;
       if (onSelectCallback) {
@@ -183,9 +162,8 @@ function displaySuggestions(inputElement, suggestions, onSelectCallback, highlig
   });
 
   inputElement.parentNode.insertBefore(suggestionsList, inputElement.nextSibling);
-  // updateSuggestionHighlight(suggestionsList.querySelectorAll('li'), highlightedIndexState.index); // 初期ハイライトなし
 
-  // 他の場所をクリックしたらリストを削除 (既存のものを改善)
+  // Click outside to close suggestions
   if (inputElement.clickOutsideHandler) {
       document.removeEventListener('click', inputElement.clickOutsideHandler, true);
   }
@@ -194,219 +172,410 @@ function displaySuggestions(inputElement, suggestions, onSelectCallback, highlig
     if (currentSuggestionsList && !inputElement.contains(event.target) && !currentSuggestionsList.contains(event.target)) {
       currentSuggestionsList.remove();
       highlightedIndexState.index = -1;
-      document.removeEventListener('click', inputElement.clickOutsideHandler, true); // 自身を削除
-      inputElement.clickOutsideHandler = null; // ハンドラ参照をクリア
+      document.removeEventListener('click', inputElement.clickOutsideHandler, true);
+      inputElement.clickOutsideHandler = null;
     }
   };
+  // Use `true` for capture phase to catch clicks on other elements sooner
   document.addEventListener('click', inputElement.clickOutsideHandler, true);
 }
 
-// --- Nature Control, Segmented Control (変更なし) ---
+
+// --- Nature Control ---
 function setupNatureControl(panelId, statKeyOrType, controlId, hiddenInputId, callback) {
     const control = document.getElementById(controlId);
     const hiddenInput = document.getElementById(hiddenInputId);
-    if (!control || !hiddenInput) return;
-    let targetStatKeyInPanelStats;
-    if (statKeyOrType === 'main-offensive') {
-        targetStatKeyInPanelStats = 'attack'; 
-    } else {
-        targetStatKeyInPanelStats = statKeyOrType;
-    }
-     if (!panelStats[panelId] || !panelStats[panelId].stats[targetStatKeyInPanelStats] && statKeyOrType !== 'main-offensive') {
-        console.warn(`panelStats for ${panelId}.${targetStatKeyInPanelStats} not found.`);
+    if (!control || !hiddenInput) {
+        // console.warn(`Nature control elements not found for ${controlId} or ${hiddenInputId}`);
         return;
     }
-    let initialNature = 1.0;
+
+    // Determine the actual stat key in panelStats (attack, defense, spAttack, spDefense)
+    let targetStatKeyInPanelStats;
     if (statKeyOrType === 'main-offensive') {
-        initialNature = panelStats[panelId].stats.attack.nature;
+        // For main-offensive, the actual target (attack or spAttack) depends on the move.
+        // Initialize with 'attack' and update when move changes.
+        // The event listener for move changes will handle updating the correct nature.
+        const move = selectedMoves[panelId];
+        targetStatKeyInPanelStats = (move && move.category === "特殊") ? 'spAttack' : 'attack';
     } else {
-        initialNature = panelStats[panelId].stats[targetStatKeyInPanelStats].nature;
+        targetStatKeyInPanelStats = statKeyOrType.replace('sp-attack', 'spAttack').replace('sp-defense', 'spDefense');
     }
+    
+    if (!panelStats[panelId] || !panelStats[panelId].stats[targetStatKeyInPanelStats]) {
+        // console.warn(`panelStats for ${panelId}.${targetStatKeyInPanelStats} not found during nature control setup.`);
+        // Fallback to attack if main-offensive and targetStatKeyInPanelStats is not set (e.g. no move selected yet)
+        if (statKeyOrType === 'main-offensive') targetStatKeyInPanelStats = 'attack';
+        else return;
+    }
+
+    let initialNature = panelStats[panelId].stats[targetStatKeyInPanelStats].nature;
     hiddenInput.value = initialNature;
+
     control.querySelectorAll('button').forEach(button => {
         button.classList.toggle('active', parseFloat(button.dataset.value) === initialNature);
     });
+
     control.querySelectorAll('button').forEach(button => {
         button.addEventListener('click', () => {
             control.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
             button.classList.add('active');
             const newNature = parseFloat(button.dataset.value);
             hiddenInput.value = newNature;
+
+            let actualTargetKeyForUpdate;
             if (statKeyOrType === 'main-offensive') {
                 const move = selectedMoves[panelId];
-                const actualTargetKey = (move && move.category === "特殊") ? 'spAttack' : 'attack';
-                panelStats[panelId].stats[actualTargetKey].nature = newNature;
+                actualTargetKeyForUpdate = (move && move.category === "特殊") ? 'spAttack' : 'attack';
             } else {
-                panelStats[panelId].stats[targetStatKeyInPanelStats].nature = newNature;
+                actualTargetKeyForUpdate = targetStatKeyInPanelStats;
             }
+            panelStats[panelId].stats[actualTargetKeyForUpdate].nature = newNature;
+            
             if (callback) callback();
         });
     });
 }
 
-function setupSegmentedControl(controlId, onChangeCallback) {
-  const control = document.getElementById(controlId);
-  if (!control) return;
-  const buttons = control.querySelectorAll('button');
-  buttons.forEach(button => {
-    button.addEventListener('click', () => {
-      const isActive = button.classList.contains('active');
-      const selectedValue = button.dataset.value;
-      if (isActive && selectedValue !== "none") {
-          if(controlId === 'center-weatherControl' || controlId === 'center-fieldControl'){
-          } else {
-            return;
-          }
-      }
-      let valueToCallBack = selectedValue;
-      if (isActive && selectedValue === "none" && (controlId === 'center-weatherControl' || controlId === 'center-fieldControl') ) {
-          return;
-      }
-      buttons.forEach(btn => btn.classList.remove('active'));
-      button.classList.add('active');
-      if (onChangeCallback) {
-        onChangeCallback(valueToCallBack);
-      }
+// --- Rank Dropdown Setup ---
+export function setupRankDropdowns() {
+    panelIds.forEach(panelId => {
+        ['main-offensive', 'defense', 'sp-defense'].forEach(statType => {
+            const dropdownBtn = document.getElementById(`${panelId}-${statType}-dropdownBtn`);
+            const dropdownMenu = document.getElementById(`${panelId}-${statType}-dropdownMenu`);
+            const rankDisplaySpan = document.getElementById(`${panelId}-${statType}-rank-display`); // For dropdown button text
+            const rankValSpan = document.getElementById(`${panelId}-${statType}-rank-val`); // Hidden span holding the value
+
+            if (!dropdownBtn || !dropdownMenu || !rankDisplaySpan || !rankValSpan) {
+                // console.warn(`Rank dropdown elements not found for ${panelId}-${statType}`);
+                return;
+            }
+
+            // Populate dropdown menu
+            dropdownMenu.innerHTML = ''; // Clear existing items
+            for (let i = 6; i >= -6; i--) {
+                const listItem = document.createElement('li');
+                listItem.textContent = i === 0 ? '±0' : (i > 0 ? `+${i}` : `${i}`);
+                listItem.dataset.value = i;
+                listItem.addEventListener('click', (e) => {
+                    const selectedRank = parseInt(e.target.dataset.value);
+                    window.changeRank(`${panelId}-${statType}`, selectedRank - parseInt(rankValSpan.textContent)); // Pass the difference
+                    dropdownMenu.classList.remove('show');
+                    dropdownBtn.classList.remove('active');
+                });
+                dropdownMenu.appendChild(listItem);
+            }
+
+            // Toggle dropdown display
+            dropdownBtn.addEventListener('click', () => {
+                dropdownMenu.classList.toggle('show');
+                dropdownBtn.classList.toggle('active');
+            });
+
+            // Click outside to close dropdown
+            if (!dropdownBtn.clickOutsideHandler) {
+                dropdownBtn.clickOutsideHandler = (event) => {
+                    if (!dropdownBtn.contains(event.target) && !dropdownMenu.contains(event.target) && dropdownMenu.classList.contains('show')) {
+                        dropdownMenu.classList.remove('show');
+                        dropdownBtn.classList.remove('active');
+                    }
+                };
+                document.addEventListener('click', dropdownBtn.clickOutsideHandler, true);
+            }
+        });
     });
-  });
 }
 
-// --- メインのイベントリスナー設定 ---
+// --- Field Control Listeners ---
+export function setupFieldControlListeners() {
+    // Weather
+    const weatherControl = document.getElementById('center-weatherControl');
+    if (weatherControl) {
+        weatherControl.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => {
+                weatherControl.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                fieldState.weather = button.dataset.value;
+                console.log('Weather updated:', fieldState.weather);
+                // Potentially trigger recalculations if weather affects stats/damage
+            });
+        });
+    }
+
+    // Terrain
+    const fieldControl = document.getElementById('center-fieldControl');
+    if (fieldControl) {
+        fieldControl.querySelectorAll('button').forEach(button => {
+            button.addEventListener('click', () => {
+                fieldControl.querySelectorAll('button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                fieldState.terrain = button.dataset.value;
+                console.log('Terrain updated:', fieldState.terrain);
+                // Potentially trigger recalculations
+            });
+        });
+    }
+
+    // Walls
+    ['red', 'blue'].forEach(teamColor => {
+        const reflectCheckbox = document.getElementById(`${teamColor}-reflect-active`);
+        const lightScreenCheckbox = document.getElementById(`${teamColor}-lightscreen-active`);
+
+        if (reflectCheckbox) {
+            reflectCheckbox.addEventListener('change', () => {
+                if (teamColor === 'red') fieldState.teamRed.isReflectActive = reflectCheckbox.checked;
+                if (teamColor === 'blue') fieldState.teamBlue.isReflectActive = reflectCheckbox.checked;
+                console.log(`${teamColor} Reflect: ${reflectCheckbox.checked}`);
+            });
+        }
+        if (lightScreenCheckbox) {
+            lightScreenCheckbox.addEventListener('change', () => {
+                if (teamColor === 'red') fieldState.teamRed.isLightScreenActive = lightScreenCheckbox.checked;
+                if (teamColor === 'blue') fieldState.teamBlue.isLightScreenActive = lightScreenCheckbox.checked;
+                console.log(`${teamColor} Light Screen: ${lightScreenCheckbox.checked}`);
+            });
+        }
+    });
+}
+
+
+// --- Main Event Listener Setup ---
 export function setupEventListeners() {
     panelIds.forEach(panelId => {
-        const setupAutocompleteForInput = (inputId, data, dataKey, onSelect) => {
-            const inputElement = document.getElementById(inputId);
-            if (!inputElement) return;
-
-            let highlightedIndexState = { index: -1 };
-
-            inputElement.addEventListener('input', () => {
-                const query = inputElement.value;
-                highlightedIndexState.index = -1; // 入力変更時はハイライトリセット
-                const suggestions = filterSuggestions(query, data, dataKey);
-                displaySuggestions(inputElement, suggestions, onSelect, highlightedIndexState);
-            });
-
-            inputElement.addEventListener('keydown', (event) => {
-                const suggestionsListElement = inputElement.parentNode.querySelector('.suggestions-list');
-                if (!suggestionsListElement || suggestionsListElement.classList.contains('no-results')) {
-                     // 候補がない、または「見つかりませんでした」メッセージの場合はキー操作を無視
-                    if (event.key === 'Enter') { // Enterキーは通常の動作を許可 (例: フォーム送信など)
-                        // displaySuggestionsでリストが消えているはずなので、ここでは何もしないか、明示的に消す
-                        if (suggestionsListElement) suggestionsListElement.remove();
-                        highlightedIndexState.index = -1;
+        // Autocomplete for Pokemon Name
+        const pokemonNameInput = document.getElementById(`${panelId}-pokemon-name`);
+        if (pokemonNameInput) {
+            let highlightedIndexStatePokemons = { index: -1 };
+            pokemonNameInput.addEventListener('input', () => {
+                const query = pokemonNameInput.value;
+                highlightedIndexStatePokemons.index = -1;
+                const suggestions = filterSuggestions(query, pokemonData, 'name');
+                displaySuggestions(pokemonNameInput, suggestions, (selectedName) => {
+                    selectedPokemons[panelId] = pokemonData.find(p => p.name === selectedName);
+                    panelStats[panelId].pokemonName = selectedName;
+                    if(selectedPokemons[panelId]) { // Ensure a Pokemon is actually found
+                        panelStats[panelId].ability.name = selectedPokemons[panelId].Ability1 || ''; // Default to first ability
+                        panelStats[panelId].ability.selectedButton = selectedPokemons[panelId].Ability1 || null;
+                        panelStats[panelId].ability.custom = '';
+                        panelStats[panelId].ability.nullified = false;
+                    } else {
+                        panelStats[panelId].ability.name = '';
+                        panelStats[panelId].ability.selectedButton = null;
                     }
-                    return;
-                }
-
-                const listItems = suggestionsListElement.querySelectorAll('li');
-                if (listItems.length === 0) return;
-
-                let newHighlightedIndex = highlightedIndexState.index;
-
-                switch (event.key) {
-                    case 'ArrowDown':
-                        event.preventDefault();
-                        newHighlightedIndex = (highlightedIndexState.index + 1) % listItems.length;
-                        break;
-                    case 'ArrowUp':
-                        event.preventDefault();
-                        newHighlightedIndex = (highlightedIndexState.index - 1 + listItems.length) % listItems.length;
-                        break;
-                    case 'Enter':
-                        event.preventDefault();
-                        if (highlightedIndexState.index >= 0 && highlightedIndexState.index < listItems.length) {
-                            listItems[highlightedIndexState.index].click();
-                        } else if (listItems.length > 0 && inputElement.value.trim() !== "" && suggestions.length > 0) {
-                            // ハイライトがないが、入力があり候補が1つ以上ある場合、最初の候補を選択するなどの挙動も考えられる
-                            // 今回はハイライトされているもののみEnterで選択
-                        }
-                        // Enter後はリストが消えるのでハイライトもリセット
-                        highlightedIndexState.index = -1; 
-                        return; // updateSuggestionHighlight を呼ばない
-                    case 'Escape':
-                        event.preventDefault();
-                        if (suggestionsListElement) {
-                            suggestionsListElement.remove();
-                        }
-                        highlightedIndexState.index = -1;
-                        return; // updateSuggestionHighlight を呼ばない
-                    default:
-                        return; // 他のキーはハイライト処理に影響しない
-                }
-                highlightedIndexState.index = newHighlightedIndex;
-                updateSuggestionHighlight(listItems, highlightedIndexState.index);
+                    showAbilities(panelId, selectedPokemons[panelId]);
+                    updatePanelStats(panelId);
+                }, highlightedIndexStatePokemons);
             });
-        };
+            pokemonNameInput.addEventListener('keydown', (event) => {
+                handleAutocompleteKeydown(event, pokemonNameInput, highlightedIndexStatePokemons);
+            });
+        }
 
-        setupAutocompleteForInput(`${panelId}-pokemon-name`, pokemonData, 'name', (selectedName) => {
-            selectedPokemons[panelId] = pokemonData.find(p => p.name === selectedName);
-            panelStats[panelId].pokemonName = selectedName;
-            showAbilities(panelId, selectedPokemons[panelId]);
-            updatePanelStats(panelId);
-        });
+        // Autocomplete for Move Name
+        const moveInput = document.getElementById(`${panelId}-move`);
+        if (moveInput) {
+            let highlightedIndexStateMoves = { index: -1 };
+            moveInput.addEventListener('input', () => {
+                const query = moveInput.value;
+                highlightedIndexStateMoves.index = -1;
+                const suggestions = filterSuggestions(query, moveData, 'name');
+                displaySuggestions(moveInput, suggestions, (selectedName) => {
+                    selectedMoves[panelId] = moveData.find(m => m.name === selectedName);
+                    panelStats[panelId].moveName = selectedName;
+                    updateMoveDetails(panelId);
+                    updatePanelStats(panelId); // This will also update main-offensive stat section
+                    dispatchMoveCategoryUpdate(panelId);
+                }, highlightedIndexStateMoves);
+            });
+            moveInput.addEventListener('keydown', (event) => {
+                handleAutocompleteKeydown(event, moveInput, highlightedIndexStateMoves);
+            });
+        }
 
-        setupAutocompleteForInput(`${panelId}-move`, moveData, 'name', (selectedName) => {
-            selectedMoves[panelId] = moveData.find(m => m.name === selectedName);
-            panelStats[panelId].moveName = selectedName;
-            updateMoveDetails(panelId);
-            updatePanelStats(panelId);
-            dispatchMoveCategoryUpdate(panelId); // ★技カテゴリ更新イベントを発行
-        });
-
-        // (その他のイベントリスナー設定)
-        ['hp', 'defense', 'sp-defense'].forEach(statPart => {
-            const jsStatKey = statPart.replace('sp-defense', 'spDefense');
+        // IV and EV inputs
+        ['hp', 'main-offensive', 'defense', 'sp-defense'].forEach(statPart => {
             const ivEl = document.getElementById(`${panelId}-${statPart}-iv`);
             const evEl = document.getElementById(`${panelId}-${statPart}-ev`);
-            if (ivEl) ivEl.addEventListener('input', () => { panelStats[panelId].stats[jsStatKey].iv = parseInt(ivEl.value) || 0; updatePanelStats(panelId); });
-            if (evEl) evEl.addEventListener('input', () => { panelStats[panelId].stats[jsStatKey].ev = parseInt(evEl.value) || 0; updatePanelStats(panelId); });
+            let targetStatKey;
+
+            if (statPart === 'main-offensive') {
+                // This will be dynamically determined for 'main-offensive'
+            } else {
+                 targetStatKey = statPart.replace('sp-defense', 'spDefense');
+            }
+
+
+            if (ivEl) {
+                ivEl.addEventListener('input', () => {
+                    let currentTargetStatKey = targetStatKey;
+                    if (statPart === 'main-offensive') {
+                        const move = selectedMoves[panelId];
+                        currentTargetStatKey = (move && move.category === "特殊") ? 'spAttack' : 'attack';
+                    }
+                    if (currentTargetStatKey && panelStats[panelId].stats[currentTargetStatKey]) {
+                        panelStats[panelId].stats[currentTargetStatKey].iv = parseInt(ivEl.value) || 0;
+                        updatePanelStats(panelId);
+                    } else if (statPart === 'hp' && panelStats[panelId].stats.hp) { // HP specific handling
+                         panelStats[panelId].stats.hp.iv = parseInt(ivEl.value) || 0;
+                         updatePanelStats(panelId);
+                    }
+                });
+            }
+            if (evEl) {
+                evEl.addEventListener('input', () => {
+                     let currentTargetStatKey = targetStatKey;
+                    if (statPart === 'main-offensive') {
+                        const move = selectedMoves[panelId];
+                        currentTargetStatKey = (move && move.category === "特殊") ? 'spAttack' : 'attack';
+                    }
+                    if (currentTargetStatKey && panelStats[panelId].stats[currentTargetStatKey]) {
+                        panelStats[panelId].stats[currentTargetStatKey].ev = parseInt(evEl.value) || 0;
+                        updatePanelStats(panelId);
+                    } else if (statPart === 'hp' && panelStats[panelId].stats.hp) { // HP specific handling
+                         panelStats[panelId].stats.hp.ev = parseInt(evEl.value) || 0;
+                         updatePanelStats(panelId);
+                    }
+                });
+            }
         });
-        const mainOffensiveIvEl = document.getElementById(`${panelId}-main-offensive-iv`);
-        const mainOffensiveEvEl = document.getElementById(`${panelId}-main-offensive-ev`);
-        if (mainOffensiveIvEl) mainOffensiveIvEl.addEventListener('input', () => {
-            const move = selectedMoves[panelId];
-            const targetStatKey = (move && move.category === "特殊") ? 'spAttack' : 'attack';
-            panelStats[panelId].stats[targetStatKey].iv = parseInt(mainOffensiveIvEl.value) || 0;
-            updatePanelStats(panelId);
-        });
-        if (mainOffensiveEvEl) mainOffensiveEvEl.addEventListener('input', () => {
-            const move = selectedMoves[panelId];
-            const targetStatKey = (move && move.category === "特殊") ? 'spAttack' : 'attack';
-            panelStats[panelId].stats[targetStatKey].ev = parseInt(mainOffensiveEvEl.value) || 0;
-            updatePanelStats(panelId);
-        });
-        ['attack', 'defense', 'sp-attack', 'sp-defense'].forEach(statName => {
-            const jsStatKey = statName.replace('sp-attack', 'spAttack').replace('sp-defense', 'spDefense');
-            setupNatureControl(panelId, jsStatKey, `${panelId}-${statName}-nature-control`, `${panelId}-${statName}-nature`, () => updatePanelStats(panelId));
-        });
+        
+        // Nature Controls
         setupNatureControl(panelId, 'main-offensive', `${panelId}-main-offensive-nature-control`, `${panelId}-main-offensive-nature`, () => updatePanelStats(panelId));
+        setupNatureControl(panelId, 'defense', `${panelId}-defense-nature-control`, `${panelId}-defense-nature`, () => updatePanelStats(panelId));
+        setupNatureControl(panelId, 'spDefense', `${panelId}-sp-defense-nature-control`, `${panelId}-sp-defense-nature`, () => updatePanelStats(panelId));
+        // Note: HP does not have nature. Attack and Sp. Attack natures are covered by main-offensive if it's the primary interface,
+        // or would need separate controls if individual A/C stat blocks were present and used.
+
+        // Ability Nullified Checkbox
         const abilityNullifiedCheckbox = document.getElementById(`${panelId}-ability-nullified`);
         if (abilityNullifiedCheckbox) {
             abilityNullifiedCheckbox.addEventListener('change', () => {
                 panelStats[panelId].ability.nullified = abilityNullifiedCheckbox.checked;
                 if (abilityNullifiedCheckbox.checked) {
-                    panelStats[panelId].ability.name = "";
+                    panelStats[panelId].ability.name = ""; // Clear ability name if nullified
                     panelStats[panelId].ability.custom = "";
                     panelStats[panelId].ability.selectedButton = null;
+                    // Deselect buttons and clear custom input visually
                     const choiceContainer = document.getElementById(`${panelId}-ability-choice`);
-                    if(choiceContainer) choiceContainer.querySelectorAll(".ability-btn.selected").forEach(b => b.classList.remove("selected"));
-                    const customInput = choiceContainer ? choiceContainer.querySelector(".custom-ability-input") : null;
-                    if(customInput) customInput.value = "";
+                    if (choiceContainer) {
+                        choiceContainer.querySelectorAll(".ability-btn.selected").forEach(b => b.classList.remove("selected"));
+                        const customInput = choiceContainer.querySelector(".custom-ability-input");
+                        if (customInput) customInput.value = "";
+                    }
+                } else {
+                    // If unchecking nullified, try to restore the selected ability if one was chosen before
+                    if (panelStats[panelId].ability.selectedButton) {
+                         panelStats[panelId].ability.name = panelStats[panelId].ability.selectedButton;
+                    } else if (panelStats[panelId].ability.custom){
+                        panelStats[panelId].ability.name = panelStats[panelId].ability.custom;
+                    }
+                    // Re-render abilities to reflect the change (buttons might need to be re-selected)
+                    if(selectedPokemons[panelId]) showAbilities(panelId, selectedPokemons[panelId]);
                 }
-                console.log(`${panelId} Ability Nullified: ${panelStats[panelId].ability.nullified}`);
+                // console.log(`${panelId} Ability Nullified: ${panelStats[panelId].ability.nullified}, Name: ${panelStats[panelId].ability.name}`);
+                // updatePanelStats(panelId); // Recalculate if ability change affects stats (e.g. Guts) - usually not for raw stats
             });
         }
-        const typeChangeEl = document.getElementById(`${panelId}-type-change`);
-        if (typeChangeEl) typeChangeEl.addEventListener('change', () => { panelStats[panelId].typeChange = typeChangeEl.value; });
-        const moveTimesEl = document.getElementById(`${panelId}-move-times`);
-        if (moveTimesEl) moveTimesEl.addEventListener('input', () => { panelStats[panelId].moveTimes = parseInt(moveTimesEl.value) || 1; });
-        const doubleDamageCheckbox = document.getElementById(`${panelId}-double-damage-checkbox`);
-        if (doubleDamageCheckbox) doubleDamageCheckbox.addEventListener('change', () => { panelStats[panelId].doubleDamage = doubleDamageCheckbox.checked; });
-    });
 
-    setupSegmentedControl('center-weatherControl', selectedValue => console.log('Selected Weather:', selectedValue));
-    setupSegmentedControl('center-fieldControl', selectedValue => console.log('Selected Field:', selectedValue));
+        // Type Change Select
+        const typeChangeEl = document.getElementById(`${panelId}-type-change`);
+        if (typeChangeEl) {
+            typeChangeEl.addEventListener('change', () => {
+                panelStats[panelId].typeChange = typeChangeEl.value;
+                updatePanelStats(panelId); // Update type display
+            });
+        }
+
+        // Move Times Input
+        const moveTimesEl = document.getElementById(`${panelId}-move-times`);
+        if (moveTimesEl) {
+            moveTimesEl.addEventListener('input', () => {
+                panelStats[panelId].moveTimes = parseInt(moveTimesEl.value) || 1;
+                // This might affect damage calculation (e.g. metronome)
+            });
+        }
+        
+        // Double Damage Checkbox
+        const doubleDamageCheckbox = document.getElementById(`${panelId}-double-damage-checkbox`);
+        if (doubleDamageCheckbox) {
+            doubleDamageCheckbox.addEventListener('change', () => {
+                panelStats[panelId].doubleDamage = doubleDamageCheckbox.checked;
+                // This affects damage calculation for spread moves
+            });
+        }
+
+        // Other panel-specific inputs like item, status condition, critical hit
+        const itemInput = document.getElementById(`${panelId}-item`); // Assuming an input field for item exists
+        if (itemInput) {
+            itemInput.addEventListener('input', () => { // or 'change' if it's a select
+                panelStats[panelId].item = itemInput.value;
+                // updatePanelStats(panelId); // if item affects visible stats
+            });
+        }
+        // Similar listeners for statusCondition, isCriticalHit would be needed if they are direct user inputs
+        // For now, isCriticalHit might be a checkbox per panel, status via dropdown etc.
+        // Example for a critical hit checkbox (assuming it exists with ID `${panelId}-critical-hit-checkbox`)
+        const critCheckbox = document.getElementById(`${panelId}-critical-hit-checkbox`);
+        if (critCheckbox) {
+            critCheckbox.addEventListener('change', () => {
+                panelStats[panelId].isCriticalHit = critCheckbox.checked;
+            });
+        }
+
+
+    });
 }
 
-window.changeRank = updateRank;
+function handleAutocompleteKeydown(event, inputElement, highlightedIndexState) {
+    const suggestionsListElement = inputElement.parentNode.querySelector('.suggestions-list');
+    if (!suggestionsListElement || suggestionsListElement.classList.contains('no-results')) {
+        if (event.key === 'Enter') {
+            if (suggestionsListElement) suggestionsListElement.remove();
+            highlightedIndexState.index = -1;
+        }
+        return;
+    }
+
+    const listItems = suggestionsListElement.querySelectorAll('li');
+    if (listItems.length === 0) return;
+
+    let newHighlightedIndex = highlightedIndexState.index;
+
+    switch (event.key) {
+        case 'ArrowDown':
+            event.preventDefault();
+            newHighlightedIndex = (newHighlightedIndex + 1) % listItems.length;
+            break;
+        case 'ArrowUp':
+            event.preventDefault();
+            newHighlightedIndex = (newHighlightedIndex - 1 + listItems.length) % listItems.length;
+            break;
+        case 'Enter':
+            event.preventDefault();
+            if (highlightedIndexState.index >= 0 && highlightedIndexState.index < listItems.length) {
+                listItems[highlightedIndexState.index].click(); // Simulate click on highlighted item
+            } else if (listItems.length > 0 && inputElement.value.trim() !== "") {
+                // Optional: if no highlight but text matches a suggestion, select first one
+                // Or simply do nothing, current behavior is to select only if highlighted.
+            }
+            highlightedIndexState.index = -1;
+            // displaySuggestions should have removed the list on click
+            return; 
+        case 'Escape':
+            event.preventDefault();
+            if (suggestionsListElement) {
+                suggestionsListElement.remove();
+            }
+            highlightedIndexState.index = -1;
+            return; 
+        default:
+            return; // Don't update highlight for other keys
+    }
+    highlightedIndexState.index = newHighlightedIndex;
+    updateSuggestionHighlight(listItems, highlightedIndexState.index);
+}
+
+
+// Note: window.changeRank is exposed in main.js
+// If it were to be fully modularized here, main.js would need to import it and expose it,
+// or the HTML would need to change to use event listeners set up here.

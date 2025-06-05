@@ -1,60 +1,12 @@
 /* style/layout.css */
 
-.container {
-  display: flex;
-  gap: 1%;
-  min-width: 50%;
-  max-width: 75% ;
+body { /* base.css から移動または base.css で定義 */
+  font-family: sans-serif;
+  margin: 0; /* Remove default margin */
+  padding: 20px; /* Add padding to body instead of margin */
+  background-color: #f0f0f0; /* Consistent background */
 }
 
-
-/* New style for attacker-input-group to be in layout.css as it deals with layout */
-.attacker-input-group {
-  display: flex; /* Flexboxを使って横並びにする */
-  align-items: center; /* 垂直方向中央揃え */
-  gap: 5px; /* 要素間の隙間 */
-  margin-bottom: 0.5%; /* 必要に応じて下の要素とのマージンを設定 */
-}
-
-.attacker-input-group .search-input-field {
-  flex: grow 3%; /* 入力欄が利用可能なスペースを占めるようにする */
-}
-
-/* Defender control group for input and switch/segmented control */
-.defender-control-group {
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-  flex-wrap: wrap;
-}
-
-.defender-control-group .search-input-field {
-  flex-grow: 1;
-  min-width: 150px;
-  margin-right: 15px;
-}
-/* New style for inline-flex-group as it is a layout utility */
-.inline-flex-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex-wrap: nowrap;
-}
-
-/* Ability control group for better layout of buttons and input */
-.ability-control-group {
-  display: flex;
-  flex-wrap: wrap; /* ボタンと入力欄を適切に折り返す */
-  align-items: center;
-  gap: 5px;
-  margin-top: 10px;
-  border: 1px solid #ccc; /* segmented-controlと同じような見た目に */
-  border-radius: 8px;
-  padding: 5px;
-}
-/* style/layout.css */
-
-/* Overall Page Container */
 .page-container {
     display: grid;
     grid-template-columns: 1fr 1fr; /* 2 columns for panels */
@@ -62,15 +14,13 @@
     gap: 15px; /* Gap between all grid items */
     width: 95%;
     max-width: 1400px; /* Adjust as needed */
-    margin: 20px auto;
+    margin: 0 auto; /* Centering the page container */
 }
 
-/* Pokemon Panel Styling (Basic layout, specific styling in panels.css and inline in HTML for backgrounds) */
+/* Pokemon Panel Styling (Basic layout, specific styling in panels.css) */
 .panel {
-    padding: 15px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    /* Background colors like lightcoral, lightblue are set via ID in HTML or specific CSS classes if preferred */
+    /* Background colors are set via ID in HTML or specific CSS if preferred */
+    /* Padding, border, border-radius are in panels.css or inline */
 }
 
 /* Field Section Layout */
@@ -78,7 +28,7 @@
     grid-column: 1 / 3; /* Span across both columns */
     grid-row: 2 / 3;    /* Place in the second row */
     display: grid;
-    grid-template-columns: 1fr 1.5fr; /* Left column for statuses (1 part), Right column for HP display (1.5 parts) */
+    grid-template-columns: 1fr 1.5fr; /* Left column (1 part), Right column (1.5 parts) */
     gap: 15px;
     padding: 15px;
     border: 1px solid #ccc;
@@ -89,7 +39,7 @@
 .field-left-column {
     display: flex;
     flex-direction: column;
-    justify-content: space-between; /* Distribute space for status areas */
+    justify-content: space-between;
     gap: 10px;
 }
 
@@ -100,15 +50,15 @@
     flex-grow: 1;
     display: flex;
     flex-direction: column;
+    gap: 5px; /* Space between elements within status area */
 }
 
-/* Background colors for status areas in the field section */
-.team-red-status-bg { background-color: #ffefef; } /* Light red for Red team's field status */
-.team-blue-status-bg { background-color: #efefff; } /* Light blue for Blue team's field status */
-.common-field-status-bg { background-color: #f2e6ff; } /* Light purple for common field status (weather/field) */
+.team-red-status-bg { background-color: #ffefef; }
+.team-blue-status-bg { background-color: #efefff; }
+.common-field-status-bg { background-color: #f2e6ff; }
 
 .field-status-area h4,
-.common-field-status-bg h4, /* Ensure heading style applies to common status area as well */
+.common-field-status-bg h4,
 .pokemon-hp-display-area > h4 {
     margin-top: 0;
     margin-bottom: 8px;
@@ -122,8 +72,8 @@
     border-radius: 4px;
     padding: 5px;
     resize: vertical;
-    flex-grow: 1; /* Allow textarea to take available space */
-    min-height: 40px;
+    min-height: 40px; /* Ensure a minimum height */
+    margin-bottom: 5px; /* Space below textarea */
 }
 
 /* Pokemon HP Display Area in Field Section */
@@ -140,7 +90,7 @@
 .team-hp-rows {
     display: flex;
     flex-direction: column;
-    gap: 10px; /* Space between Red/Blue HP rows and Icon rows */
+    gap: 15px; /* Increased gap for clarity */
 }
 
 .pokemon-hp-row,
@@ -148,185 +98,223 @@
     display: grid;
     grid-template-columns: 1fr 1fr; /* Two Pokemon items side-by-side */
     gap: 10px;
-    align-items: center;
+    align-items: center; /* Align items nicely */
 }
 
 .pokemon-hp-entry,
 .pokemon-icon-entry {
     display: flex;
-    flex-direction: column; /* Stack name/HP bar or icon */
+    flex-direction: column;
     align-items: center;
-    gap: 4px;
+    gap: 5px; /* Gap between name/HP bar and icon */
     font-size: 0.85em;
     text-align: center;
 }
 
 .pokemon-icon {
-    width: 35px;
-    height: 35px;
+    width: 40px;  /* Slightly larger icon */
+    height: 40px;
     background-color: #cccccc; /* Default grey circle */
     border-radius: 50%;
     border: 1px solid #aaa;
-    /* Pokemon sprite will be set as background-image via JS */
+    background-size: cover; /* For background images */
+    background-position: center;
 }
 
 .hp-bar-container {
-    width: 90%; /* Relative to its parent (.pokemon-hp-entry) */
-    max-width: 150px; /* Max width for the HP bar */
-    height: 18px;
-    background-color: #e0e0e0; /* Slightly darker background for the bar track */
+    width: 90%;
+    max-width: 160px; /* Max width for the HP bar */
+    height: 20px;    /* Slightly taller HP bar */
+    background-color: #e0e0e0;
     border-radius: 4px;
     overflow: hidden;
-    position: relative;
+    position: relative; /* For absolute positioning of the text inside */
+    border: 1px solid #c0c0c0; /* Add a subtle border */
 }
 
 .hp-bar {
     height: 100%;
     background-color: #4CAF50; /* Green for HP */
-    width: 100%; /* Default to full, JS will update based on HP percentage */
-    transition: width 0.3s ease-in-out;
+    width: 100%; /* Default to full, JS will update */
+    transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
     display: flex;
     align-items: center;
     justify-content: center;
     color: white;
-    font-size: 0.75em;
+    font-size: 0.8em; /* Adjusted for better readability */
     font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3); /* Add text shadow for better contrast */
 }
 
 
-/* Panel Content Layout Helpers */
+/* Panel Content Layout Helpers (from panels.css originally, good for layout.css) */
+.panel-header-row {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* Space between h3 and pokemon-info-line */
+  margin-bottom: 10px; /* Space below header row */
+}
+
+.panel-header-row > h3 {
+  margin: 0;
+  font-size: 1.2em; /* Slightly larger panel title */
+  white-space: nowrap;
+}
+
+.panel-header-row > .pokemon-info-line {
+  flex-grow: 1;
+  margin-bottom: 0; /* remove margin as gap is handled by parent */
+}
+
+
 .pokemon-info-line {
   display: flex;
   align-items: center;
   gap: 8px;
-  margin-bottom: 6px;
+  margin-bottom: 8px; /* Consistent spacing */
+  position: relative; /* For suggestions list positioning */
 }
 
-.pokemon-info-line input[type="text"],
-.pokemon-info-line select {
-  flex-grow: 1; 
-  padding: 5px;
+.pokemon-info-line .search-input-field,
+.pokemon-info-line select,
+.pokemon-info-line input[type="number"] {
+  flex-grow: 1;
+  padding: 6px 8px; /* Consistent padding */
   font-size: 0.9em;
-  /* Other input/select styling should be in forms.css */
+  border: 1px solid #ccc; /* forms.cssと共通化も検討 */
+  border-radius: 4px;
+}
+.pokemon-info-line .move-input {
+    flex-basis: 0; /* Allow move input to shrink if needed */
 }
 
-.type-display {
+
+.pokemon-info-line .type-display {
   font-weight: bold;
-  min-width: 60px; 
+  min-width: 75px; /* Adjusted min-width */
   text-align: center;
-  padding: 3px 5px;
-  border: 1px dashed #ccc;
-  border-radius: 3px;
+  padding: 6px 5px;
+  border: 1px solid #e0e0e0;
+  border-radius: 4px;
+  background-color: #f5f5f5;
   font-size: 0.85em;
+  white-space: nowrap;
 }
 
 .ability-section {
-    flex-grow: 1; /* Allow ability choice segmented control to take space */
-    min-width: 0; /* Allow shrinking if needed for flexbox */
+    flex-grow: 1;
+    min-width: 0; /* Allow shrinking for flexbox */
+    display: flex; /* Ensure segmented control inside takes space */
+    align-items: center;
 }
-.ability-section .segmented-control{
-    flex-wrap: nowrap; /* Prevent wrapping of ability buttons */
-    overflow-x: auto;  /* Allow horizontal scrolling for many abilities */
+.ability-section .segmented-control {
+    flex-grow: 1;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    /* padding/border handled by segmented-control.css */
+}
+.ability-section .custom-ability-input { /* Style for dynamically added input */
+    flex-grow: 1;
+    min-width: 80px;
+    padding: 6px 8px;
+    font-size: 0.9em;
+    border: 1px solid #ccc;
+    border-radius: 4px;
 }
 
 
 .checkbox-inline {
     display: inline-flex;
     align-items: center;
-    font-size: 0.85em;
-    gap: 3px; /* Space between checkbox and label text */
-    white-space: nowrap; /* Prevent label from wrapping */
+    font-size: 0.9em; /* Slightly larger for better readability */
+    gap: 4px;
+    white-space: nowrap;
+    margin-left: 8px; /* Space from ability choice */
+}
+.checkbox-inline input[type="checkbox"] {
+    margin-right: 3px;
 }
 
-/* Stat Block Layout */
+
+/* Stat Block Layout (from panels.css originally) */
 .stat-block {
-    margin-bottom: 8px; 
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #fff;
 }
 
 .stat-block h4 {
-    margin-top: 0; /* Remove default top margin from h4 */
-    margin-bottom: 4px; 
-    font-size: 0.9em;
+    margin-top: 0;
+    margin-bottom: 8px;
+    font-size: 0.95em;
+    font-weight: bold;
+    color: #333;
 }
 
 .stat-block-row {
   display: flex;
-  flex-wrap: wrap; 
+  flex-wrap: wrap;
   align-items: center;
-  gap: 5px; /* Gap between items in the row */
+  gap: 6px; /* Consistent gap */
 }
 
-.stat-block-row > * {
-  margin-right: 0; /* Remove individual right margins when using gap */
-}
-
-.stat-block-row .actual-stat {
+.stat-block-row > .actual-stat { /* Target direct child for specificity */
     font-weight: bold;
-    min-width: 25px; /* Ensure space for stat value */
+    min-width: 35px; /* Ensure space for stat value */
     text-align: right;
-    margin-right: 5px; /* Space before nature control */
+    font-size: 1em; /* Match h4 more closely */
 }
 
 .stat-block-row .iv-input,
 .stat-block-row .ev-input {
-  width: 50px; 
-  padding: 3px;
-  font-size: 0.9em;
-  /* Specific input styling in forms.css */
+  width: 60px; /* Slightly wider for comfort */
+  text-align: center;
+  /* padding from .pokemon-info-line .search-input-field */
 }
 
-.stat-block-row .rank-value {
-    min-width: 20px; /* Ensure space for rank value */
+/* Rank Selector specific layout */
+.attack-rank-selector {
+    display: flex;
+    align-items: center;
+    margin-left: auto; /* Push to the right */
+}
+.selector-controls {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+.rank-value { /* This is the hidden span holding the numerical rank */
+    min-width: 20px;
     text-align: center;
+    font-weight: bold;
+    /* display: none; if truly always hidden by dropdown button text */
 }
 
-/* General inline flex utility if still needed */
-.inline-flex-group {
-  display: inline-flex; 
-  align-items: center;
-  gap: 8px;
-}
 
 /* Styles for segmented controls within Field section */
 .field-section-container .menu-section {
     width: 100%;
+    margin-bottom: 10px; /* Space between menu sections */
 }
 .field-section-container .menu-section label {
     display: block;
-    margin-bottom: 3px;
+    margin-bottom: 4px;
     font-size: 0.9em;
     font-weight: bold;
 }
-.field-section-container .segmented-control {
+.field-section-container .segmented-control { /* Specific to field section */
     display: flex;
-    justify-content: space-around; /* Distribute buttons evenly */
+    justify-content: flex-start; /* Align buttons to the start */
 }
 .field-section-container .segmented-control button {
-    flex-grow: 1; /* Allow buttons to take equal width */
+    flex-grow: 0; /* Don't grow to fill space, allow natural width */
+    padding: 5px 10px; /* Adjust padding */
 }
 
-/* Styles for panel header row where H3 is to the left of the Pokemon name input */
-.panel-header-row {
-  display: flex;
-  align-items: center; /* Vertically align h3 and input line */
-  gap: 8px; /* Space between the h3 and the input field line */
-  /* margin-bottom is handled by the parent .panel's gap property */
-}
-
-/*
-  Target h3 elements that are direct children of .panel-header-row,
-  itself a child of .panel. This ensures these styles override
-  the more general .panel h3 styles from style/modules/panels.css.
-*/
-.panel > .panel-header-row > h3 {
-  margin: 0; /* Reset default h3 margins */
-  font-size: 1.1em; /* Match font size from panels.css .panel h3 */
-  text-align: left; /* Override text-align: center from panels.css */
-  border-bottom: none; /* Override border-bottom from panels.css */
-  padding-bottom: 0; /* Override padding-bottom from panels.css */
-}
-
-.panel-header-row > .pokemon-info-line {
-  flex-grow: 1; /* The input line should take up available horizontal space */
-  margin-bottom: 0; /* Remove its own bottom margin as spacing is handled by the panel's gap or this row's structure */
+/* Field section wall checkboxes */
+.field-status-area .checkbox-inline {
+    margin-left: 0; /* Reset margin for these specific checkboxes */
+    margin-top: 5px;
 }

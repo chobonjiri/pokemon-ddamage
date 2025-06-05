@@ -1,48 +1,88 @@
 /* style/components/forms.css */
 
-.stat-block input[type=range] {
-  width: 100px;
-}
-
-/* Specific styles for search input fields */
-.search-input-field {
-  background-repeat: no-repeat;
-  background-position: 8px center;
-}
-
-/* Custom ability input fields */
-/* ability-control-group内のinputに適用 */
-.ability-control-group .custom-ability-input {
-  flex-grow: 1;
-  min-width: 100px;
-  max-width: 200px;
-  padding: 7px;
-  border: 1px solid #ddd;
-  border-radius: 5px;
-}
-
-/* Checkbox wrapper within segmented control */
-.segmented-control .ability-nullified-checkbox-wrapper {
-  margin-left: auto;
-  flex-shrink: 0;
-  white-space: nowrap;
-}
-
-/* Adjust default styles for input/label inside segmented control */
-.segmented-control input[type="checkbox"],
-.segmented-control label {
-  margin: 0;
-  padding: 0;
-}
-
-/* General select element styles */
-select {
-  width: 100%;
-  margin-bottom: 12px;
-  padding: 5px;
+/* General input, select, textarea styling (can be further unified) */
+input[type="text"],
+input[type="number"],
+select,
+textarea {
+  padding: 6px 8px;
+  font-size: 0.9em;
+  border: 1px solid #ccc;
   border-radius: 4px;
+  box-sizing: border-box; /* Ensures padding and border don't add to width/height */
+  transition: border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
 }
 
-#ability-nullified {
-  text-align: left;
+input[type="text"]:focus,
+input[type="number"]:focus,
+select:focus,
+textarea:focus {
+  border-color: #007bff;
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  outline: none;
+}
+
+/* Specific styles for search input fields within pokemon-info-line */
+.pokemon-info-line .search-input-field {
+  /* background-image: url('path/to/search-icon.svg'); Optional: add a search icon */
+  background-repeat: no-repeat;
+  background-position: 8px center; /* Adjust if using an icon */
+  /* flex-grow: 1; already handled in layout.css or panel structure */
+}
+
+
+/* Custom ability input field (dynamically added by JS) */
+.custom-ability-input { /* This class is added by JS in showAbilities */
+  flex-grow: 1;
+  min-width: 100px; /* Or as needed */
+  max-width: 200px; /* Prevent it from becoming too wide */
+  padding: 6px 8px; /* Match other inputs */
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 0.9em; /* Match other inputs */
+}
+
+
+/* Checkbox specific styling (if not covered by .checkbox-inline in layout.css) */
+input[type="checkbox"] {
+  margin-right: 5px;
+  vertical-align: middle;
+}
+
+/* Styling for select elements, ensuring they fit well */
+select {
+  /* width: 100%; */ /* This can sometimes be too aggressive, let flexbox handle width in .pokemon-info-line */
+  /* margin-bottom: 12px; */ /* Handled by gap in flex containers */
+  /* padding, border-radius already defined above */
+  background-color: #fff; /* Ensure select has a background */
+  height: auto; /* Ensure consistent height with other inputs, adjust padding as needed */
+}
+
+/* Number inputs for IV/EV, ensuring they don't take up too much space */
+.iv-input,
+.ev-input {
+  width: 60px; /* Defined in layout.css, ensure consistency */
+  text-align: center;
+}
+
+/* Textarea for field status */
+.field-status-area textarea {
+    /* width: calc(100% - 12px); /* from layout.css */
+    /* font-size: 0.85em; */ /* from layout.css */
+    /* border: 1px solid #ccc; */ /* from general input style */
+    /* border-radius: 4px; */ /* from general input style */
+    /* padding: 5px; */       /* from general input style */
+    resize: vertical;
+    min-height: 40px;
+    line-height: 1.4; /* Improve readability */
+}
+
+/* Remove spinners from number inputs (optional, for cleaner look) */
+input[type=number]::-webkit-inner-spin-button,
+input[type=number]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type=number] {
+  -moz-appearance: textfield; /* Firefox */
 }
