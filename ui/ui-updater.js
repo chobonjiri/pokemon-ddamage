@@ -178,41 +178,77 @@ export function showAbilities(panelId, pokemon) {
     const nullifiedCheckbox = document.getElementById(`${panelId}-ability-nullified`);
     
     if (!container) return;
-    container.innerHTML = ""; // Clear previous abilities
+    container.innerHTML = ""; // 以前の特性表示をクリア
     
     const currentPanelAbilityState = panelStats[panelId].ability;
 
+    // カスタム特性入力フィールドを先に作成（ボタンの後に追加するため）
+    const customInput = document.createElement("input");
+    customInput.type = "text";
+    customInput.id = `${panelId}-custom-ability-input-dynamic`; // 必要に応じてIDをユニークに
+    customInput.placeholder = "特性入力";
+    customInput.className = "custom-ability-input";
+    customInput.style.flexGrow = "1"; 
+    customInput.style.minWidth = "80px"; // 必要に応じて調整
+
     if (!pokemon) { // ポケモンが選択されていない場合
-        if (nullifiedCheckbox) nullifiedCheckbox.checked = false;
+        if (nullifiedCheckbox) {
+            nullifiedCheckbox.checked = false;
+            // nullifiedCheckbox.disabled = true; // 必要であれば無効化チェックボックスも無効に
+        }
+        // パネルの特性状態をリセット
         currentPanelAbilityState.name = '';
         currentPanelAbilityState.custom = '';
         currentPanelAbilityState.nullified = false;
         currentPanelAbilityState.selectedButton = null;
-        return;
+
+        const placeholderAbilityNames = ["特性1", "特性2", "隠れ特性"];
+        placeholderAbilityNames.forEach(name => {
+            const btn = document.createElement("button");
+            btn.textContent = name;
+            btn.className = "ability-btn placeholder-ability-btn"; // スタイル付けのためのクラス追加
+            btn.type = "button";
+            btn.disabled = true;
+            container.appendChild(btn);
+        });
+
+        customInput.value = "";
+        customInput.disabled = true;
+        container.appendChild(customInput);
+
+        if (nullifiedCheckbox) {
+            nullifiedCheckbox.checked = currentPanelAbilityState.nullified; // falseになるはず
+        }
+        return; // ポケモン未選択の場合はここで処理終了
     }
 
-    const abilities = [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean); // Filter out empty strings
+    // --- ポケモンが選択されている場合の処理 ---
+    // if (nullifiedCheckbox) nullifiedCheckbox.disabled = false; // 必要であれば有効化
+
+    const abilities = [pokemon.Ability1, pokemon.Ability2, pokemon.Ability3].filter(Boolean); // 空文字列を除外
     
     abilities.forEach((abilityName) => {
         const btn = document.createElement("button");
         btn.textContent = abilityName;
-        btn.className = "ability-btn"; // For styling
+        btn.className = "ability-btn";
         btn.type = "button";
         btn.dataset.ability = abilityName;
 
-        // Restore selection if this ability was selected
+        // この特性が選択されており、カスタム入力や無効化で上書きされていない場合に選択状態を復元
         if (currentPanelAbilityState.selectedButton === abilityName && !currentPanelAbilityState.custom && !currentPanelAbilityState.nullified) {
             btn.classList.add("selected");
         }
 
+        // ボタンクリック時の処理
         btn.onclick = () => {
-            container.querySelectorAll(".ability-btn").forEach(b => b.classList.remove("selected"));
+            container.querySelectorAll(".ability-btn.selected").forEach(b => b.classList.remove("selected"));
             btn.classList.add("selected");
             currentPanelAbilityState.name = abilityName;
             currentPanelAbilityState.custom = "";    // Clear custom input when a button is clicked
             currentPanelAbilityState.nullified = false;
             currentPanelAbilityState.selectedButton = abilityName;
-            if (customInput) customInput.value = ""; // Clear visual custom input
+            customInput.value = ""; // カスタム入力フィールドをクリア
+            customInput.disabled = false; // カスタム入力フィールドを有効化
             if (nullifiedCheckbox) nullifiedCheckbox.checked = false;
             // console.log(`${panelId} Ability selected: ${currentPanelAbilityState.name}`);
             // updatePanelStats(panelId); // If ability affects base stats directly (rare)
@@ -220,34 +256,28 @@ export function showAbilities(panelId, pokemon) {
         container.appendChild(btn);
     });
 
-    // Add custom ability input field dynamically if it's not already part of the static HTML per panel
-    const customInputId = `${panelId}-custom-ability-input-dynamic`;
-    let customInput = container.querySelector(`#${customInputId}`);
-    if (!customInput) {
-        customInput = document.createElement("input");
-        customInput.type = "text";
-        customInput.id = customInputId;
-        customInput.placeholder = "特性入力";
-        customInput.className = "custom-ability-input";
-        customInput.style.flexGrow = "1"; 
-        customInput.style.minWidth = "80px"; // Adjust as needed
-        container.appendChild(customInput);
-    }
-    customInput.value = currentPanelAbilityState.custom; // Restore custom input value
+    // カスタム特性入力フィールドの設定
+    customInput.value = currentPanelAbilityState.custom; // カスタム入力値を復元
+    customInput.disabled = currentPanelAbilityState.nullified; // 特性が無効化されていれば入力フィールドも無効化
 
+    // カスタム入力時の処理
     customInput.oninput = () => {
-        container.querySelectorAll(".ability-btn").forEach(b => b.classList.remove("selected"));
+        container.querySelectorAll(".ability-btn.selected").forEach(b => b.classList.remove("selected"));
         currentPanelAbilityState.name = customInput.value;
         currentPanelAbilityState.custom = customInput.value;
-        currentPanelAbilityState.nullified = false;
+        currentPanelAbilityState.nullified = false; // カスタム入力時は無効化を解除
         currentPanelAbilityState.selectedButton = null; // Clear button selection
         if (nullifiedCheckbox) nullifiedCheckbox.checked = false;
+        customInput.disabled = false; // 入力中は有効
         // console.log(`${panelId} Custom Ability input: ${currentPanelAbilityState.name}`);
     };
+    container.appendChild(customInput); // ボタンの後にカスタム入力フィールドを追加
 
-    // Restore nullified checkbox state
+    // 無効化チェックボックスの状態を復元
     if (nullifiedCheckbox) {
         nullifiedCheckbox.checked = currentPanelAbilityState.nullified;
+        // 特性が無効化されている場合、UI（ボタンの選択解除、カスタム入力の無効化など）は
+        // nullifiedCheckbox のイベントハンドラ (event-handler.js内) とこの関数の冒頭で処理される
     }
 }
 
