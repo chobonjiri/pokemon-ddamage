@@ -5,6 +5,7 @@ export const panelIds = ['red1', 'red2', 'blue1', 'blue2'];
 export const initialPanelStatsTemplate = {
     pokemonName: '',
     moveName: '',
+    item: '', // 持ち物を追加
     ability: { name: '', custom: '', nullified: false, selectedButton: null },
     typeChange: '',
     moveTimes: 1,

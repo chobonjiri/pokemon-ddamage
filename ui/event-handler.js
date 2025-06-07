@@ -505,15 +505,15 @@ export function setupEventListeners() {
         }
 
         // Other panel-specific inputs like item, status condition, critical hit
-        const itemInput = document.getElementById(`${panelId}-item`); // Assuming an input field for item exists
+        const itemInput = document.getElementById(`${panelId}-item`);
         if (itemInput) {
-            itemInput.addEventListener('input', () => { // or 'change' if it's a select
+            itemInput.addEventListener('input', () => {
                 panelStats[panelId].item = itemInput.value;
+                // console.log(`${panelId} Item: ${panelStats[panelId].item}`);
                 // updatePanelStats(panelId); // if item affects visible stats
             });
         }
-        // Similar listeners for statusCondition, isCriticalHit would be needed if they are direct user inputs
-        // For now, isCriticalHit might be a checkbox per panel, status via dropdown etc.
+
         // Example for a critical hit checkbox (assuming it exists with ID `${panelId}-critical-hit-checkbox`)
         const critCheckbox = document.getElementById(`${panelId}-critical-hit-checkbox`);
         if (critCheckbox) {
