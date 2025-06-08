@@ -434,6 +434,7 @@ export function setupEventListeners() {
                     } else if (statPart === 'hp' && panelStats[panelId].stats.hp) { // HP specific handling
                          panelStats[panelId].stats.hp.ev = parseInt(evEl.value) || 0;
                          updatePanelStats(panelId);
+                    
                     }
                 });
             }

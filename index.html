@@ -12,6 +12,7 @@
   <link rel="stylesheet" href="style/components/segmented-control.css" />
   <link rel="stylesheet" href="style/modules/panels.css" />
   <link rel="stylesheet" href="style/components/dropdown.css" />
+  <link rel="stylesheet" href="style/components/value-control.css" />
   <style>
   </style>
 </head>
@@ -366,46 +367,82 @@
             <div class="pokemon-hp-row">
                 <div class="pokemon-hp-entry">
                     <span>Red 2: <span id="red2-hp-table-name">-</span>HP:<span id="red2-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
-                    <div class="hp-bar-container"><div id="red2-hp-bar" class="hp-bar">100%</div></div>    
                     <div class="stat-block-row">
-                        <input type="number" id="red2-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
-                        <input type="number" id="red2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                        <div class="value-control">
+                        <input type="number" id="red2-hp-1v" value="0" min="0" max="31" class="iv-input" title="個体値"/>
+                        <div class="value-buttons">
+                            <button type="button" class="value-set-btn" data-target="red2-hp-iv" data-value="31">31</button>
+                            <button type="button" class="value-set-btn" data-target="red2-hp-iv" data-value="0">0</button>
+                        </div>
                     </div>
+                        <div class="value-control">
+                        <input type="number" id="red2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                        <div class="value-buttons">
+                            <button type="button" class="value-set-btn" data-target="red2-hp-ev" data-value="252">0</button>
+                            <button type="button" class="value-set-btn" data-target="red2-hp-ev" data-value="0">252</button>
+                        </div>
+                    </div>
+                    <div class="hp-bar-container"><div id="red2-hp-bar" class="hp-bar">100%</div></div>    
                 </div>
                 <div class="pokemon-hp-entry">
                     <span>Red 1: <span id="red1-hp-table-name">-</span>HP:<span id="red1-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
-                    <div class="hp-bar-container"><div id="red1-hp-bar" class="hp-bar">100%</div></div>
                     <div class="stat-block-row">
-                        <input type="number" id="red1-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
+                        <div class="value-control">
+                        <input type="number" id="red2-hp-1v" value="0" min="0" max="31" class="iv-input" title="個体値"/>
+                        <div class="value-buttons">
+                            <button type="button" class="value-set-btn" data-target="red1-hp-iv" data-value="31">31</button>
+                            <button type="button" class="value-set-btn" data-target="red1-hp-iv" data-value="0">0</button>
+                        </div>
+                    </div>
+                        <div class="value-control">
                         <input type="number" id="red1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                        <div class="value-buttons">
+                            <button type="button" class="value-set-btn" data-target="red1-hp-ev" data-value="252">252</button>
+                            <button type="button" class="value-set-btn" data-target="red1-hp-ev" data-value="0">0</button>
+                        </div>
+                    </div>
+                    <div class="hp-bar-container"><div id="red1-hp-bar" class="hp-bar">100%</div></div>
                     </div>
                 </div>
-            </div>
-            <div class="pokemon-icon-row">
-                <div class="pokemon-icon-entry"><div class="pokemon-icon" id="red2-icon"></div></div>
-                <div class="pokemon-icon-entry"><div class="pokemon-icon" id="red1-icon"></div></div>
-            </div>
             <div class="pokemon-hp-row">
                 <div class="pokemon-hp-entry">
                     <span>Blue 1: <span id="blue1-hp-table-name">-</span>HP:<span id="blue1-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
-                    <div class="hp-bar-container"><div id="blue1-hp-bar" class="hp-bar">100%</div></div>    
-                    <div class="stat-block-row">
-                        <input type="number" id="blue1-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
+                        <div class="value-control">
+                        <input type="number" id="blue1-hp-1v" value="0" min="0" max="31" class="iv-input" title="個体値"/>
+                        <div class="value-buttons">
+                            <button type="button" class="value-set-btn" data-target="blue1-hp-iv" data-value="31">31</button>
+                            <button type="button" class="value-set-btn" data-target="blue1-hp-iv" data-value="0">0</button>
+                        </div>
+                    </div>
+                        <div class="value-control">
                         <input type="number" id="blue1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                        <div class="value-buttons">
+                            <button type="button" class="value-set-btn" data-target="blue1-hp-ev" data-value="252">0</button>
+                            <button type="button" class="value-set-btn" data-target="blue1-hp-ev" data-value="0">252</button>
+                        </div>
+                    </div>
+                    <div class="hp-bar-container"><div id="blue1-hp-bar" class="hp-bar">100%</div></div>    
                     </div>
                 </div>
                 <div class="pokemon-hp-entry">
                     <span>Blue 2: <span id="blue2-hp-table-name">-</span>HP:<span id="blue2-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
-                    <div class="hp-bar-container"><div id="blue2-hp-bar" class="hp-bar">100%</div></div>
-                    <div class="stat-block-row">
-                        <input type="number" id="blue2-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
+                        <div class="value-control">
+                        <input type="number" id="blue2-hp-1v" value="0" min="0" max="31" class="iv-input" title="個体値"/>
+                        <div class="value-buttons">
+                            <button type="button" class="value-set-btn" data-target="blue2-hp-iv" data-value="31">31</button>
+                            <button type="button" class="value-set-btn" data-target="blue2-hp-iv" data-value="0">0</button>
+                        </div>
+                    </div>
+                        <div class="value-control">
                         <input type="number" id="blue2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                        <div class="value-buttons">
+                            <button type="button" class="value-set-btn" data-target="blue2-hp-ev" data-value="252">0</button>
+                            <button type="button" class="value-set-btn" data-target="blue2-hp-ev" data-value="0">252</button>
+                        </div>
+                    </div>
+                    <div class="hp-bar-container"><div id="blue2-hp-bar" class="hp-bar">100%</div></div>
                     </div>
                 </div>
-            </div>
-            <div class="pokemon-icon-row">
-                <div class="pokemon-icon-entry"><div class="pokemon-icon" id="blue1-icon"></div></div>
-                <div class="pokemon-icon-entry"><div class="pokemon-icon" id="blue2-icon"></div></div>
             </div>
         </div>
         <button id="calculate-damage-button" style="margin-top: 10px;">ダメージ計算実行</button>
