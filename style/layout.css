@@ -11,9 +11,9 @@ body { /* base.css から移動または base.css で定義 */
     display: grid;
     grid-template-columns: 1fr 1fr; /* 2 columns for panels */
     grid-template-rows: auto auto auto; /* Row for Red panels, Row for Field, Row for Blue panels */
-    gap: 15px; /* Gap between all grid items */
-    width: 95%;
-    max-width: 1400px; /* Adjust as needed */
+    gap: 10px; /* Gap between all grid items */
+    width: 100%;
+    max-width: 1200%; /* パネル幅を狭くするため、この値を1400pxから変更 */
     margin: 0 auto; /* Centering the page container */
 }
 

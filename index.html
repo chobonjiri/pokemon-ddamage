@@ -11,49 +11,8 @@
   <link rel="stylesheet" href="style/components/forms.css" />
   <link rel="stylesheet" href="style/components/segmented-control.css" />
   <link rel="stylesheet" href="style/modules/panels.css" />
+  <link rel="stylesheet" href="style/components/dropdown.css" />
   <style>
-    /* 既存のインラインスタイル（特に dropdown 関連）は、
-       style/components/dropdown.css のような別ファイルに切り出すか、
-       既存のCSSファイルに統合することを検討してください。
-       ここでは簡略化のため一部残しますが、最終的には外部化が望ましいです。 */
-    .dropdown-wrapper {
-        position: relative;
-        display: inline-block;
-    }
-    .dropdown-toggle {
-        background-color: #fff; border: 1px solid #ccc; border-radius: 4px;
-        padding: 4px 8px; font-size: 14px; cursor: pointer;
-        display: flex; align-items: center; justify-content: space-between;
-        min-width: 60px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); outline: none;
-        transition: border-color 0.3s ease;
-    }
-    .dropdown-toggle:hover, .dropdown-toggle.active { border-color: #007bff; }
-    .dropdown-toggle.active { box-shadow: 0 0 0 2px rgba(0,123,255,0.25); }
-    .arrow-icon { margin-left: 4px; font-size: 10px; transition: transform 0.3s ease; }
-    .dropdown-toggle.active .arrow-icon { transform: rotate(180deg); }
-    .dropdown-menu {
-        position: absolute; top: 100%; left: 0; width: 100%;
-        background-color: #fff; border: 1px solid #ccc; border-radius: 4px;
-        box-shadow: 0 4px 8px rgba(0,0,0,0.1); list-style: none;
-        padding: 0; margin-top: 4px; z-index: 1000; /* z-index調整 */
-        max-height: 150px; overflow-y: auto; display: none;
-    }
-    .dropdown-menu.show { display: block; }
-    .dropdown-menu li { padding: 8px 12px; cursor: pointer; }
-    .dropdown-menu li:hover, .dropdown-menu li.selected { background-color: #e9ecef; }
-
-    /* オートコンプリート候補のスタイル (panels.css から移動または共通化検討) */
-    .suggestions-list {
-        list-style-type: none; padding: 0; margin: 0;
-        border: 1px solid #ccc; border-top: none;
-        position: absolute; z-index: 1001; /* ドロップダウンより手前に */
-        background-color: white; max-height: 200px; overflow-y: auto;
-        width: calc(100% - 2px); box-sizing: border-box;
-    }
-    .suggestions-list li { padding: 8px 12px; cursor: pointer; font-size: 0.9em; }
-    .suggestions-list li:hover, .suggestions-list li.suggestion-highlight { background-color: #e0e0e0; }
-    .suggestions-list.no-results li.no-results-message { color: #777; cursor: default; }
-    .suggestions-list.no-results li.no-results-message:hover { background-color: transparent; }
   </style>
 </head>
 <body>
@@ -364,15 +323,15 @@
   <div class="field-section-container" id="field-section">
     <div class="field-left-column">
         <div class="field-status-area team-red-status-bg">
-            <h4>Red場の状態</h4>
-            <textarea id="red-field-status" rows="2" placeholder="例: リフレクター, おいかぜ..."></textarea>
+            <h4>Red Side</h4>
+ 
             <div>
                 <label class="checkbox-inline"><input type="checkbox" id="red-reflect-active" /> リフレクター</label>
                 <label class="checkbox-inline"><input type="checkbox" id="red-lightscreen-active" /> ひかりのかべ</label>
             </div>
         </div>
         <div class="field-status-area common-field-status-bg">
-            <h4>場の状態</h4>
+            <h4>Both Side</h4>
             <div class="menu-section">
                 <label for="center-weatherControl">天候:</label>
                 <div class="segmented-control" id="center-weatherControl">
@@ -394,8 +353,7 @@
             </div>
         </div>
         <div class="field-status-area team-blue-status-bg">
-            <h4>Blue場の状態</h4>
-            <textarea id="blue-field-status" rows="2" placeholder="例: ひかりのかべ, トリックルーム..."></textarea>
+            <h4>Blue Side</h4>
             <div>
                 <label class="checkbox-inline"><input type="checkbox" id="blue-reflect-active" /> リフレクター</label>
                 <label class="checkbox-inline"><input type="checkbox" id="blue-lightscreen-active" /> ひかりのかべ</label>

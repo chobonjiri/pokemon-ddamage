@@ -66,3 +66,32 @@
     background-color: #e9ecef;
     font-weight: bold;
 }
+    /* 既存のインラインスタイル（特に dropdown 関連）は、
+       style/components/dropdown.css のような別ファイルに切り出すか、
+       既存のCSSファイルに統合することを検討してください。
+       ここでは簡略化のため一部残しますが、最終的には外部化が望ましいです。 */
+    .dropdown-wrapper {
+        position: relative;
+        display: inline-block;
+    }
+    .dropdown-toggle {
+        background-color: #fff; border: 1px solid #ccc; border-radius: 4px;
+        padding: 4px 8px; font-size: 14px; cursor: pointer;
+        display: flex; align-items: center; justify-content: space-between;
+        min-width: 60px; box-shadow: 0 1px 2px rgba(0,0,0,0.05); outline: none;
+        transition: border-color 0.3s ease;
+    }
+    .dropdown-toggle:hover, .dropdown-toggle.active { border-color: #007bff; }
+    .dropdown-toggle.active { box-shadow: 0 0 0 2px rgba(0,123,255,0.25); }
+    .arrow-icon { margin-left: 4px; font-size: 10px; transition: transform 0.3s ease; }
+    .dropdown-toggle.active .arrow-icon { transform: rotate(180deg); }
+    .dropdown-menu {
+        position: absolute; top: 100%; left: 0; width: 100%;
+        background-color: #fff; border: 1px solid #ccc; border-radius: 4px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); list-style: none;
+        padding: 0; margin-top: 4px; z-index: 1000; /* z-index調整 */
+        max-height: 150px; overflow-y: auto; display: none;
+    }
+    .dropdown-menu.show { display: block; }
+    .dropdown-menu li { padding: 8px 12px; cursor: pointer; }
+    .dropdown-menu li:hover, .dropdown-menu li.selected { background-color: #e9ecef; }

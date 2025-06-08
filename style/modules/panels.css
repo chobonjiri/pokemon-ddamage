@@ -135,3 +135,16 @@
 .dropdown-menu li.selected { /* 'selected' class for JS to mark current rank */
     background-color: #e9ecef;
 }
+
+    /* オートコンプリート候補のスタイル (panels.css から移動または共通化検討) */
+    .suggestions-list {
+        list-style-type: none; padding: 0; margin: 0;
+        border: 1px solid #ccc; border-top: none;
+        position: absolute; z-index: 1001; /* ドロップダウンより手前に */
+        background-color: white; max-height: 200px; overflow-y: auto;
+        width: calc(100% - 2px); box-sizing: border-box;
+    }
+    .suggestions-list li { padding: 8px 12px; cursor: pointer; font-size: 0.9em; }
+    .suggestions-list li:hover, .suggestions-list li.suggestion-highlight { background-color: #e0e0e0; }
+    .suggestions-list.no-results li.no-results-message { color: #777; cursor: default; }
+    .suggestions-list.no-results li.no-results-message:hover { background-color: transparent; }
