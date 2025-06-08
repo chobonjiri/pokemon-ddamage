@@ -207,16 +207,7 @@
         <input type="number" id="red2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
       </div>
     </div>
-    <div class="stat-block">
-      <div style="display: flex; align-items: center;">
-        <h4 style="margin-right: 0px; margin-bottom: 0;">HP</h4>
-        <span id="red2-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span>
-      </div>
-      <div class="stat-block-row">
-        <input type="number" id="red2-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
-        <input type="number" id="red2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-      </div>
-    </div>
+
   </div>
 
   <div class="panel" id="red1-panel" style="background-color: lightcoral;">
@@ -367,16 +358,7 @@
             <input type="number" id="red1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
         </div>
     </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="margin-right: 0px; margin-bottom: 0;">HP</h4>
-            <span id="red1-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span>
-        </div>
-        <div class="stat-block-row">
-            <input type="number" id="red1-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
-            <input type="number" id="red1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-        </div>
-    </div>
+
   </div>
 
   <div class="field-section-container" id="field-section">
@@ -425,12 +407,20 @@
         <div class="team-hp-rows">
             <div class="pokemon-hp-row">
                 <div class="pokemon-hp-entry">
-                    <span>Red 2: <span id="red2-hp-table-name">-</span></span>
-                    <div class="hp-bar-container"><div id="red2-hp-bar" class="hp-bar">100%</div></div>
+                    <span>Red 2: <span id="red2-hp-table-name">-</span>HP:<span id="red2-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
+                    <div class="hp-bar-container"><div id="red2-hp-bar" class="hp-bar">100%</div></div>    
+                    <div class="stat-block-row">
+                        <input type="number" id="red2-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
+                        <input type="number" id="red2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                    </div>
                 </div>
                 <div class="pokemon-hp-entry">
-                    <span>Red 1: <span id="red1-hp-table-name">-</span></span>
+                    <span>Red 1: <span id="red1-hp-table-name">-</span>HP:<span id="red1-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
                     <div class="hp-bar-container"><div id="red1-hp-bar" class="hp-bar">100%</div></div>
+                    <div class="stat-block-row">
+                        <input type="number" id="red1-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
+                        <input type="number" id="red1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                    </div>
                 </div>
             </div>
             <div class="pokemon-icon-row">
@@ -439,12 +429,20 @@
             </div>
             <div class="pokemon-hp-row">
                 <div class="pokemon-hp-entry">
-                    <span>Blue 1: <span id="blue1-hp-table-name">-</span></span>
-                    <div class="hp-bar-container"><div id="blue1-hp-bar" class="hp-bar">100%</div></div>
+                    <span>Blue 1: <span id="blue1-hp-table-name">-</span>HP:<span id="blue1-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
+                    <div class="hp-bar-container"><div id="blue1-hp-bar" class="hp-bar">100%</div></div>    
+                    <div class="stat-block-row">
+                        <input type="number" id="blue1-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
+                        <input type="number" id="blue1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                    </div>
                 </div>
                 <div class="pokemon-hp-entry">
-                    <span>Blue 2: <span id="blue2-hp-table-name">-</span></span>
+                    <span>Blue 2: <span id="blue2-hp-table-name">-</span>HP:<span id="blue2-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
                     <div class="hp-bar-container"><div id="blue2-hp-bar" class="hp-bar">100%</div></div>
+                    <div class="stat-block-row">
+                        <input type="number" id="blue2-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
+                        <input type="number" id="blue2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+                    </div>
                 </div>
             </div>
             <div class="pokemon-icon-row">
@@ -604,16 +602,6 @@
             <input type="number" id="blue1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
         </div>
     </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="margin-right: 0px; margin-bottom: 0;">HP</h4>
-            <span id="blue1-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span>
-        </div>
-        <div class="stat-block-row">
-            <input type="number" id="blue1-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
-            <input type="number" id="blue1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-        </div>
-    </div>
   </div>
 
   <div class="panel" id="blue2-panel" style="background-color: lightblue;">
@@ -764,16 +752,7 @@
             <input type="number" id="blue2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
         </div>
     </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="margin-right: 0px; margin-bottom: 0;">HP</h4>
-            <span id="blue2-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span>
-        </div>
-        <div class="stat-block-row">
-            <input type="number" id="blue2-hp-iv" value="31" min="0" max="31" class="iv-input" title="個体値" style="margin-left:auto;"/>
-            <input type="number" id="blue2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-        </div>
-    </div>
+
   </div>
 </div>
 
