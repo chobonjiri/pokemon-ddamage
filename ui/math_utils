@@ -1,0 +1,18 @@
+// ui/math-utils.js
+
+export function floor(num) {
+  return Math.floor(num);
+}
+
+export function round(num) {
+  return Math.round(num);
+}
+
+export function goshaGoChonyu(num) {
+  const decimalPart = num - Math.floor(num);
+  if (decimalPart <= 0.5) {
+    return Math.floor(num);
+  } else {
+    return Math.ceil(num);
+  }
+}

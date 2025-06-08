@@ -2,6 +2,8 @@
 
 export let pokemonData = [];
 export let moveData = [];
+export let abilityData = [];
+export let itemData = [];
 
 async function fetchJson(url) {
   try {
@@ -20,4 +22,6 @@ async function fetchJson(url) {
 export async function loadAllData() {
   pokemonData = await fetchJson('data/pokemonList.json');
   moveData = await fetchJson('data/moveList.json');
+  abilityData = await fetchJson('data/abilitiy.json'); // 追加
+  itemData = await fetchJson('data/items.json');     // 追加
 }

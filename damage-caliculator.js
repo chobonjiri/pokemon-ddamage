@@ -1,10 +1,10 @@
 // ui/damage-calculator.js
 import { selectedPokemons, selectedMoves, panelStats, fieldState } from './main.js';
-import { pokemonData, moveData } from './data-loader.js'; // タイプ相性表などを将来的にここから取得する可能性
-import { floor, ceil, round, goshaGoChonyu } from './math-utils.js';
-import { calcActualStat } from './stat-calculator.js'; // ランク補正を再計算する場合に利用
+import { pokemonData, moveData, abilityData, itemData } from './data-loader.js'; // abilityData, itemData をインポート
+import { floor, goshaGoChonyu } from './math-utils.js';
+import { calcActualStat } from './stat-calculator.js';
 
-// --- タイプ相性データ (仮。実際にはdata-loader等でJSONから読み込むことを推奨) ---
+// --- タイプ相性データ (仮) ---
 const typeEffectiveness = {
     'ノーマル': { 'いわ': 0.5, 'ゴースト': 0, 'はがね': 0.5 },
     'ほのお': { 'ほのお': 0.5, 'みず': 0.5, 'くさ': 2, 'こおり': 2, 'むし': 2, 'いわ': 0.5, 'ドラゴン': 0.5, 'はがね': 2 },
@@ -26,23 +26,12 @@ const typeEffectiveness = {
     'フェアリー': { 'かくとう': 2, 'どく': 0.5, 'ドラゴン': 2, 'あく': 2, 'はがね': 0.5 }
 };
 
-/**
- * ランクから能力値の倍率を取得します。
- * @param {number} rank - ランク(-6 から +6)。
- * @returns {number} ランク補正倍率。
- */
-function getRankMultiplier(rank) {
-    if (rank === 0) return 1.0;
-    if (rank > 0) return (2 + rank) / 2;
-    return 2 / (2 - rank);
-}
-
 
 /**
  * ダメージ計算を実行します。
  * @param {string} attackerPanelId - 攻撃側のパネルID。
  * @param {string} defenderPanelId - 防御側のパネルID。
- * @returns {object} 計算されたダメージ量などの詳細。 { damage: number, percentage: number, details: string }
+ * @returns {object} 計算されたダメージ量などの詳細。
  */
 export function calculateDamage(attackerPanelId, defenderPanelId) {
     const attacker = selectedPokemons[attackerPanelId];
@@ -57,266 +46,169 @@ export function calculateDamage(attackerPanelId, defenderPanelId) {
 
     const moveCategory = attackerMove.category;
     if (moveCategory !== "物理" && moveCategory !== "特殊") {
-        // return { damage: 0, percentage: 0, details: "変化技はダメージ計算対象外です。" };
-        // 変化技でも固定ダメージ技や割合ダメージ技はあるが、ここでは基本ダメージ計算を対象とする
-        console.log("変化技のため基本ダメージ計算をスキップ:", attackerMove.name);
-        return { baseDamage: 0, finalDamage: 0, details: "変化技" };
+        return { finalDamage: 0, percentage: 0, details: "変化技のためダメージ計算対象外" };
     }
 
-    // --- 1. 基本情報の取得 ---
+    // --- 計算式の各要素を取得 ---
     const level = 50; // 固定
     let movePower = parseInt(attackerMove.power);
-    if (isNaN(movePower)) { // 技威力が数値でない場合（例: "W参照"）
-        // TODO: 技威力参照のロジックを実装 (例:けたぐり、くさむすび)
-        console.warn(`技「${attackerMove.name}」の威力が数値ではありません。計算をスキップします。`);
-        return { baseDamage: 0, finalDamage: 0, details: "技威力不明" };
-    }
-    const moveType = attackerMove.Type;
-
-    // 攻撃側の能力値
-    let attackStatValue;
-    let attackerRank;
+    // TODO: 'W参照'などの威力変動技のロジック
+    
+    // 攻撃/特攻の実数値とランク
+    let attackStat, attackRank;
     if (moveCategory === "物理") {
-        attackStatValue = attackerStats.stats.attack.actual; // ランク補正込み
-        attackerRank = attackerStats.stats.attack.rank;
+        attackStat = attackerStats.stats.attack.actual;
+        attackRank = attackerStats.stats.attack.rank;
     } else { // 特殊
-        attackStatValue = attackerStats.stats.spAttack.actual; // ランク補正込み
-        attackerRank = attackerStats.stats.spAttack.rank;
+        attackStat = attackerStats.stats.spAttack.actual;
+        attackRank = attackerStats.stats.spAttack.rank;
     }
-
-    // 防御側の能力値
-    let defenseStatValue;
-    let defenderRank;
+    
+    // 防御/特防の実数値とランク
+    let defenseStat, defenseRank, defenderTypes;
     if (moveCategory === "物理") {
-        defenseStatValue = defenderStats.stats.defense.actual; // ランク補正込み
-        defenderRank = defenderStats.stats.defense.rank;
+        defenseStat = defenderStats.stats.defense.actual;
+        defenseRank = defenderStats.stats.defense.rank;
     } else { // 特殊
-        defenseStatValue = defenderStats.stats.spDefense.actual; // ランク補正込み
-        defenderRank = defenderStats.stats.spDefense.rank;
+        defenseStat = defenderStats.stats.spDefense.actual;
+        defenseRank = defenderStats.stats.spDefense.rank;
     }
 
-    // --- 2. 各種補正値の計算 ---
-
-    // 威力補正 (仮。実際には特性や持ち物に応じて複雑に変動)
+    // --- 各種補正値の計算 ---
+    
+    // 威力補正
     let powerMultiplier = 1.0;
-    // TODO: 技、特性(例:ちからずく、テクニシャン、フェアリースキン等)、持ち物(例:ノーマルジュエル等)による威力補正
-
+    // TODO: "一部の技"、"一部の特性"、"一部の持物"に応じた威力補正
+    
     // はりきり補正
-    const harikiriMultiplier = (attackerStats.ability.name === "はりきり" && !attackerStats.ability.nullified && moveCategory === "物理") ? 1.5 : 1.0;
+    const harikiriMultiplier = (attackerStats.ability.name === "はりきり" && moveCategory === "物理") ? 1.5 : 1.0;
+    
+    // 攻撃補正
+    let attackMultiplier = 1.0;
+    // TODO: "一部の技"、"一部の特性"、"一部の持物"に応じた攻撃補正
 
-    // 攻撃補正 (仮。特性や持ち物、場の状態による)
-    let attackStatMultiplier = 1.0;
-    // TODO: 特性(例:フラワーギフト、こんじょう、サンパワー、プラスマイナス等)、持ち物(例:こだわりハチマキ/メガネ、しんかのきせき等)による攻撃/特攻補正
-
-    // 防御補正 (仮。特性や持ち物、場の状態による)
-    let defenseStatMultiplier = 1.0;
-    // TODO: 特性(例:フラワーギフト等)、持ち物(例:しんかのきせき、とつげきチョッキ等)による防御/特防補正
+    // 防御補正
+    let defenseMultiplier = 1.0;
+    // TODO: "一部の技"、"一部の特性"、"一部の持物"に応じた防御補正
 
     // 雪こおり補正
-    const yukiKooriMultiplier = (fieldState.weather === "snow" && defenderStats.types && defenderStats.types.current.includes("こおり") && moveCategory === "物理") ? 1.5 : 1.0;
+    const yukiKooriMultiplier = (fieldState.weather === "snow" && defenderStats.types.current.includes("こおり") && moveCategory === "物理") ? 1.5 : 1.0;
+    
     // 砂いわ補正
-    const sunaIwaMultiplier = (fieldState.weather === "sand" && defenderStats.types && defenderStats.types.current.includes("いわ") && moveCategory === "特殊") ? 1.5 : 1.0;
+    const sunaIwaMultiplier = (fieldState.weather === "sand" && defenderStats.types.current.includes("いわ") && moveCategory === "特殊") ? 1.5 : 1.0;
 
-    // 範囲補正 (技が全体技で対象が複数の場合)
-    let rangeMultiplier = 1.0;
-    if (attackerMove.memo && attackerMove.memo.includes("全体") && panelStats[defenderPanelId].doubleDamage) { // doubleDamageフラグで単体対象か複数対象かを判定
-        rangeMultiplier = 0.75;
-    } else if (attackerMove.memo && attackerMove.memo.includes("全体") && !panelStats[defenderPanelId].doubleDamage) {
-        // 全体技だが対象が1体しかいない場合 (ダブルバトルで片方が倒れているなど)
-        // このツールでは panelStats[defenderPanelId].doubleDamage で「ダブルダメージ計算を行うか」を見るので、
-        // これがfalseなら対象は1体とみなし、範囲補正は1.0のまま。
-    }
+    // 範囲補正
+    const rangeMultiplier = (attackerMove.memo && attackerMove.memo.includes("全体") && panelStats[defenderPanelId].doubleDamage) ? 0.75 : 1.0;
 
-
-    // おやこあい補正 (仮。実際には2回目の攻撃として処理)
-    const oyakoiMultiplier = (attackerStats.ability.name === "おやこあい" && !attackerStats.ability.nullified) ? 1.25 : 1.0; // 1発目+0.25発目
+    // おやこあい補正
+    const oyakoiMultiplier = (attackerStats.ability.name === "おやこあい") ? 1.25 : 1.0;
 
     // 天候補正
     let weatherMultiplier = 1.0;
-    if (fieldState.weather === "sun") {
-        if (moveType === "ほのお") weatherMultiplier = 1.5;
-        if (moveType === "みず") weatherMultiplier = 0.5;
-    } else if (fieldState.weather === "rain") {
-        if (moveType === "みず") weatherMultiplier = 1.5;
-        if (moveType === "ほのお") weatherMultiplier = 0.5;
+    if (fieldState.weather === "rain") {
+        if (attackerMove.Type === "みず") weatherMultiplier = 1.5;
+        if (attackerMove.Type === "ほのお") weatherMultiplier = 0.5;
+    } else if (fieldState.weather === "sun") {
+        if (attackerMove.Type === "ほのお") weatherMultiplier = 1.5;
+        if (attackerMove.Type === "みず") weatherMultiplier = 0.5;
     }
-    // TODO: フィールドによる威力補正 (グラスフィールドで草技1.3倍など)
-    if(fieldState.terrain === "grassy" && moveType === "くさ") powerMultiplier *= 1.3; // グラスフィールド
-    if(fieldState.terrain === "electric" && moveType === "でんき") powerMultiplier *= 1.3; // エレキフィールド
-    if(fieldState.terrain === "psychic" && moveType === "エスパー") powerMultiplier *= 1.3; // サイコフィールド
-    // ミストフィールドはドラゴン技威力半減
-    if(fieldState.terrain === "misty" && moveType === "ドラゴン") powerMultiplier *= 0.5;
-
+    // フィールド補正 (威力)
+    if (fieldState.terrain === "grassy" && attackerMove.Type === "くさ") powerMultiplier *= 1.3;
+    if (fieldState.terrain === "electric" && attackerMove.Type === "でんき") powerMultiplier *= 1.3;
+    if (fieldState.terrain === "psychic" && attackerMove.Type === "エスパー") powerMultiplier *= 1.3;
+    if (fieldState.terrain === "misty" && attackerMove.Type === "ドラゴン") powerMultiplier *= 0.5;
 
     // 急所補正
     const criticalMultiplier = attackerStats.isCriticalHit ? 1.5 : 1.0;
 
-    // 乱数補正 (0.85 ~ 1.00 の16段階。ここでは最大乱数1.0を使用)
-    const randomMultiplier = 1.0; // or panelStats[attackerPanelId].randomFactor if user selectable
+    // 乱数補正 (0.85 ~ 1.00) - ここでは最大値1.0を使用
+    const randomMultiplier = 1.0; 
 
     // タイプ一致補正 (STAB)
     let stabMultiplier = 1.0;
-    const attackerCurrentTypes = [];
-    if (attackerStats.typeChange && attackerStats.typeChange.startsWith("terastal-")) {
-        attackerCurrentTypes.push(attackerStats.typeChange.replace("terastal-", ""));
-    } else if (attackerStats.typeChange === "stellar") {
-        // ステラの場合、最初の1回だけ各タイプ技が1.2倍 (元のタイプ一致とは別枠)
-        // ここでは基本STABのみ考慮。ステラ専用の処理は別途必要。
-        attackerCurrentTypes.push(...[attacker.Type1, attacker.Type2].filter(Boolean));
-    } else {
-        attackerCurrentTypes.push(...[attacker.Type1, attacker.Type2].filter(Boolean));
-    }
+    const isTerastallized = attackerStats.typeChange.startsWith("terastal-");
+    const terastalType = isTerastallized ? attackerStats.typeChange.replace("terastal-", "") : null;
+    const originalTypes = [attacker.Type1, attacker.Type2].filter(Boolean);
+    const hasOriginalStab = originalTypes.includes(attackerMove.Type);
+    const hasTerastalStab = isTerastallized && terastalType === attackerMove.Type;
 
-    const isOriginalTypeMatch = attacker.Type1 === moveType || attacker.Type2 === moveType;
-
-    if (attackerStats.typeChange && attackerStats.typeChange.startsWith("terastal-")) {
-        const terastalType = attackerStats.typeChange.replace("terastal-", "");
-        if (terastalType === moveType) { // テラスタイプと技タイプが一致
-            if (isOriginalTypeMatch) { // 元のタイプとも一致
-                stabMultiplier = (attackerStats.ability.name === "てきおうりょく" && !attackerStats.ability.nullified) ? 2.25 : 2.0;
-            } else { // 元のタイプとは不一致
-                stabMultiplier = (attackerStats.ability.name === "てきおうりょく" && !attackerStats.ability.nullified) ? 2.0 : 1.5;
-            }
-        } else if (isOriginalTypeMatch) { // テラスタイプとは不一致だが、元のタイプとは一致
-            stabMultiplier = (attackerStats.ability.name === "てきおうりょく" && !attackerStats.ability.nullified) ? 2.0 : 1.5;
+    if (attackerStats.ability.name === "てきおうりょく") {
+        if (hasTerastalStab) {
+            stabMultiplier = hasOriginalStab ? 2.25 : 2.0;
+        } else if (hasOriginalStab) {
+            stabMultiplier = 2.0;
         }
-    } else if (isOriginalTypeMatch) { // テラスタルなし、元のタイプと一致
-        stabMultiplier = (attackerStats.ability.name === "てきおうりょく" && !attackerStats.ability.nullified) ? 2.0 : 1.5;
-    }
-    // ステラタイプのSTABは複雑なので別途考慮。最初の1回だけ各タイプ1.2倍、一致なら2倍。
-
-
-    // 相性補正
-    let typeEffectivenessMultiplier = 1.0;
-    const defenderCurrentTypes = [];
-     if (defenderStats.typeChange && defenderStats.typeChange.startsWith("terastal-")) {
-        defenderCurrentTypes.push(defenderStats.typeChange.replace("terastal-", ""));
-    } else if (defenderStats.typeChange === "stellar") {
-        // ステラは防御時のタイプ相性は元のタイプのまま
-        defenderCurrentTypes.push(...[defender.Type1, defender.Type2].filter(Boolean));
     } else {
-        defenderCurrentTypes.push(...[defender.Type1, defender.Type2].filter(Boolean));
-    }
-
-    if (typeEffectiveness[moveType]) {
-        defenderCurrentTypes.forEach(defType => {
-            if (typeEffectiveness[moveType][defType] !== undefined) {
-                typeEffectivenessMultiplier *= typeEffectiveness[moveType][defType];
-            }
-        });
-    }
-
-    // やけど補正
-    const burnMultiplier = (attackerStats.statusCondition === "burn" && moveCategory === "物理" && !(attackerStats.ability.name === "こんじょう" && !attackerStats.ability.nullified)) ? 0.5 : 1.0;
-
-    // M (その他の補正)
-    let mMultiplier = 1.0;
-    // 壁補正
-    let wallMultiplier = 1.0;
-    if (!attackerStats.isCriticalHit) { // 急所時は壁無効
-        if (moveCategory === "物理" && (defenderPanelId.startsWith('blue') ? fieldState.teamBlue.isReflectActive : fieldState.teamRed.isReflectActive)) {
-            wallMultiplier = (attackerMove.memo && attackerMove.memo.includes("全体") && panelStats[defenderPanelId].doubleDamage) ? 0.66 : 0.5; // ダブルバトルでは0.66倍(2/3)、シングル0.5倍
-        } else if (moveCategory === "特殊" && (defenderPanelId.startsWith('blue') ? fieldState.teamBlue.isLightScreenActive : fieldState.teamRed.isLightScreenActive)) {
-            wallMultiplier = (attackerMove.memo && attackerMove.memo.includes("全体") && panelStats[defenderPanelId].doubleDamage) ? 0.66 : 0.5;
+        if (hasTerastalStab) {
+            stabMultiplier = hasOriginalStab ? 2.0 : 1.5;
+        } else if (hasOriginalStab) {
+            stabMultiplier = 1.5;
         }
-    }
-    mMultiplier *= wallMultiplier;
-
-    // TODO: ブレインフォース補正 (特性 && 効果抜群)
-    // TODO: スナイパー補正 (特性 && 急所)
-    // TODO: いろめがね補正 (特性 && 効果いまひとつ)
-    // TODO: もふもふ補正 (防御側特性、被ほのお技)
-    // TODO: Mhalf (マルチスケイル等)
-    // TODO: Mfilter (フィルター等)
-    // TODO: フレンドガード補正
-    // TODO: たつじんのおび補正 (持ち物 && 効果抜群)
-    // TODO: メトロノーム補正 (持ち物 && 連続使用)
-    // TODO: いのちのたま補正 (持ち物)
-    // TODO: 半減実補正 (持ち物)
-    // TODO: Mtwice (じしん vs あなをほる等)
-
-    // --- 3. ダメージ計算式のコア部分 ---
-
-    // 急所の場合、攻撃側のプラスランクと防御側のマイナスランク以外は無視
-    let effectiveAttackValueForCalc = attackerStats.stats[moveCategory === "物理" ? 'attack' : 'spAttack'].actual;
-    let effectiveDefenseValueForCalc = defenderStats.stats[moveCategory === "物理" ? 'defense' : 'spDefense'].actual;
-
-    if (attackerStats.isCriticalHit) {
-        // 攻撃側のプラスランクのみ考慮
-        const attackerBaseStat = parseInt(attacker[moveCategory === "物理" ? 'A' : 'C']);
-        const attackerIV = attackerStats.stats[moveCategory === "物理" ? 'attack' : 'spAttack'].iv;
-        const attackerEV = attackerStats.stats[moveCategory === "物理" ? 'attack' : 'spAttack'].ev;
-        const attackerNature = attackerStats.stats[moveCategory === "物理" ? 'attack' : 'spAttack'].nature;
-        const positiveAttackerRank = Math.max(0, attackerRank); // プラスのランクのみ
-        effectiveAttackValueForCalc = calcActualStat(attackerBaseStat, attackerIV, attackerEV, attackerNature, positiveAttackerRank);
-
-        // 防御側のマイナスランクのみ考慮
-        const defenderBaseStat = parseInt(defender[moveCategory === "物理" ? 'B' : 'D']);
-        const defenderIV = defenderStats.stats[moveCategory === "物理" ? 'defense' : 'spDefense'].iv;
-        const defenderEV = defenderStats.stats[moveCategory === "物理" ? 'defense' : 'spDefense'].ev;
-        const defenderNature = defenderStats.stats[moveCategory === "物理" ? 'defense' : 'spDefense'].nature;
-        const negativeDefenderRank = Math.min(0, defenderRank); // マイナスのランクのみ
-        effectiveDefenseValueForCalc = calcActualStat(defenderBaseStat, defenderIV, defenderEV, defenderNature, negativeDefenderRank);
-    }
-
-
-    let baseDamagePart1 = floor(level * 2 / 5 + 2);
-    let modifiedMovePower = goshaGoChonyu(movePower * powerMultiplier);
-    let modifiedAttackStat = goshaGoChonyu(floor(floor(effectiveAttackValueForCalc) * harikiriMultiplier) * attackStatMultiplier); // 計算式通りA実数値からランク補正を分離
-    let modifiedDefenseStat = goshaGoChonyu(floor(floor(effectiveDefenseValueForCalc) * (moveCategory === "物理" ? yukiKooriMultiplier : sunaIwaMultiplier) ) * defenseStatMultiplier);
-
-    let baseDamagePart2 = floor(baseDamagePart1 * modifiedMovePower * modifiedAttackStat / modifiedDefenseStat);
-    let baseDamagePart3 = floor(baseDamagePart2 / 50) + 2;
-
-    // --- 4. ダメージの最終調整 ---
-    let finalDamage = baseDamagePart3;
-    finalDamage = goshaGoChonyu(finalDamage * rangeMultiplier);
-    // finalDamage = goshaGoChonyu(finalDamage * oyakoiMultiplier); // 親子愛は複数回攻撃として扱うべき
-    finalDamage = goshaGoChonyu(finalDamage * weatherMultiplier);
-    finalDamage = goshaGoChonyu(finalDamage * criticalMultiplier);
-    finalDamage = floor(finalDamage * randomMultiplier); // 乱数は最後に切り捨て
-    finalDamage = goshaGoChonyu(finalDamage * stabMultiplier);
-    finalDamage = floor(finalDamage * typeEffectivenessMultiplier); //タイプ相性は切り捨て
-    finalDamage = goshaGoChonyu(finalDamage * burnMultiplier);
-    finalDamage = goshaGoChonyu(finalDamage * mMultiplier);
-
-    // 最低保証ダメージは1
-    if (typeEffectivenessMultiplier > 0 && finalDamage < 1) {
-        finalDamage = 1;
-    }
-    if (typeEffectivenessMultiplier === 0) {
-        finalDamage = 0;
     }
     
-    // 親子愛の2発目 (威力を0.25倍にして再計算する方がより正確だが、ここでは簡易的に)
-    if (attackerStats.ability.name === "おやこあい" && !attackerStats.ability.nullified && moveCategory !== "変化") {
-        let secondHitDamage = baseDamagePart3; // 乱数や急所などを再抽選する場合もあるが、ここでは単純化
-        secondHitDamage = goshaGoChonyu(secondHitDamage * rangeMultiplier);
-        secondHitDamage = goshaGoChonyu(secondHitDamage * weatherMultiplier);
-        secondHitDamage = goshaGoChonyu(secondHitDamage * criticalMultiplier); // 2発目も急所判定あり
-        secondHitDamage = floor(secondHitDamage * randomMultiplier); // 乱数も再抽選の可能性
-        secondHitDamage = goshaGoChonyu(secondHitDamage * stabMultiplier);
-        secondHitDamage = floor(secondHitDamage * typeEffectivenessMultiplier);
-        secondHitDamage = goshaGoChonyu(secondHitDamage * burnMultiplier);
-        secondHitDamage = goshaGoChonyu(secondHitDamage * mMultiplier);
-        secondHitDamage = floor(secondHitDamage * 0.25); // 2発目は威力1/4
-        if (typeEffectivenessMultiplier > 0 && secondHitDamage < 1 && finalDamage > 0) { // 1発目が当たっていれば2発目も最低1は保証されるか要確認
-             secondHitDamage = 1;
+    // 相性補正
+    let typeEffectivenessMultiplier = 1.0;
+    defenderTypes = defenderStats.types.current;
+    defenderTypes.forEach(defType => {
+        if (typeEffectiveness[attackerMove.Type] && typeEffectiveness[attackerMove.Type][defType] !== undefined) {
+            typeEffectivenessMultiplier *= typeEffectiveness[attackerMove.Type][defType];
         }
-        if (typeEffectivenessMultiplier === 0) {
-            secondHitDamage = 0;
-        }
-        finalDamage += secondHitDamage;
+    });
+
+    // やけど補正
+    const burnMultiplier = (attackerStats.statusCondition === "burn" && moveCategory === "物理" && attackerStats.ability.name !== "こんじょう") ? 0.5 : 1.0;
+
+    // --- M（その他の補正）の計算 ---
+    let mMultiplier = 1.0;
+    // 壁補正
+    if (!attackerStats.isCriticalHit) {
+        const isDouble = (attackerMove.memo && attackerMove.memo.includes("全体"));
+        if (moveCategory === "物理" && fieldState.teamBlue.isReflectActive) mMultiplier *= (isDouble ? 2/3 : 0.5);
+        if (moveCategory === "特殊" && fieldState.teamBlue.isLightScreenActive) mMultiplier *= (isDouble ? 2/3 : 0.5);
+    }
+    // いのちのたま補正
+    if (attackerStats.item === "いのちのたま") mMultiplier *= 1.3;
+    // TODO: README.md に記載の他のM補正を実装 (ブレインフォース、スナイパー、いろめがね、もふもふ、フィルター、フレンドガード、たつじんのおび、メトロノーム、半減実など)
+
+
+    // --- ダメージ計算実行 ---
+
+    // 攻撃側の能力値 (急所時はランク補正を考慮しない)
+    let finalAttack = attackStat;
+    if (attackerStats.isCriticalHit && attackRank > 0) {
+        finalAttack = calcActualStat(parseInt(moveCategory === "物理" ? attacker.A : attacker.C), attackerStats.stats[moveCategory === "物理" ? 'attack' : 'spAttack'].iv, attackerStats.stats[moveCategory === "物理" ? 'attack' : 'spAttack'].ev, attackerStats.stats[moveCategory === "物理" ? 'attack' : 'spAttack'].nature, 0);
+    }
+    
+    // 防御側の能力値 (急所時はランク補正を考慮しない)
+    let finalDefense = defenseStat;
+    if (attackerStats.isCriticalHit && defenseRank < 0) {
+        finalDefense = calcActualStat(parseInt(moveCategory === "物理" ? defender.B : defender.D), defenderStats.stats[moveCategory === "物理" ? 'defense' : 'spDefense'].iv, defenderStats.stats[moveCategory === "物理" ? 'defense' : 'spDefense'].ev, defenderStats.stats[moveCategory === "物理" ? 'defense' : 'spDefense'].nature, 0);
     }
 
 
-    // HPに対する割合
-    const damagePercentage = defenderStats.maxHP > 0 ? Math.round((finalDamage / defenderStats.maxHP) * 1000) / 10 : 0; // 小数点第1位まで
+    // 計算式コア
+    let damage = floor(level * 2 / 5 + 2);
+    damage = floor(damage * goshaGoChonyu(movePower * powerMultiplier) * goshaGoChonyu(floor(floor(finalAttack * getRankMultiplier(attackRank)) * harikiriMultiplier) * attackMultiplier));
+    damage = floor(damage / goshaGoChonyu(floor(floor(finalDefense * getRankMultiplier(defenseRank)) * (moveCategory === "物理" ? yukiKooriMultiplier : sunaIwaMultiplier)) * defenseMultiplier));
+    damage = floor(damage / 50) + 2;
+    
+    // 最終ダメージ計算
+    damage = goshaGoChonyu(damage * rangeMultiplier);
+    damage = goshaGoChonyu(damage * oyakoiMultiplier); //親子愛は別処理のほうが正確かも
+    damage = goshaGoChonyu(damage * weatherMultiplier);
+    damage = goshaGoChonyu(damage * criticalMultiplier);
+    damage = floor(damage * randomMultiplier);
+    damage = goshaGoChonyu(damage * stabMultiplier);
+    damage = floor(damage * typeEffectivenessMultiplier);
+    damage = goshaGoChonyu(damage * burnMultiplier);
+    damage = goshaGoChonyu(damage * mMultiplier);
+
+    const finalDamage = Math.max(1, damage); // 最低1ダメージ保証
+    const percentage = defenderStats.maxHP > 0 ? (finalDamage / defenderStats.maxHP) * 100 : 0;
 
     return {
-        baseDamage: baseDamagePart3, // 各種補正適用前の基礎ダメージに近い値
-        finalDamage: finalDamage,
-        percentage: damagePercentage,
-        details: `攻撃: ${attacker.name}, 技: ${attackerMove.name}, 防御: ${defender.name}`
+        finalDamage,
+        percentage,
+        details: "計算完了" // TODO: 詳細な計算過程を返す
     };
 }

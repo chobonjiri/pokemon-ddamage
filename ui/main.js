@@ -1,6 +1,6 @@
 // ui/main.js
 import { panelIds as P_IDS, initialPanelStatsTemplate } from './config.js';
-import { loadAllData, pokemonData as pData, moveData as mData } from './data-loader.js';
+import { loadAllData, pokemonData as pData, moveData as mData, abilityData as aData, itemData as iData} from './data-loader.js';
 import { setupEventListeners, setupRankDropdowns, setupFieldControlListeners } from './event-handler.js';
 import { updateAllPanelStats, updatePokemonHPBar, showAbilities, updateRankDisplay, initializeRankValuesFromPanelStats } from './ui-updater.js';
 // import { calculateDamage } from './damage-calculator.js'; // damage-calculator.js を後ほど作成・連携
@@ -11,7 +11,7 @@ export let selectedPokemons = {};
 export let selectedMoves = {};
 export let panelStats = {};
 
-// Field State (場の状態)
+// Field State (場の状態)dfd
 export let fieldState = {
     weather: 'none', // 'none', 'sun', 'rain', 'sand', 'snow'
     terrain: 'none', // 'none', 'electric', 'grassy', 'misty', 'psychic'
@@ -42,8 +42,7 @@ panelIds.forEach(id => {
     // panelStats[id].terastalType = panelStats[id].terastalType || null; // typeChangeで管理
 });
 
-
-export { pData as pokemonData, mData as moveData };
+export { pData as pokemonData, mData as moveData, aData as abilityData, iData as itemData };
 
 export function dispatchMoveCategoryUpdate(panelId) {
     const moveInputElement = document.getElementById(`${panelId}-move`);
