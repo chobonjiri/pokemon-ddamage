@@ -321,3 +321,114 @@ px;
     margin-left: 0; /* Reset margin for these specific checkboxes */
     margin-top: 5px;
 }
+.stat-block-container-BD {
+    display: flex; /* Flexboxを使用して横並びにする */
+    gap: 10px;     /* BとDの間の隙間を調整 */
+}
+
+.stat-block-container-BD > .stat-block {
+    flex: 1;       /* 利用可能なスペースを均等に分け合う */
+    margin-bottom: 0; /* 元のstat-blockのmarginをリセット */
+}
+/* style/layout.css */
+
+/* .pokemon-hp-display-area の基本スタイル */
+.pokemon-hp-display-area {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #ffffff;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.team-hp-rows {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    gap: 20px;
+}
+
+.pokemon-hp-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    align-items: flex-start;
+}
+
+/* 各ポケモンのエントリ全体 */
+.pokemon-hp-entry {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    font-size: 0.9em;
+    padding: 8px;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    background-color: #f9f9f9;
+}
+
+/* アイコンとHPバーの表示情報エリア */
+.hp-display-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pokemon-icon {
+    width: 40px;
+    height: 40px;
+    background-color: #cccccc;
+    border-radius: 50%;
+    border: 1px solid #aaa;
+    background-size: cover;
+    background-position: center;
+    flex-shrink: 0;
+}
+
+.hp-display-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    width: 100%;
+}
+
+.hp-value {
+    font-size: 0.9em;
+    color: #333;
+    text-align: right;
+}
+
+.hp-bar-container {
+    width: 100%;
+    height: 20px;
+    background-color: #e0e0e0;
+    border-radius: 4px;
+    overflow: hidden;
+    position: relative;
+    border: 1px solid #c0c0c0;
+}
+
+.hp-bar {
+    height: 100%;
+    background-color: #4CAF50;
+    width: 100%;
+    transition: width 0.3s ease-in-out, background-color 0.3s ease-in-out;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.3);
+}
+
+/* IVとEVの入力コントロールエリア */
+.hp-input-controls {
+    display: flex;
+    justify-content: space-around;
+    gap: 10px;
+    padding-top: 8px;
+    border-top: 1px solid #eee;
+}

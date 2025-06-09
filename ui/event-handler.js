@@ -434,7 +434,6 @@ export function setupEventListeners() {
                     } else if (statPart === 'hp' && panelStats[panelId].stats.hp) { // HP specific handling
                          panelStats[panelId].stats.hp.ev = parseInt(evEl.value) || 0;
                          updatePanelStats(panelId);
-                    
                     }
                 });
             }
@@ -506,15 +505,15 @@ export function setupEventListeners() {
         }
 
         // Other panel-specific inputs like item, status condition, critical hit
-        const itemInput = document.getElementById(`${panelId}-item`);
+        const itemInput = document.getElementById(`${panelId}-item`); // Assuming an input field for item exists
         if (itemInput) {
-            itemInput.addEventListener('input', () => {
+            itemInput.addEventListener('input', () => { // or 'change' if it's a select
                 panelStats[panelId].item = itemInput.value;
-                // console.log(`${panelId} Item: ${panelStats[panelId].item}`);
                 // updatePanelStats(panelId); // if item affects visible stats
             });
         }
-
+        // Similar listeners for statusCondition, isCriticalHit would be needed if they are direct user inputs
+        // For now, isCriticalHit might be a checkbox per panel, status via dropdown etc.
         // Example for a critical hit checkbox (assuming it exists with ID `${panelId}-critical-hit-checkbox`)
         const critCheckbox = document.getElementById(`${panelId}-critical-hit-checkbox`);
         if (critCheckbox) {

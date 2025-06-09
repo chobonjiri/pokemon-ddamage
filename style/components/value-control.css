@@ -1,17 +1,24 @@
 /* style/components/value-control.css */
 .value-control {
     position: relative; /* ボタンを絶対配置するための基準 */
-    display: inline-flex; /* 要素をインラインでフレックスボックスとして配置 */
-    align-items: center;
-    width: 85px; /* コントロール全体の幅を固定 */
+    display: flex;
+    flex-direction: column; /* 縦に並べる */
+    align-items: center;    /* 中央揃え */
+    gap: 4px;               /* ラベルと入力欄の隙間 */
 }
 
-/* スピナー（上下矢印）を非表示にする設定 */
+.value-control label {
+    font-weight: bold;
+    font-size: 0.9em;
+}
+
 .value-control input[type="number"] {
-    width: 100%; /* 親要素の幅いっぱいに広がる */
-    padding: 6px 24px 6px 8px; /* 右側にボタン用のスペースを確保 */
-    box-sizing: border-box; /* paddingを含めて幅を計算 */
+    width: 70px; /* 幅を少し広げる */
+    padding: 4px;
+    box-sizing: border-box;
     text-align: center;
+    border: 1px solid #ccc;
+    border-radius: 4px;
     -moz-appearance: textfield; /* Firefox用 */
 }
 
@@ -22,30 +29,22 @@
 }
 
 .value-buttons {
-    position: absolute; /* 入力欄に対して絶対配置 */
-    right: 5px; /* 右端から5pxの位置に配置 */
-    top: 50%; /* 上下中央に配置するための基準 */
-    transform: translateY(-50%); /* 上下中央揃えの微調整 */
     display: flex;
-    flex-direction: column;
-    gap: 2px; /* ボタン間の隙間 */
+    gap: 4px; /* ボタン間の隙間 */
 }
 
 .value-buttons button {
     font-family: sans-serif;
     font-size: 0.8em;
     line-height: 1;
-    width: 18px; /* ボタンの幅 */
-    height: 11px; /* ボタンの高さ */
+    width: 30px; /* ボタンの幅 */
+    height: 18px; /* ボタンの高さ */
     padding: 0;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     cursor: pointer;
-    border-radius: 2px;
+    border-radius: 3px;
     color: #333;
-    display: flex;
-    align-items: center;
-    justify-content: center;
 }
 
 .value-buttons button:hover {

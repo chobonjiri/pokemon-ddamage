@@ -103,69 +103,71 @@
         <input type="number" id="red2-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
       </div>
     </div>
-    <div class="stat-block">
-      <div style="display: flex; align-items: center;">
-        <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">B</h4>
+    <div class="stat-block-container-BD">
+        <div class="stat-block">
         <div style="display: flex; align-items: center;">
-          <span id="red2-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
-          <div class="attack-rank-selector">
-              <div class="selector-controls">
-                  <div class="dropdown-wrapper">
-                      <button id="red2-defense-dropdownBtn" class="dropdown-toggle">
-                          <span id="red2-defense-rank-display">±0</span>
-                          <span class="arrow-icon">▼</span>
-                      </button>
-                      <ul id="red2-defense-dropdownMenu" class="dropdown-menu"></ul>
-                  </div>
-                  <button type="button" onclick="window.changeRank('red2-defense', -1)" class="rank-btn minus">-</button>
-                  <span id="red2-defense-rank-val" class="rank-value" style="display:none;">0</span>
-                  <button type="button" onclick="window.changeRank('red2-defense', 1)" class="rank-btn plus">+</button>
-              </div>
-          </div>
+            <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">B</h4>
+            <div style="display: flex; align-items: center;">
+            <span id="red2-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
+            <div class="attack-rank-selector">
+                <div class="selector-controls">
+                    <div class="dropdown-wrapper">
+                        <button id="red2-defense-dropdownBtn" class="dropdown-toggle">
+                            <span id="red2-defense-rank-display">±0</span>
+                            <span class="arrow-icon">▼</span>
+                        </button>
+                        <ul id="red2-defense-dropdownMenu" class="dropdown-menu"></ul>
+                    </div>
+                    <button type="button" onclick="window.changeRank('red2-defense', -1)" class="rank-btn minus">-</button>
+                    <span id="red2-defense-rank-val" class="rank-value" style="display:none;">0</span>
+                    <button type="button" onclick="window.changeRank('red2-defense', 1)" class="rank-btn plus">+</button>
+                </div>
+            </div>
+            </div>
         </div>
-      </div>
-      <div class="stat-block-row">
-        <div class="segmented-control nature-control" id="red2-defense-nature-control">
-            <button type="button" data-value="0.9">x0.9</button>
-            <button type="button" data-value="1.0" class="active">x1.0</button>
-            <button type="button" data-value="1.1">x1.1</button>
+        <div class="stat-block-row">
+            <div class="segmented-control nature-control" id="red2-defense-nature-control">
+                <button type="button" data-value="0.9">x0.9</button>
+                <button type="button" data-value="1.0" class="active">x1.0</button>
+                <button type="button" data-value="1.1">x1.1</button>
+            </div>
+            <input type="hidden" id="red2-defense-nature" value="1.0"/>
+            <input type="number" id="red2-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
+            <input type="number" id="red2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
         </div>
-        <input type="hidden" id="red2-defense-nature" value="1.0"/>
-        <input type="number" id="red2-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
-        <input type="number" id="red2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-      </div>
-    </div>
-    <div class="stat-block">
-      <div style="display: flex; align-items: center;">
-        <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">D</h4>
+        </div>
+        <div class="stat-block">
         <div style="display: flex; align-items: center;">
-          <span id="red2-sp-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
-          <div class="attack-rank-selector">
-              <div class="selector-controls">
-                  <div class="dropdown-wrapper">
-                      <button id="red2-sp-defense-dropdownBtn" class="dropdown-toggle">
-                          <span id="red2-sp-defense-rank-display">±0</span>
-                          <span class="arrow-icon">▼</span>
-                      </button>
-                      <ul id="red2-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
-                  </div>
-                  <button type="button" onclick="window.changeRank('red2-sp-defense', -1)" class="rank-btn minus">-</button>
-                  <span id="red2-sp-defense-rank-val" class="rank-value" style="display:none;">0</span>
-                  <button type="button" onclick="window.changeRank('red2-sp-defense', 1)" class="rank-btn plus">+</button>
-              </div>
-          </div>
+            <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">D</h4>
+            <div style="display: flex; align-items: center;">
+            <span id="red2-sp-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
+            <div class="attack-rank-selector">
+                <div class="selector-controls">
+                    <div class="dropdown-wrapper">
+                        <button id="red2-sp-defense-dropdownBtn" class="dropdown-toggle">
+                            <span id="red2-sp-defense-rank-display">±0</span>
+                            <span class="arrow-icon">▼</span>
+                        </button>
+                        <ul id="red2-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
+                    </div>
+                    <button type="button" onclick="window.changeRank('red2-sp-defense', -1)" class="rank-btn minus">-</button>
+                    <span id="red2-sp-defense-rank-val" class="rank-value" style="display:none;">0</span>
+                    <button type="button" onclick="window.changeRank('red2-sp-defense', 1)" class="rank-btn plus">+</button>
+                </div>
+            </div>
+            </div>
         </div>
-      </div>
-      <div class="stat-block-row">
-        <div class="segmented-control nature-control" id="red2-sp-defense-nature-control">
-            <button type="button" data-value="0.9">x0.9</button>
-            <button type="button" data-value="1.0" class="active">x1.0</button>
-            <button type="button" data-value="1.1">x1.1</button>
+        <div class="stat-block-row">
+            <div class="segmented-control nature-control" id="red2-sp-defense-nature-control">
+                <button type="button" data-value="0.9">x0.9</button>
+                <button type="button" data-value="1.0" class="active">x1.0</button>
+                <button type="button" data-value="1.1">x1.1</button>
+            </div>
+            <input type="hidden" id="red2-sp-defense-nature" value="1.0"/>
+            <input type="number" id="red2-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
+            <input type="number" id="red2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
         </div>
-        <input type="hidden" id="red2-sp-defense-nature" value="1.0"/>
-        <input type="number" id="red2-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
-        <input type="number" id="red2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-      </div>
+        </div>
     </div>
 
   </div>
@@ -254,68 +256,70 @@
         <input type="number" id="red1-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
       </div>
     </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">B</h4>
+    <div class="stat-block-container-BD">
+        <div class="stat-block">
             <div style="display: flex; align-items: center;">
-              <span id="red1-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
-              <div class="attack-rank-selector">
-                  <div class="selector-controls">
-                      <div class="dropdown-wrapper">
-                          <button id="red1-defense-dropdownBtn" class="dropdown-toggle">
-                              <span id="red1-defense-rank-display">±0</span>
-                              <span class="arrow-icon">▼</span>
-                          </button>
-                          <ul id="red1-defense-dropdownMenu" class="dropdown-menu"></ul>
-                      </div>
-                      <button type="button" onclick="window.changeRank('red1-defense', -1)" class="rank-btn minus">-</button>
-                      <span id="red1-defense-rank-val" class="rank-value" style="display:none;">0</span>
-                      <button type="button" onclick="window.changeRank('red1-defense', 1)" class="rank-btn plus">+</button>
-                  </div>
-              </div>
+                <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">B</h4>
+                <div style="display: flex; align-items: center;">
+                <span id="red1-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
+                <div class="attack-rank-selector">
+                    <div class="selector-controls">
+                        <div class="dropdown-wrapper">
+                            <button id="red1-defense-dropdownBtn" class="dropdown-toggle">
+                                <span id="red1-defense-rank-display">±0</span>
+                                <span class="arrow-icon">▼</span>
+                            </button>
+                            <ul id="red1-defense-dropdownMenu" class="dropdown-menu"></ul>
+                        </div>
+                        <button type="button" onclick="window.changeRank('red1-defense', -1)" class="rank-btn minus">-</button>
+                        <span id="red1-defense-rank-val" class="rank-value" style="display:none;">0</span>
+                        <button type="button" onclick="window.changeRank('red1-defense', 1)" class="rank-btn plus">+</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="stat-block-row">
+                <div class="segmented-control" id="red1-defense-nature-control">
+                    <button type="button" data-value="0.9">x0.9</button>
+                    <button type="button" data-value="1.0" class="active">x1.0</button>
+                    <button type="button" data-value="1.1">x1.1</button>
+                </div>
+                <input type="hidden" id="red1-defense-nature" value="1.0"/>
+                <input type="number" id="red1-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
+                <input type="number" id="red1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
             </div>
         </div>
-        <div class="stat-block-row">
-            <div class="segmented-control" id="red1-defense-nature-control">
-                <button type="button" data-value="0.9">x0.9</button>
-                <button type="button" data-value="1.0" class="active">x1.0</button>
-                <button type="button" data-value="1.1">x1.1</button>
-            </div>
-            <input type="hidden" id="red1-defense-nature" value="1.0"/>
-            <input type="number" id="red1-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
-            <input type="number" id="red1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-        </div>
-    </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">D</h4>
+        <div class="stat-block">
             <div style="display: flex; align-items: center;">
-              <span id="red1-sp-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
-              <div class="attack-rank-selector">
-                  <div class="selector-controls">
-                      <div class="dropdown-wrapper">
-                          <button id="red1-sp-defense-dropdownBtn" class="dropdown-toggle">
-                              <span id="red1-sp-defense-rank-display">±0</span>
-                              <span class="arrow-icon">▼</span>
-                          </button>
-                          <ul id="red1-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
-                      </div>
-                      <button type="button" onclick="window.changeRank('red1-sp-defense', -1)" class="rank-btn minus">-</button>
-                      <span id="red1-sp-defense-rank-val" class="rank-value" style="display:none;">0</span>
-                      <button type="button" onclick="window.changeRank('red1-sp-defense', 1)" class="rank-btn plus">+</button>
-                  </div>
-              </div>
+                <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">D</h4>
+                <div style="display: flex; align-items: center;">
+                <span id="red1-sp-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
+                <div class="attack-rank-selector">
+                    <div class="selector-controls">
+                        <div class="dropdown-wrapper">
+                            <button id="red1-sp-defense-dropdownBtn" class="dropdown-toggle">
+                                <span id="red1-sp-defense-rank-display">±0</span>
+                                <span class="arrow-icon">▼</span>
+                            </button>
+                            <ul id="red1-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
+                        </div>
+                        <button type="button" onclick="window.changeRank('red1-sp-defense', -1)" class="rank-btn minus">-</button>
+                        <span id="red1-sp-defense-rank-val" class="rank-value" style="display:none;">0</span>
+                        <button type="button" onclick="window.changeRank('red1-sp-defense', 1)" class="rank-btn plus">+</button>
+                    </div>
+                </div>
+                </div>
             </div>
-        </div>
-        <div class="stat-block-row">
-            <div class="segmented-control" id="red1-sp-defense-nature-control">
-                <button type="button" data-value="0.9">x0.9</button>
-                <button type="button" data-value="1.0" class="active">x1.0</button>
-                <button type="button" data-value="1.1">x1.1</button>
+            <div class="stat-block-row">
+                <div class="segmented-control" id="red1-sp-defense-nature-control">
+                    <button type="button" data-value="0.9">x0.9</button>
+                    <button type="button" data-value="1.0" class="active">x1.0</button>
+                    <button type="button" data-value="1.1">x1.1</button>
+                </div>
+                <input type="hidden" id="red1-sp-defense-nature" value="1.0"/>
+                <input type="number" id="red1-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
+                <input type="number" id="red1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
             </div>
-            <input type="hidden" id="red1-sp-defense-nature" value="1.0"/>
-            <input type="number" id="red1-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
-            <input type="number" id="red1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
         </div>
     </div>
 
@@ -365,82 +369,118 @@
         <h4>ポケモンHP</h4>
         <div class="team-hp-rows">
             <div class="pokemon-hp-row">
-                <div class="pokemon-hp-entry">
-                    <span>Red 2: <span id="red2-hp-table-name">-</span>HP:<span id="red2-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
-                    <div class="stat-block-row">
-                        <div class="value-control">
-                        <input type="number" id="red2-hp-1v" value="0" min="0" max="31" class="iv-input" title="個体値"/>
-                        <div class="value-buttons">
-                            <button type="button" class="value-set-btn" data-target="red2-hp-iv" data-value="31">31</button>
-                            <button type="button" class="value-set-btn" data-target="red2-hp-iv" data-value="0">0</button>
+                <div class="pokemon-hp-entry" id="red2-hp-entry">
+                    <div class="hp-display-info">
+                        <div id="red2-icon" class="pokemon-icon"></div>
+                        <div class="hp-display-details">
+                            <span>Red 2: <span id="red2-hp-table-name">-</span></span>
+                            <div class="hp-bar-container"><div id="red2-hp-bar" class="hp-bar">100%</div></div>
+                            <span class="hp-value">HP: <span id="red2-hp-actual" class="actual-stat">-</span></span>
                         </div>
                     </div>
+                    <div class="hp-input-controls">
                         <div class="value-control">
-                        <input type="number" id="red2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-                        <div class="value-buttons">
-                            <button type="button" class="value-set-btn" data-target="red2-hp-ev" data-value="252">0</button>
-                            <button type="button" class="value-set-btn" data-target="red2-hp-ev" data-value="0">252</button>
+                            <label for="red2-hp-iv">IV</label>
+                            <input type="number" id="red2-hp-iv" value="31" min="0" max="31" class="iv-input" title="HP個体値"/>
+                            <div class="value-buttons">
+                                <button type="button" class="value-set-btn" data-value="31">31</button>
+                                <button type="button" class="value-set-btn" data-value="0">0</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="hp-bar-container"><div id="red2-hp-bar" class="hp-bar">100%</div></div>    
-                </div>
-                <div class="pokemon-hp-entry">
-                    <span>Red 1: <span id="red1-hp-table-name">-</span>HP:<span id="red1-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
-                    <div class="stat-block-row">
                         <div class="value-control">
-                        <input type="number" id="red2-hp-1v" value="0" min="0" max="31" class="iv-input" title="個体値"/>
-                        <div class="value-buttons">
-                            <button type="button" class="value-set-btn" data-target="red1-hp-iv" data-value="31">31</button>
-                            <button type="button" class="value-set-btn" data-target="red1-hp-iv" data-value="0">0</button>
+                            <label for="red2-hp-ev">EV</label>
+                            <input type="number" id="red2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="HP努力値"/>
+                            <div class="value-buttons">
+                                <button type="button" class="value-set-btn" data-value="252">252</button>
+                                <button type="button" class="value-set-btn" data-value="0">0</button>
+                            </div>
                         </div>
-                    </div>
-                        <div class="value-control">
-                        <input type="number" id="red1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-                        <div class="value-buttons">
-                            <button type="button" class="value-set-btn" data-target="red1-hp-ev" data-value="252">252</button>
-                            <button type="button" class="value-set-btn" data-target="red1-hp-ev" data-value="0">0</button>
-                        </div>
-                    </div>
-                    <div class="hp-bar-container"><div id="red1-hp-bar" class="hp-bar">100%</div></div>
                     </div>
                 </div>
+                <div class="pokemon-hp-entry" id="red1-hp-entry">
+                    <div class="hp-display-info">
+                        <div id="red1-icon" class="pokemon-icon"></div>
+                        <div class="hp-display-details">
+                            <span>Red 1: <span id="red1-hp-table-name">-</span></span>
+                            <div class="hp-bar-container"><div id="red1-hp-bar" class="hp-bar">100%</div></div>
+                            <span class="hp-value">HP: <span id="red1-hp-actual" class="actual-stat">-</span></span>
+                        </div>
+                    </div>
+                    <div class="hp-input-controls">
+                        <div class="value-control">
+                            <label for="red1-hp-iv">IV</label>
+                            <input type="number" id="red1-hp-iv" value="31" min="0" max="31" class="iv-input" title="HP個体値"/>
+                            <div class="value-buttons">
+                                <button type="button" class="value-set-btn" data-value="31">31</button>
+                                <button type="button" class="value-set-btn" data-value="0">0</button>
+                            </div>
+                        </div>
+                        <div class="value-control">
+                            <label for="red1-hp-ev">EV</label>
+                            <input type="number" id="red1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="HP努力値"/>
+                            <div class="value-buttons">
+                                <button type="button" class="value-set-btn" data-value="252">252</button>
+                                <button type="button" class="value-set-btn" data-value="0">0</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <div class="pokemon-hp-row">
-                <div class="pokemon-hp-entry">
-                    <span>Blue 1: <span id="blue1-hp-table-name">-</span>HP:<span id="blue1-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
-                        <div class="value-control">
-                        <input type="number" id="blue1-hp-1v" value="0" min="0" max="31" class="iv-input" title="個体値"/>
-                        <div class="value-buttons">
-                            <button type="button" class="value-set-btn" data-target="blue1-hp-iv" data-value="31">31</button>
-                            <button type="button" class="value-set-btn" data-target="blue1-hp-iv" data-value="0">0</button>
+                <div class="pokemon-hp-entry" id="blue1-hp-entry">
+                    <div class="hp-display-info">
+                        <div id="blue1-icon" class="pokemon-icon"></div>
+                        <div class="hp-display-details">
+                            <span>Blue 1: <span id="blue1-hp-table-name">-</span></span>
+                            <div class="hp-bar-container"><div id="blue1-hp-bar" class="hp-bar">100%</div></div>
+                            <span class="hp-value">HP: <span id="blue1-hp-actual" class="actual-stat">-</span></span>
                         </div>
                     </div>
+                    <div class="hp-input-controls">
                         <div class="value-control">
-                        <input type="number" id="blue1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-                        <div class="value-buttons">
-                            <button type="button" class="value-set-btn" data-target="blue1-hp-ev" data-value="252">0</button>
-                            <button type="button" class="value-set-btn" data-target="blue1-hp-ev" data-value="0">252</button>
+                            <label for="blue1-hp-iv">IV</label>
+                            <input type="number" id="blue1-hp-iv" value="31" min="0" max="31" class="iv-input" title="HP個体値"/>
+                            <div class="value-buttons">
+                                <button type="button" class="value-set-btn" data-value="31">31</button>
+                                <button type="button" class="value-set-btn" data-value="0">0</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="hp-bar-container"><div id="blue1-hp-bar" class="hp-bar">100%</div></div>    
+                        <div class="value-control">
+                            <label for="blue1-hp-ev">EV</label>
+                            <input type="number" id="blue1-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="HP努力値"/>
+                            <div class="value-buttons">
+                                <button type="button" class="value-set-btn" data-value="252">252</button>
+                                <button type="button" class="value-set-btn" data-value="0">0</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
-                <div class="pokemon-hp-entry">
-                    <span>Blue 2: <span id="blue2-hp-table-name">-</span>HP:<span id="blue2-hp-actual" class="actual-stat" style="margin-right: 2px;">-</span></span> 
-                        <div class="value-control">
-                        <input type="number" id="blue2-hp-1v" value="0" min="0" max="31" class="iv-input" title="個体値"/>
-                        <div class="value-buttons">
-                            <button type="button" class="value-set-btn" data-target="blue2-hp-iv" data-value="31">31</button>
-                            <button type="button" class="value-set-btn" data-target="blue2-hp-iv" data-value="0">0</button>
+                <div class="pokemon-hp-entry" id="blue2-hp-entry">
+                    <div class="hp-display-info">
+                        <div id="blue2-icon" class="pokemon-icon"></div>
+                        <div class="hp-display-details">
+                            <span>Blue 2: <span id="blue2-hp-table-name">-</span></span>
+                            <div class="hp-bar-container"><div id="blue2-hp-bar" class="hp-bar">100%</div></div>
+                            <span class="hp-value">HP: <span id="blue2-hp-actual" class="actual-stat">-</span></span>
                         </div>
                     </div>
+                    <div class="hp-input-controls">
                         <div class="value-control">
-                        <input type="number" id="blue2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-                        <div class="value-buttons">
-                            <button type="button" class="value-set-btn" data-target="blue2-hp-ev" data-value="252">0</button>
-                            <button type="button" class="value-set-btn" data-target="blue2-hp-ev" data-value="0">252</button>
+                            <label for="blue2-hp-iv">IV</label>
+                            <input type="number" id="blue2-hp-iv" value="31" min="0" max="31" class="iv-input" title="HP個体値"/>
+                            <div class="value-buttons">
+                                <button type="button" class="value-set-btn" data-value="31">31</button>
+                                <button type="button" class="value-set-btn" data-value="0">0</button>
+                            </div>
                         </div>
-                    </div>
-                    <div class="hp-bar-container"><div id="blue2-hp-bar" class="hp-bar">100%</div></div>
+                        <div class="value-control">
+                            <label for="blue2-hp-ev">EV</label>
+                            <input type="number" id="blue2-hp-ev" value="0" min="0" max="252" step="4" class="ev-input" title="HP努力値"/>
+                            <div class="value-buttons">
+                                <button type="button" class="value-set-btn" data-value="252">252</button>
+                                <button type="button" class="value-set-btn" data-value="0">0</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -533,68 +573,70 @@
         <input type="number" id="blue1-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
       </div>
     </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">B</h4>
+    <div class="stat-block-container-BD">
+        <div class="stat-block">
             <div style="display: flex; align-items: center;">
-              <span id="blue1-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
-              <div class="attack-rank-selector">
-                  <div class="selector-controls">
-                      <div class="dropdown-wrapper">
-                          <button id="blue1-defense-dropdownBtn" class="dropdown-toggle">
-                              <span id="blue1-defense-rank-display">±0</span>
-                              <span class="arrow-icon">▼</span>
-                          </button>
-                          <ul id="blue1-defense-dropdownMenu" class="dropdown-menu"></ul>
-                      </div>
-                      <button type="button" onclick="window.changeRank('blue1-defense', -1)" class="rank-btn minus">-</button>
-                      <span id="blue1-defense-rank-val" class="rank-value" style="display:none;">0</span>
-                      <button type="button" onclick="window.changeRank('blue1-defense', 1)" class="rank-btn plus">+</button>
-                  </div>
-              </div>
+                <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">B</h4>
+                <div style="display: flex; align-items: center;">
+                <span id="blue1-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
+                <div class="attack-rank-selector">
+                    <div class="selector-controls">
+                        <div class="dropdown-wrapper">
+                            <button id="blue1-defense-dropdownBtn" class="dropdown-toggle">
+                                <span id="blue1-defense-rank-display">±0</span>
+                                <span class="arrow-icon">▼</span>
+                            </button>
+                            <ul id="blue1-defense-dropdownMenu" class="dropdown-menu"></ul>
+                        </div>
+                        <button type="button" onclick="window.changeRank('blue1-defense', -1)" class="rank-btn minus">-</button>
+                        <span id="blue1-defense-rank-val" class="rank-value" style="display:none;">0</span>
+                        <button type="button" onclick="window.changeRank('blue1-defense', 1)" class="rank-btn plus">+</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="stat-block-row">
+                <div class="segmented-control" id="blue1-defense-nature-control">
+                    <button type="button" data-value="0.9">x0.9</button>
+                    <button type="button" data-value="1.0" class="active">x1.0</button>
+                    <button type="button" data-value="1.1">x1.1</button>
+                </div>
+                <input type="hidden" id="blue1-defense-nature" value="1.0"/>
+                <input type="number" id="blue1-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
+                <input type="number" id="blue1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
             </div>
         </div>
-        <div class="stat-block-row">
-            <div class="segmented-control" id="blue1-defense-nature-control">
-                <button type="button" data-value="0.9">x0.9</button>
-                <button type="button" data-value="1.0" class="active">x1.0</button>
-                <button type="button" data-value="1.1">x1.1</button>
-            </div>
-            <input type="hidden" id="blue1-defense-nature" value="1.0"/>
-            <input type="number" id="blue1-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
-            <input type="number" id="blue1-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-        </div>
-    </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">D</h4>
+        <div class="stat-block">
             <div style="display: flex; align-items: center;">
-              <span id="blue1-sp-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
-              <div class="attack-rank-selector">
-                  <div class="selector-controls">
-                      <div class="dropdown-wrapper">
-                          <button id="blue1-sp-defense-dropdownBtn" class="dropdown-toggle">
-                              <span id="blue1-sp-defense-rank-display">±0</span>
-                              <span class="arrow-icon">▼</span>
-                          </button>
-                          <ul id="blue1-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
-                      </div>
-                      <button type="button" onclick="window.changeRank('blue1-sp-defense', -1)" class="rank-btn minus">-</button>
-                      <span id="blue1-sp-defense-rank-val" class="rank-value" style="display:none;">0</span>
-                      <button type="button" onclick="window.changeRank('blue1-sp-defense', 1)" class="rank-btn plus">+</button>
-                  </div>
-              </div>
+                <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">D</h4>
+                <div style="display: flex; align-items: center;">
+                <span id="blue1-sp-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
+                <div class="attack-rank-selector">
+                    <div class="selector-controls">
+                        <div class="dropdown-wrapper">
+                            <button id="blue1-sp-defense-dropdownBtn" class="dropdown-toggle">
+                                <span id="blue1-sp-defense-rank-display">±0</span>
+                                <span class="arrow-icon">▼</span>
+                            </button>
+                            <ul id="blue1-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
+                        </div>
+                        <button type="button" onclick="window.changeRank('blue1-sp-defense', -1)" class="rank-btn minus">-</button>
+                        <span id="blue1-sp-defense-rank-val" class="rank-value" style="display:none;">0</span>
+                        <button type="button" onclick="window.changeRank('blue1-sp-defense', 1)" class="rank-btn plus">+</button>
+                    </div>
+                </div>
+                </div>
             </div>
-        </div>
-        <div class="stat-block-row">
-            <div class="segmented-control" id="blue1-sp-defense-nature-control">
-                <button type="button" data-value="0.9">x0.9</button>
-                <button type="button" data-value="1.0" class="active">x1.0</button>
-                <button type="button" data-value="1.1">x1.1</button>
+            <div class="stat-block-row">
+                <div class="segmented-control" id="blue1-sp-defense-nature-control">
+                    <button type="button" data-value="0.9">x0.9</button>
+                    <button type="button" data-value="1.0" class="active">x1.0</button>
+                    <button type="button" data-value="1.1">x1.1</button>
+                </div>
+                <input type="hidden" id="blue1-sp-defense-nature" value="1.0"/>
+                <input type="number" id="blue1-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
+                <input type="number" id="blue1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
             </div>
-            <input type="hidden" id="blue1-sp-defense-nature" value="1.0"/>
-            <input type="number" id="blue1-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
-            <input type="number" id="blue1-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
         </div>
     </div>
   </div>
@@ -683,71 +725,72 @@
         <input type="number" id="blue2-main-offensive-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
       </div>
     </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">B</h4>
+    <div class="stat-block-container-BD">
+        <div class="stat-block">
             <div style="display: flex; align-items: center;">
-              <span id="blue2-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
-              <div class="attack-rank-selector">
-                  <div class="selector-controls">
-                      <div class="dropdown-wrapper">
-                          <button id="blue2-defense-dropdownBtn" class="dropdown-toggle">
-                              <span id="blue2-defense-rank-display">±0</span>
-                              <span class="arrow-icon">▼</span>
-                          </button>
-                          <ul id="blue2-defense-dropdownMenu" class="dropdown-menu"></ul>
-                      </div>
-                      <button type="button" onclick="window.changeRank('blue2-defense', -1)" class="rank-btn minus">-</button>
-                      <span id="blue2-defense-rank-val" class="rank-value" style="display:none;">0</span>
-                      <button type="button" onclick="window.changeRank('blue2-defense', 1)" class="rank-btn plus">+</button>
-                  </div>
-              </div>
+                <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">B</h4>
+                <div style="display: flex; align-items: center;">
+                <span id="blue2-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
+                <div class="attack-rank-selector">
+                    <div class="selector-controls">
+                        <div class="dropdown-wrapper">
+                            <button id="blue2-defense-dropdownBtn" class="dropdown-toggle">
+                                <span id="blue2-defense-rank-display">±0</span>
+                                <span class="arrow-icon">▼</span>
+                            </button>
+                            <ul id="blue2-defense-dropdownMenu" class="dropdown-menu"></ul>
+                        </div>
+                        <button type="button" onclick="window.changeRank('blue2-defense', -1)" class="rank-btn minus">-</button>
+                        <span id="blue2-defense-rank-val" class="rank-value" style="display:none;">0</span>
+                        <button type="button" onclick="window.changeRank('blue2-defense', 1)" class="rank-btn plus">+</button>
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="stat-block-row">
+                <div class="segmented-control" id="blue2-defense-nature-control">
+                    <button type="button" data-value="0.9">x0.9</button>
+                    <button type="button" data-value="1.0" class="active">x1.0</button>
+                    <button type="button" data-value="1.1">x1.1</button>
+                </div>
+                <input type="hidden" id="blue2-defense-nature" value="1.0"/>
+                <input type="number" id="blue2-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
+                <input type="number" id="blue2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
             </div>
         </div>
-        <div class="stat-block-row">
-            <div class="segmented-control" id="blue2-defense-nature-control">
-                <button type="button" data-value="0.9">x0.9</button>
-                <button type="button" data-value="1.0" class="active">x1.0</button>
-                <button type="button" data-value="1.1">x1.1</button>
+        <div class="stat-block">
+            <div style="display: flex; align-items: center;">
+                <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">D</h4>
+                <div style="display: flex; align-items: center;">
+                <span id="blue2-sp-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
+                <div class="attack-rank-selector">
+                    <div class="selector-controls">
+                        <div class="dropdown-wrapper">
+                            <button id="blue2-sp-defense-dropdownBtn" class="dropdown-toggle">
+                                <span id="blue2-sp-defense-rank-display">±0</span>
+                                <span class="arrow-icon">▼</span>
+                            </button>
+                            <ul id="blue2-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
+                        </div>
+                        <button type="button" onclick="window.changeRank('blue2-sp-defense', -1)" class="rank-btn minus">-</button>
+                        <span id="blue2-sp-defense-rank-val" class="rank-value" style="display:none;">0</span>
+                        <button type="button" onclick="window.changeRank('blue2-sp-defense', 1)" class="rank-btn plus">+</button>
+                    </div>
+                </div>
+                </div>
             </div>
-            <input type="hidden" id="blue2-defense-nature" value="1.0"/>
-            <input type="number" id="blue2-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
-            <input type="number" id="blue2-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+            <div class="stat-block-row">
+                <div class="segmented-control" id="blue2-sp-defense-nature-control">
+                    <button type="button" data-value="0.9">x0.9</button>
+                    <button type="button" data-value="1.0" class="active">x1.0</button>
+                    <button type="button" data-value="1.1">x1.1</button>
+                </div>
+                <input type="hidden" id="blue2-sp-defense-nature" value="1.0"/>
+                <input type="number" id="blue2-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
+                <input type="number" id="blue2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
+            </div>
         </div>
     </div>
-    <div class="stat-block">
-        <div style="display: flex; align-items: center;">
-            <h4 style="min-width: 70px; text-align: left; margin-right: 0px; margin-bottom: 0;">D</h4>
-            <div style="display: flex; align-items: center;">
-              <span id="blue2-sp-defense-actual" class="actual-stat" style="width: 50px; text-align: right; margin-right: 2px;">-</span>
-              <div class="attack-rank-selector">
-                  <div class="selector-controls">
-                      <div class="dropdown-wrapper">
-                          <button id="blue2-sp-defense-dropdownBtn" class="dropdown-toggle">
-                              <span id="blue2-sp-defense-rank-display">±0</span>
-                              <span class="arrow-icon">▼</span>
-                          </button>
-                          <ul id="blue2-sp-defense-dropdownMenu" class="dropdown-menu"></ul>
-                      </div>
-                      <button type="button" onclick="window.changeRank('blue2-sp-defense', -1)" class="rank-btn minus">-</button>
-                      <span id="blue2-sp-defense-rank-val" class="rank-value" style="display:none;">0</span>
-                      <button type="button" onclick="window.changeRank('blue2-sp-defense', 1)" class="rank-btn plus">+</button>
-                  </div>
-              </div>
-            </div>
-        </div>
-        <div class="stat-block-row">
-            <div class="segmented-control" id="blue2-sp-defense-nature-control">
-                <button type="button" data-value="0.9">x0.9</button>
-                <button type="button" data-value="1.0" class="active">x1.0</button>
-                <button type="button" data-value="1.1">x1.1</button>
-            </div>
-            <input type="hidden" id="blue2-sp-defense-nature" value="1.0"/>
-            <input type="number" id="blue2-sp-defense-iv" value="31" min="0" max="31" class="iv-input" title="個体値"/>
-            <input type="number" id="blue2-sp-defense-ev" value="0" min="0" max="252" step="4" class="ev-input" title="努力値"/>
-        </div>
-    </div>
-
   </div>
 </div>
 
